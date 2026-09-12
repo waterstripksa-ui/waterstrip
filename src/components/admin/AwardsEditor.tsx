@@ -12,14 +12,16 @@ import { HrefField } from './fields/HrefField.tsx';
 import { CheckboxField } from './fields/CheckboxField.tsx';
 
 export default function AwardsEditor({ initial }: { initial: HomeAwards }) {
+  const title = 'الجوائز والتكريم';
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
     'home_awards',
     initial,
+    title,
   );
 
   return (
     <SectionForm
-      title="الجوائز والتكريم"
+      title={title}
       lede="ترقيم الجوائز (٠١، ٠٢ …) يُحسب تلقائيًا من ترتيب القائمة."
       dirty={dirty}
       status={status}

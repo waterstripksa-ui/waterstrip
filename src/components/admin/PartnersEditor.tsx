@@ -18,14 +18,16 @@ export default function PartnersEditor({
   initial: HomePartners;
   media: Record<string, MediaView>;
 }) {
+  const title = 'الجهات الاستراتيجية';
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
     'home_partners',
     initial,
+    title,
   );
 
   return (
     <SectionForm
-      title="الجهات الاستراتيجية"
+      title={title}
       lede="أسماء الجهات وروابطها وشعاراتها. الجهة التي لا شعار لها تظهر بشعار الشريط."
       dirty={dirty}
       status={status}

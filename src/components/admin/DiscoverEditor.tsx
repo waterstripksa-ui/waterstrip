@@ -16,14 +16,16 @@ export default function DiscoverEditor({
   initial: HomeDiscover;
   media: Record<string, MediaView>;
 }) {
+  const title = 'تعرّف على الشريط';
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
     'home_discover',
     initial,
+    title,
   );
 
   return (
     <SectionForm
-      title="تعرّف على الشريط"
+      title={title}
       lede="النص التعريفي والبطاقات أسفله."
       dirty={dirty}
       status={status}

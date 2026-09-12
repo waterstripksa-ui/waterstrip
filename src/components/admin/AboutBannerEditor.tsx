@@ -15,14 +15,16 @@ export default function AboutBannerEditor({
   initial: HomeAboutBanner;
   media: Record<string, MediaView>;
 }) {
+  const title = 'بانر العضوية';
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
     'home_about_banner',
     initial,
+    title,
   );
 
   return (
     <SectionForm
-      title="بانر العضوية"
+      title={title}
       lede="القسم الأخير في الصفحة."
       dirty={dirty}
       status={status}

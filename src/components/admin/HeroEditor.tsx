@@ -19,14 +19,16 @@ export default function HeroEditor({
   initial: HomeHero;
   media: Record<string, MediaView>;
 }) {
+  const title = 'الواجهة الرئيسية';
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
     'home_hero',
     initial,
+    title,
   );
 
   return (
     <SectionForm
-      title="الواجهة الرئيسية"
+      title={title}
       lede="شرائح الواجهة المتعاقبة. عنوان الشريحة الأولى هو عنوان الصفحة الرئيسي."
       dirty={dirty}
       status={status}

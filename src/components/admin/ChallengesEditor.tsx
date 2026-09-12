@@ -15,14 +15,16 @@ export default function ChallengesEditor({
   initial: HomeChallenges;
   media: Record<string, MediaView>;
 }) {
+  const title = 'التحديات';
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
     'home_challenges',
     initial,
+    title,
   );
 
   return (
     <SectionForm
-      title="التحديات"
+      title={title}
       lede="عناصر شريط التحديات. العنصر الذي لا صورة له يظهر برسم توضيحي افتراضي."
       dirty={dirty}
       status={status}

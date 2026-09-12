@@ -7,6 +7,7 @@
  * issues that come back onto fields by their dot-joined path.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { registerEditor, unregisterEditor } from './editorRegistry.ts';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -40,7 +41,7 @@ export interface SingletonEditor<T> {
   reset: () => void;
 }
 
-export function useSingletonEditor<T>(key: string, initial: T): SingletonEditor<T> {
+export function useSingletonEditor<T>(key: string, initial: T, title: string): SingletonEditor<T> {
   const [draft, setDraft] = useState<T>(initial);
   const [saved, setSaved] = useState<T>(initial);
   const [status, setStatus] = useState<SaveStatus>('idle');
@@ -121,6 +122,14 @@ export function useSingletonEditor<T>(key: string, initial: T): SingletonEditor<
       }
     })();
   }, [draft, key]);
+
+  // Registers this panel with the page-wide "Save All" bar. Unregistering
+  // only on unmount (not on every update) avoids a remove/re-add flicker on
+  // each keystroke.
+  useEffect(() => {
+    registerEditor({ key, title, dirty, status, save });
+  }, [key, title, dirty, status, save]);
+  useEffect(() => () => unregisterEditor(key), [key]);
 
   return { draft, update, dirty, status, message, errors, save, reset };
 }
