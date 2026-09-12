@@ -46,3 +46,15 @@
     padding-block: 38px 32px;
   }
 }
+
+/* Shorter, solid band for utility pages that have no lede or hero art. */
+.page-hero--plain {
+  align-items: flex-start;
+  padding-block: 46px 30px;
+  background: var(--c-action);
+}
+
+.page-hero--plain .page-hero__title {
+  font-size: var(--fs-section);
+  line-height: var(--lh-section);
+}

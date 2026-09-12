@@ -1,0 +1,78 @@
+---
+// Ported from waterstrip/sitemap.html. This page is pure site navigation —
+// the same links SiteHeader/SiteFooter already carry — so unlike the other
+// legal/utility pages it has no CMS surface at all; there is no "content"
+// here for an admin to edit, only routes. Update this list alongside
+// SiteHeader/SiteFooter as pages are ported, not through /admin.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+
+const groups = [
+  {
+    headingAr: 'الرئيسية',
+    links: [
+      { label: 'الرئيسية', href: '/' },
+      { label: 'عن الشريط', href: '/about' },
+      { label: 'مجموعات العمل', href: '#' },
+      { label: 'الأعضاء', href: '#' },
+      { label: 'الأخبار والفعاليات', href: '#' },
+      { label: 'تواصل معنا', href: '/contact' },
+    ],
+  },
+  {
+    headingAr: 'المشاركة',
+    links: [
+      { label: 'سجّل اهتمامك', href: '/register-interest' },
+      { label: 'دليل الأعضاء', href: '#' },
+      { label: 'ملف العضو', href: '#' },
+    ],
+  },
+  {
+    headingAr: 'الأخبار والفعاليات',
+    links: [
+      { label: 'الأخبار', href: '#' },
+      { label: 'الفعاليات والمعارض', href: '#' },
+    ],
+  },
+  {
+    headingAr: 'الشؤون النظامية',
+    links: [
+      { label: 'الشروط والأحكام', href: '/terms' },
+      { label: 'سياسة الخصوصية', href: '/privacy' },
+      { label: 'إشعار ملفات الارتباط', href: '/cookies' },
+      { label: 'إمكانية الوصول', href: '/accessibility' },
+      { label: 'خريطة الموقع', href: '/sitemap' },
+    ],
+  },
+];
+---
+
+<Layout title="خريطة الموقع">
+  <PageHero
+    plain
+    title="خريطة الموقع"
+    lede="كل صفحات الموقع في مكان واحد."
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'خريطة الموقع' }]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="sitemap-grid u-reveal">
+        {
+          groups.map((group) => (
+            <div>
+              <h3>{group.headingAr}</h3>
+              <ul>
+                {group.links.map((link) => (
+                  <li>
+                    <a href={link.href}>{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>

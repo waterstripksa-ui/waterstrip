@@ -9,12 +9,14 @@ interface Props {
   title: string;
   lede?: string;
   crumbs?: Crumb[];
+  /** Shorter, solid-colour band with no lede — for legal/utility pages. */
+  plain?: boolean;
 }
 
-const { title, lede, crumbs = [] } = Astro.props;
+const { title, lede, crumbs = [], plain = false } = Astro.props;
 ---
 
-<section class="page-hero">
+<section class:list={['page-hero', plain && 'page-hero--plain']}>
   <div class="wrap page-hero__inner">
     {
       crumbs.length > 0 && (

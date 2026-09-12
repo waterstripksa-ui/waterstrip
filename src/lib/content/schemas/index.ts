@@ -21,6 +21,11 @@ import { contactInfo } from './contact-info.ts';
 import { contactBanner } from './contact-banner.ts';
 import { registerHero } from './register-hero.ts';
 import { registerInfo } from './register-info.ts';
+import { legalBanner } from './legal-banner.ts';
+import { legalTerms } from './legal-terms.ts';
+import { legalPrivacy } from './legal-privacy.ts';
+import { legalCookies } from './legal-cookies.ts';
+import { legalAccessibility } from './legal-accessibility.ts';
 import type { SingletonDefinition } from './types.ts';
 
 /** Iteration type. The payload generic is erased because the surfaces differ. */
@@ -46,6 +51,11 @@ export const singletons = {
   contact_banner: contactBanner,
   register_hero: registerHero,
   register_info: registerInfo,
+  legal_banner: legalBanner,
+  legal_terms: legalTerms,
+  legal_privacy: legalPrivacy,
+  legal_cookies: legalCookies,
+  legal_accessibility: legalAccessibility,
 } as const;
 
 export type SingletonKey = keyof typeof singletons;
@@ -77,5 +87,10 @@ export {
   contactBanner,
   registerHero,
   registerInfo,
+  legalBanner,
+  legalTerms,
+  legalPrivacy,
+  legalCookies,
+  legalAccessibility,
 };
 export type { SingletonDefinition };

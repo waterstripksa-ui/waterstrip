@@ -5,9 +5,10 @@
 // been ported yet hold "#", matching the convention in SiteHeader/SiteFooter.
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
 import { getSingleton } from '../lib/content/cache.ts';
 import { FOUNDING_STATEMENT_IMG, MISSION_IMG, nationalChallengeImages } from '../lib/about-assets.ts';
-import { MEMBERSHIP_BANNER_IMG, imageFor, resolveImage } from '../lib/media-assets.ts';
+import { imageFor, resolveImage } from '../lib/media-assets.ts';
 
 const hero = getSingleton('about_hero');
 const mission = getSingleton('about_mission');
@@ -139,18 +140,5 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
     </div>
   </section>
 
-  <section class="about-banner">
-    <img {...resolveImage(banner.imageId, MEMBERSHIP_BANNER_IMG)} alt="" loading="lazy" />
-    <div class="about-banner__in">
-      <p class="eyebrow eyebrow--light">{banner.eyebrowAr}</p>
-      <h2>{banner.headingAr}</h2>
-      <p class="about-banner__lede">{banner.ledeAr}</p>
-      <a class="button button--brand" href={banner.ctaHref}>
-        <span>{banner.ctaLabelAr}</span>
-        <svg class="button__icon" fill="none" stroke="currentColor" stroke-width="1.9" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 12h13M13 6l6 6-6 6"></path>
-        </svg>
-      </a>
-    </div>
-  </section>
+  <MembershipBanner banner={banner} />
 </Layout>

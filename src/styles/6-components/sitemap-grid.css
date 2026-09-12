@@ -1,0 +1,42 @@
+/* -----------------------------------------------------------------------------
+   Component / sitemap-grid
+   The four-column directory of site links on /sitemap.
+   -------------------------------------------------------------------------- */
+.sitemap-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 48px var(--gap);
+}
+
+.sitemap-grid h3 {
+  font-size: var(--fs-small);
+  letter-spacing: 1.1px;
+  font-weight: var(--fw-medium);
+  margin-block-end: 20px;
+  padding-block-end: 12px;
+  border-block-end: 1px solid var(--c-line);
+}
+
+.sitemap-grid li {
+  margin-block-end: 11px;
+}
+
+.sitemap-grid a {
+  font-size: 15px;
+}
+
+.sitemap-grid a:hover {
+  color: var(--c-link);
+}
+
+@media (--bp-lap) {
+  .sitemap-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (--bp-tab) {
+  .sitemap-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,31 @@
+---
+// Shared body for the legal/policy pages (terms, privacy, cookies,
+// accessibility): an "updated" note followed by the page's admin-managed
+// sections. Each section's body is short, safe markdown-lite text rendered
+// by src/lib/prose.ts — see that file and legal-shared.ts for why this is
+// not a freeform HTML field despite the section list itself being dynamic.
+import { renderProse } from '../lib/prose.ts';
+import type { LegalPage } from '../lib/content/schemas/legal-shared.ts';
+
+interface Props {
+  page: LegalPage;
+}
+
+const { page } = Astro.props;
+---
+
+<section class="ribbon">
+  <div class="wrap">
+    <div class="prose u-reveal">
+      <p class="prose__updated">{page.updatedLabelAr}</p>
+      {
+        page.sections.map((section) => (
+          <>
+            <h2>{section.titleAr}</h2>
+            <Fragment set:html={renderProse(section.bodyAr)} />
+          </>
+        ))
+      }
+    </div>
+  </div>
+</section>

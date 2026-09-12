@@ -1,0 +1,40 @@
+---
+// The legal/utility pages' editable surfaces: one shared closing banner plus
+// terms/privacy/cookies/accessibility, each a dynamic list of sections (see
+// LegalPageEditor.tsx and src/lib/content/schemas/legal-shared.ts). sitemap
+// and 404 have no CMS surface — they are pure navigation, edited in source.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getMedia, getSingleton, type MediaView } from '../../lib/content/cache.ts';
+import { collectMediaIds } from '../../lib/content/schemas/fields.ts';
+import { singletons } from '../../lib/content/schemas/index.ts';
+import LegalBannerEditor from '../../components/admin/legal/LegalBannerEditor.tsx';
+import LegalPageEditor from '../../components/admin/legal/LegalPageEditor.tsx';
+
+const banner = structuredClone(getSingleton('legal_banner'));
+const terms = structuredClone(getSingleton('legal_terms'));
+const privacy = structuredClone(getSingleton('legal_privacy'));
+const cookies = structuredClone(getSingleton('legal_cookies'));
+const accessibility = structuredClone(getSingleton('legal_accessibility'));
+
+const media: Record<string, MediaView> = {};
+for (const ref of collectMediaIds(singletons.legal_banner.schema, banner)) {
+  const view = getMedia(ref.id);
+  if (view) media[ref.id] = { ...view };
+}
+---
+
+<AdminLayout
+  title="الشؤون النظامية"
+  lede="تحرير صفحات الشروط والأحكام، الخصوصية، ملفات الارتباط، وإمكانية الوصول. يمكن إضافة قسم جديد أو حذفه أو إعادة ترتيبه في كل صفحة."
+>
+  <LegalPageEditor singletonKey="legal_terms" title="الشروط والأحكام" initial={terms} client:load />
+  <LegalPageEditor singletonKey="legal_privacy" title="سياسة الخصوصية" initial={privacy} client:load />
+  <LegalPageEditor singletonKey="legal_cookies" title="إشعار ملفات الارتباط" initial={cookies} client:load />
+  <LegalPageEditor
+    singletonKey="legal_accessibility"
+    title="إمكانية الوصول"
+    initial={accessibility}
+    client:load
+  />
+  <LegalBannerEditor initial={banner} media={media} client:load />
+</AdminLayout>

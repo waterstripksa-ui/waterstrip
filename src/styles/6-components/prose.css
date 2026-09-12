@@ -1,0 +1,44 @@
+/* -----------------------------------------------------------------------------
+   Component / prose
+   Long-form body copy for the legal/policy pages: a heading per section, then
+   paragraphs and bullet lists rendered from admin-authored text by
+   src/lib/prose.ts.
+   -------------------------------------------------------------------------- */
+.prose {
+  max-width: 820px;
+}
+
+.prose h2 {
+  font-family: var(--f-head);
+  font-size: var(--fs-intro);
+  font-weight: var(--fw-medium);
+  line-height: 1.45;
+  margin-block: 54px 16px;
+  color: var(--c-text);
+}
+
+.prose h2:first-child {
+  margin-block-start: 0;
+}
+
+.prose p,
+.prose li {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--c-text-soft);
+  margin-block-end: 14px;
+}
+
+.prose ul {
+  list-style: disc;
+  padding-inline-start: 22px;
+  margin-block-end: 20px;
+}
+
+.prose__updated {
+  font-size: var(--fs-small);
+  color: var(--c-text-soft);
+  border-inline-start: 3px solid var(--brand-blue-light);
+  padding-inline-start: 16px;
+  margin-block-end: 46px;
+}

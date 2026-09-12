@@ -62,6 +62,9 @@
 @import './6-components/form-layout.css';
 @import './6-components/info-card.css';
 @import './6-components/login-card.css';
+@import './6-components/prose.css';
+@import './6-components/sitemap-grid.css';
+@import './6-components/quick-links.css';
 @import './6-components/admin-bar.css';
 @import './6-components/admin-nav.css';
 @import './6-components/admin-shell.css';

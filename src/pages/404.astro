@@ -1,0 +1,54 @@
+---
+// Ported from waterstrip/404.html. Pure navigation, like sitemap.astro — no
+// CMS surface, see that page's note.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+
+const quickLinks = [
+  { label: 'عن الشريط', href: '/about' },
+  { label: 'مجموعات العمل', href: '#' },
+  { label: 'الأعضاء', href: '#' },
+  { label: 'الأخبار والفعاليات', href: '#' },
+  { label: 'سجّل اهتمامك', href: '/register-interest' },
+  { label: 'تواصل معنا', href: '/contact' },
+];
+---
+
+<Layout title="الصفحة غير موجودة">
+  <PageHero
+    plain
+    title="عذرًا، الصفحة غير موجودة"
+    lede="ربما نُقل الرابط أو تغيّر عنوانه. جرّب أحد الروابط أدناه."
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'غير موجودة' }]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="section-head u-reveal">
+        <div class="section-head__text">
+          <p class="eyebrow">خطأ 404</p>
+          <h2>أين تريد أن تذهب؟</h2>
+        </div>
+        <a class="cta-circle" href="/">
+          <span>العودة للرئيسية</span>
+          <span class="circ">
+            <svg fill="none" stroke="currentColor" stroke-width="1.6" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h13M13 6l6 6-6 6"></path>
+            </svg>
+          </span>
+        </a>
+      </div>
+
+      <div class="quick-links u-reveal">
+        <h3>روابط سريعة</h3>
+        {
+          quickLinks.map((link) => (
+            <div class="quick-links__row">
+              <a href={link.href}>{link.label}</a>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -55,6 +55,17 @@ order**. That is enforced by schema design, not by UI politeness:
 - Validate at the form boundary so the dashboard cannot write a shape the components do not
   expect.
 
+**Exception: the legal/utility pages** (terms, privacy, cookies, accessibility —
+`src/lib/content/schemas/legal-shared.ts`). Their content is fundamentally a list of
+(title, prose) sections whose count and order genuinely change over time as policy changes, so
+admins may add, remove, reorder and retitle sections there, via the same repeatable-list
+mechanism (`ItemList`) already sanctioned above for ordering. This does not reopen the door to a
+block/page builder: every section renders through the exact same heading+prose template, so
+nothing an admin does can swap a component or change the page's layout. The prose body itself is
+still never a freeform HTML field — it is plain text with a small, fixed markdown-lite syntax
+(paragraphs, `- ` bullet lists, `**bold**`, `[text](url)` restricted to relative/mailto/https
+links) that `src/lib/prose.ts` renders into the small set of tags it recognises, nothing else.
+
 ## Suggested porting order
 
 1. ~~Shared `Layout.astro`~~ and ~~the CSS foundation~~ — **done.**
