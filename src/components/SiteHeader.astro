@@ -2,12 +2,16 @@
 // The public header, ported from waterstrip/index.html. Carries the mobile
 // drawer (the site's only nav — the header itself shows just the brand and
 // the register CTA, at every viewport width) and the top scroll-progress bar.
+import { getSingleton } from '../lib/content/cache.ts';
+
+const awards = getSingleton('home_awards');
+
 const navLinks = [
   { label: 'الرئيسية', href: '/' },
   { label: 'عن الشريط', href: '#' },
   { label: 'مجموعات العمل', href: '#' },
   { label: 'الأعضاء', href: '#' },
-  { label: 'الجوائز والتكريم', href: '#awards' },
+  ...(awards.hidden ? [] : [{ label: 'الجوائز والتكريم', href: '#awards' }]),
   { label: 'الأخبار والفعاليات', href: '#' },
   { label: 'تواصل معنا', href: '#' },
 ];
