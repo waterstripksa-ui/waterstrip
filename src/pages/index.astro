@@ -125,33 +125,35 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
     </div>
   </section>
 
-  <section class="awards" id="awards">
-    <div class="wrap">
-      <div class="awards__panel">
-        <div class="awards__head">
-          <p class="eyebrow eyebrow--light">{awards.eyebrowAr}</p>
-          <h2>{awards.headingAr}</h2>
-          <p class="lede">{awards.ledeAr}</p>
-          <a class="button button--brand" href={awards.ctaHref}>
-            <span>{awards.ctaLabelAr}</span>
-            <svg class="button__icon" fill="none" stroke="currentColor" stroke-width="1.9" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12h13M13 6l6 6-6 6"></path>
-            </svg>
-          </a>
+  {!awards.hidden && (
+    <section class="awards" id="awards">
+      <div class="wrap">
+        <div class="awards__panel">
+          <div class="awards__head">
+            <p class="eyebrow eyebrow--light">{awards.eyebrowAr}</p>
+            <h2>{awards.headingAr}</h2>
+            <p class="lede">{awards.ledeAr}</p>
+            <a class="button button--brand" href={awards.ctaHref}>
+              <span>{awards.ctaLabelAr}</span>
+              <svg class="button__icon" fill="none" stroke="currentColor" stroke-width="1.9" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6"></path>
+              </svg>
+            </a>
+          </div>
+          <ol class="awards__cats">
+            {awards.items.map((a, i) => (
+              <li class="award">
+                <span class="award__no" aria-hidden="true">{ordinal(i)}</span>
+                <h3>{a.titleAr}</h3>
+                <p>{a.bodyAr}</p>
+                <i class="award__rule"></i>
+              </li>
+            ))}
+          </ol>
         </div>
-        <ol class="awards__cats">
-          {awards.items.map((a, i) => (
-            <li class="award">
-              <span class="award__no" aria-hidden="true">{ordinal(i)}</span>
-              <h3>{a.titleAr}</h3>
-              <p>{a.bodyAr}</p>
-              <i class="award__rule"></i>
-            </li>
-          ))}
-        </ol>
       </div>
-    </div>
-  </section>
+    </section>
+  )}
 
   <section class="partners" aria-label={partners.labelAr}>
     <div class="wrap">

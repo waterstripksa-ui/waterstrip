@@ -9,6 +9,7 @@ import { ItemList } from './ItemList.tsx';
 import { TextField } from './fields/TextField.tsx';
 import { TextAreaField } from './fields/TextAreaField.tsx';
 import { HrefField } from './fields/HrefField.tsx';
+import { CheckboxField } from './fields/CheckboxField.tsx';
 
 export default function AwardsEditor({ initial }: { initial: HomeAwards }) {
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
@@ -26,6 +27,13 @@ export default function AwardsEditor({ initial }: { initial: HomeAwards }) {
       onSave={save}
       onReset={reset}
     >
+      <CheckboxField
+        label="إخفاء القسم من الصفحة الرئيسية"
+        value={draft.hidden}
+        onChange={(v) => update({ ...draft, hidden: v })}
+        name="hidden"
+        error={errors.hidden}
+      />
       <TextField
         label="العنوان الفرعي"
         value={draft.eyebrowAr}

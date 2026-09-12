@@ -24,14 +24,19 @@ const v1 = z.object({
   items: z.array(award).min(1).max(12),
 });
 
+const v2 = v1.extend({
+  /** When true, the public home page skips rendering this section entirely. */
+  hidden: z.boolean(),
+});
+
 export type HomeAward = z.infer<typeof award>;
-export type HomeAwards = z.infer<typeof v1>;
+export type HomeAwards = z.infer<typeof v2>;
 
 export const homeAwards = defineSingleton<HomeAwards>({
   key: 'home_awards',
-  version: 1,
-  schema: v1,
-  migrations: [],
+  version: 2,
+  schema: v2,
+  migrations: [(data) => ({ ...(data as object), hidden: false })],
   initial: {
     eyebrowAr: 'التميّز',
     headingAr: 'الجوائز والتكريم',
@@ -39,6 +44,7 @@ export const homeAwards = defineSingleton<HomeAwards>({
       'تكريمات نالها الشريط وترشيحات دخلها خلال سنته الأولى، تعكس أثر العمل المشترك بين أعضائه في قطاع المياه.',
     ctaLabelAr: 'انضم إلى الشريط',
     ctaHref: '#',
+    hidden: false,
     items: [
       { id: 'aw-global-esg', titleAr: 'جائزة Global ESG', bodyAr: 'تكريم حصل عليه الشريط في 2025.' },
       { id: 'aw-steves', titleAr: "جائزة Steve's Award", bodyAr: 'تكريم حصل عليه الشريط في 2026.' },
