@@ -1,0 +1,54 @@
+/* -----------------------------------------------------------------------------
+   Component / stats
+   The about page "at a glance" figure strip.
+   -------------------------------------------------------------------------- */
+.stats__heading {
+  margin-block-end: 62px;
+}
+
+.stats__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 40px;
+  max-width: 1376px;
+}
+
+.stats__item {
+  border-block-end: 1px solid var(--c-line);
+  padding-block-end: 22px;
+  padding-inline-end: 60px;
+}
+
+.stats__value {
+  display: block;
+  font-family: var(--f-head);
+  font-size: 53px;
+  line-height: 53px;
+  font-weight: var(--fw-medium);
+  letter-spacing: -1px;
+  background: var(--g-brand);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-block-end: 18px;
+}
+
+.stats__label {
+  font-size: var(--fs-small);
+  line-height: 18px;
+  letter-spacing: 0.28px;
+}
+
+@media (--bp-tab) {
+  .stats__heading {
+    margin-block-end: 22px;
+  }
+
+  .stats__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats__item {
+    padding-inline-end: 0;
+  }
+}

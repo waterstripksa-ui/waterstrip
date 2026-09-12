@@ -9,6 +9,13 @@ import { homeChallenges } from './home-challenges.ts';
 import { homeAwards } from './home-awards.ts';
 import { homePartners } from './home-partners.ts';
 import { homeAboutBanner } from './home-about-banner.ts';
+import { aboutHero } from './about-hero.ts';
+import { aboutMission } from './about-mission.ts';
+import { aboutGlance } from './about-glance.ts';
+import { aboutChallenges } from './about-challenges.ts';
+import { aboutGoals } from './about-goals.ts';
+import { aboutFoundingStatement } from './about-founding-statement.ts';
+import { aboutBanner } from './about-banner.ts';
 import type { SingletonDefinition } from './types.ts';
 
 /** Iteration type. The payload generic is erased because the surfaces differ. */
@@ -22,6 +29,13 @@ export const singletons = {
   home_awards: homeAwards,
   home_partners: homePartners,
   home_about_banner: homeAboutBanner,
+  about_hero: aboutHero,
+  about_mission: aboutMission,
+  about_glance: aboutGlance,
+  about_challenges: aboutChallenges,
+  about_goals: aboutGoals,
+  about_founding_statement: aboutFoundingStatement,
+  about_banner: aboutBanner,
 } as const;
 
 export type SingletonKey = keyof typeof singletons;
@@ -34,5 +48,19 @@ export function isSingletonKey(value: string): value is SingletonKey {
   return Object.prototype.hasOwnProperty.call(singletons, value);
 }
 
-export { homeHero, homeDiscover, homeChallenges, homeAwards, homePartners, homeAboutBanner };
+export {
+  homeHero,
+  homeDiscover,
+  homeChallenges,
+  homeAwards,
+  homePartners,
+  homeAboutBanner,
+  aboutHero,
+  aboutMission,
+  aboutGlance,
+  aboutChallenges,
+  aboutGoals,
+  aboutFoundingStatement,
+  aboutBanner,
+};
 export type { SingletonDefinition };

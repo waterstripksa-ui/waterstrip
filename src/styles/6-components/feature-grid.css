@@ -1,0 +1,60 @@
+/* -----------------------------------------------------------------------------
+   Component / feature-grid
+   A three-up row of illustrated cards — the about page's national-challenges
+   grid. Wraps to two columns then one as the viewport narrows.
+   -------------------------------------------------------------------------- */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+}
+
+.feature-grid__figure {
+  overflow: hidden;
+  margin-block-end: 22px;
+}
+
+.feature-grid__figure img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.feature-grid__item:hover .feature-grid__figure img {
+  transform: scale(1.05);
+}
+
+.feature-grid__title {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: var(--fw-regular);
+  margin-block-end: 14px;
+}
+
+.feature-grid__body {
+  font-size: var(--fs-body);
+  line-height: 24px;
+  color: var(--c-text-soft);
+}
+
+@media (--bp-tab) {
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-grid__figure img {
+    height: 165px;
+  }
+
+  .feature-grid__title {
+    font-size: 15px;
+    line-height: 22px;
+    margin-block-end: 8px;
+  }
+
+  .feature-grid__body {
+    font-size: 13px;
+    line-height: 20px;
+  }
+}

@@ -93,36 +93,6 @@
   margin-block-start: 34px;
 }
 
-.cta-circle {
-  display: inline-flex;
-  align-items: center;
-  gap: 20px;
-  color: var(--c-text-invert);
-  font-size: var(--fs-small);
-}
-
-.cta-circle .circ {
-  width: 44px;
-  height: 44px;
-  flex: none;
-  border: 1px solid currentColor;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  transition:
-    background var(--dur-base),
-    color var(--dur-base);
-}
-
-.cta-circle .circ svg {
-  transform: scaleX(-1);
-}
-
-.cta-circle:hover .circ {
-  background: var(--c-text-invert);
-  color: var(--c-action);
-}
-
 .hero__tabs {
   position: absolute;
   inset-inline: 0;

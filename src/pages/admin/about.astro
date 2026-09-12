@@ -1,0 +1,55 @@
+---
+// The about page's editable surfaces. Each panel is a React island that PUTs to
+// /admin/api/content/<key>; reads go through the content cache, as they must.
+// Image fields upload to /admin/api/media and put the returned id in the draft.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getMedia, getSingleton, type MediaView } from '../../lib/content/cache.ts';
+import { collectMediaIds } from '../../lib/content/schemas/fields.ts';
+import { singletons, type SingletonKey } from '../../lib/content/schemas/index.ts';
+import AboutHeroEditor from '../../components/admin/about/AboutHeroEditor.tsx';
+import AboutMissionEditor from '../../components/admin/about/AboutMissionEditor.tsx';
+import AboutGlanceEditor from '../../components/admin/about/AboutGlanceEditor.tsx';
+import AboutChallengesEditor from '../../components/admin/about/AboutChallengesEditor.tsx';
+import AboutGoalsEditor from '../../components/admin/about/AboutGoalsEditor.tsx';
+import AboutFoundingStatementEditor from '../../components/admin/about/AboutFoundingStatementEditor.tsx';
+import AboutBannerEditor from '../../components/admin/about/AboutBannerEditor.tsx';
+
+// The cache deep-freezes what it returns, and React needs to build new objects
+// from these, so each island gets a structural clone as its initial draft.
+const hero = structuredClone(getSingleton('about_hero'));
+const mission = structuredClone(getSingleton('about_mission'));
+const glance = structuredClone(getSingleton('about_glance'));
+const challenges = structuredClone(getSingleton('about_challenges'));
+const goals = structuredClone(getSingleton('about_goals'));
+const founding = structuredClone(getSingleton('about_founding_statement'));
+const banner = structuredClone(getSingleton('about_banner'));
+
+// Previews for every image the saved content already references. One map is
+// shared by every island; it is a handful of small records.
+const media: Record<string, MediaView> = {};
+const surfaces: Array<[SingletonKey, unknown]> = [
+  ['about_mission', mission],
+  ['about_challenges', challenges],
+  ['about_founding_statement', founding],
+  ['about_banner', banner],
+];
+for (const [key, data] of surfaces) {
+  for (const ref of collectMediaIds(singletons[key].schema, data)) {
+    const view = getMedia(ref.id);
+    if (view) media[ref.id] = { ...view };
+  }
+}
+---
+
+<AdminLayout
+  title="صفحة عن الشريط"
+  lede="تحرير نصوص صفحة عن الشريط وصورها. كل قسم يُحفظ على حدة، ويظهر التغيير في الموقع مباشرة بعد الحفظ."
+>
+  <AboutHeroEditor initial={hero} client:load />
+  <AboutMissionEditor initial={mission} media={media} client:load />
+  <AboutGlanceEditor initial={glance} client:load />
+  <AboutChallengesEditor initial={challenges} media={media} client:load />
+  <AboutGoalsEditor initial={goals} client:load />
+  <AboutFoundingStatementEditor initial={founding} media={media} client:load />
+  <AboutBannerEditor initial={banner} media={media} client:load />
+</AdminLayout>

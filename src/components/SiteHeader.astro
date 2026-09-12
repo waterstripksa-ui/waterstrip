@@ -8,7 +8,7 @@ const awards = getSingleton('home_awards');
 
 const navLinks = [
   { label: 'الرئيسية', href: '/' },
-  { label: 'عن الشريط', href: '#' },
+  { label: 'عن الشريط', href: '/about' },
   { label: 'مجموعات العمل', href: '#' },
   { label: 'الأعضاء', href: '#' },
   ...(awards.hidden ? [] : [{ label: 'الجوائز والتكريم', href: '#awards' }]),
@@ -62,7 +62,7 @@ const path = Astro.url.pathname;
   <button class="drawer__close" id="drawerClose" type="button" aria-label="إغلاق">×</button>
   <nav class="drawer__nav">
     {navLinks.map((link) => (
-      <a class:list={[link.href === '/' && path === '/' && 'is-current']} href={link.href}>
+      <a class:list={[link.href !== '#' && link.href === path && 'is-current']} href={link.href}>
         {link.label}
       </a>
     ))}

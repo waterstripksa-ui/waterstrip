@@ -5,15 +5,8 @@
 // hold "#", matching the convention in SiteHeader/SiteFooter.
 import Layout from '../layouts/Layout.astro';
 import { getSingleton } from '../lib/content/cache.ts';
-import {
-  ABOUT_BANNER_IMG,
-  challengeImages,
-  discoverTileImages,
-  heroSlideImages,
-  imageFor,
-  partnerLogos,
-  resolveImage,
-} from '../lib/home-assets.ts';
+import { challengeImages, discoverTileImages, heroSlideImages, partnerLogos } from '../lib/home-assets.ts';
+import { MEMBERSHIP_BANNER_IMG, imageFor, resolveImage } from '../lib/media-assets.ts';
 
 const hero = getSingleton('home_hero');
 const discover = getSingleton('home_discover');
@@ -41,7 +34,7 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
             <p class="eyebrow eyebrow--light">{panel.eyebrowAr}</p>
             {i === 0 ? <h1>{panel.headingAr}</h1> : <h2>{panel.headingAr}</h2>}
             <div class="hero__actions">
-              <a class="cta-circle" href={panel.ctaHref}>
+              <a class="cta-circle cta-circle--invert" href={panel.ctaHref}>
                 <span>{panel.ctaLabelAr}</span>
                 <span class="circ">
                   <svg fill="none" stroke="currentColor" stroke-width="1.6" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
@@ -174,7 +167,7 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
   </section>
 
   <section class="about-banner">
-    <img {...resolveImage(aboutBanner.imageId, ABOUT_BANNER_IMG)} alt="" loading="lazy" />
+    <img {...resolveImage(aboutBanner.imageId, MEMBERSHIP_BANNER_IMG)} alt="" loading="lazy" />
     <div class="about-banner__in">
       <p class="eyebrow eyebrow--light">{aboutBanner.eyebrowAr}</p>
       <h2>{aboutBanner.headingAr}</h2>

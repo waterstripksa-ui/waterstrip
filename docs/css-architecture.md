@@ -16,11 +16,13 @@ src/styles/
   3-generic/         reset.css
   4-elements/        typography.css  links.css  forms.css
   5-skeleton/        wrap.css  ribbon.css
-  6-components/      button.css  eyebrow.css  lede.css
+  6-components/      button.css  eyebrow.css  lede.css  cta-circle.css
                      site-header.css  scroll-progress.css  drawer.css  site-footer.css
                      hero.css  tile.css  challenge-slider.css  awards.css
                      partners.css  about-banner.css
-                     page-hero.css  breadcrumbs.css  form.css  login-card.css
+                     page-hero.css  breadcrumbs.css  section-head.css  split.css
+                     stats.css  feature-grid.css  goal-grid.css
+                     form.css  login-card.css
                      admin-bar.css  admin-nav.css  admin-shell.css  panel.css
                      item-list.css  editor.css
   7-utilities/       visually-hidden.css  text.css  state.css  reveal.css

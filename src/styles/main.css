@@ -39,6 +39,7 @@
 @import './6-components/button.css';
 @import './6-components/eyebrow.css';
 @import './6-components/lede.css';
+@import './6-components/cta-circle.css';
 @import './6-components/site-header.css';
 @import './6-components/scroll-progress.css';
 @import './6-components/drawer.css';
@@ -51,6 +52,11 @@
 @import './6-components/site-footer.css';
 @import './6-components/page-hero.css';
 @import './6-components/breadcrumbs.css';
+@import './6-components/section-head.css';
+@import './6-components/split.css';
+@import './6-components/stats.css';
+@import './6-components/feature-grid.css';
+@import './6-components/goal-grid.css';
 @import './6-components/form.css';
 @import './6-components/login-card.css';
 @import './6-components/admin-bar.css';

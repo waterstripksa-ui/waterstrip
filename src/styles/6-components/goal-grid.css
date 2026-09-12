@@ -1,0 +1,50 @@
+/* -----------------------------------------------------------------------------
+   Component / goal-grid
+   The about page's four-up numbered goals panel. Always exactly four items —
+   see src/lib/content/schemas/about-goals.ts — so the grid has no case for a
+   fifth.
+   -------------------------------------------------------------------------- */
+.goal-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--gap);
+}
+
+.goal-grid__item {
+  border-block-start: 2px solid var(--c-line-strong);
+  padding-block-start: 22px;
+}
+
+.goal-grid__no {
+  display: block;
+  font-size: var(--fs-micro);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--c-text-soft);
+  font-weight: var(--fw-medium);
+  margin-block-end: 8px;
+}
+
+.goal-grid__title {
+  font-size: 20px;
+  font-weight: var(--fw-medium);
+  margin-block: 6px 12px;
+}
+
+.goal-grid__body {
+  font-size: var(--fs-small);
+  line-height: 25px;
+  color: var(--c-text-soft);
+}
+
+@media (--bp-lap) {
+  .goal-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (--bp-tab) {
+  .goal-grid {
+    grid-template-columns: 1fr;
+  }
+}
