@@ -57,8 +57,15 @@ order**. That is enforced by schema design, not by UI politeness:
 
 ## Suggested porting order
 
-1. Shared `Layout.astro` — the `<head>`, fonts, brand meta, header and footer, with `dir="rtl"`.
-2. `assets/css/style.css` moved in roughly as-is, then `index.html` as the first real page.
+1. ~~Shared `Layout.astro`~~ and ~~the CSS foundation~~ — **done.**
+   [src/layouts/Layout.astro](../src/layouts/Layout.astro) has the `<head>`, fonts, brand meta,
+   header and footer with `dir="rtl"`; [src/styles/](../src/styles/) holds the layered
+   stylesheet. `style.css` is **not** moved in as a block — each page's rules are re-authored
+   into the layers as that page lands. See [css-architecture.md](css-architecture.md).
+2. `index.html` as the first real page, replacing the placeholder in
+   [src/pages/index.astro](../src/pages/index.astro). This is also where the mobile drawer,
+   the nav links and the `about-banner` CTA get ported, since the home page is the first page
+   that needs them.
 3. The remaining static pages, which mostly reuse the same components.
 4. Data-driven pages (`working-group`, `article`, `media`, `members`) as dynamic routes reading
    from the database.

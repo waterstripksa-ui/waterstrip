@@ -1,0 +1,18 @@
+/* -----------------------------------------------------------------------------
+   Skeleton / ribbon
+   A full-bleed horizontal band. Sections stack as ribbons, which is what gives
+   the site its vertical rhythm.
+   -------------------------------------------------------------------------- */
+.ribbon {
+  position: relative;
+  padding-block: var(--sec-pad);
+}
+
+.ribbon--sunken {
+  background: var(--c-surface-sunken);
+}
+
+/* Sits directly under another ribbon: no top padding, so the two read as one. */
+.ribbon--tight {
+  padding-block: 0 var(--sec-pad);
+}

@@ -1,0 +1,55 @@
+/* =============================================================================
+   Water STRIP — stylesheet entry point
+   The only file that contains @import. Layers are imported in cascade order,
+   from least specific to most; nothing may be imported out of order.
+
+     2-design-tokens/breakpoints  build-time @custom-media, emits no CSS
+     1-settings                   global layout config (custom properties)
+     2-design-tokens              palette, type scale, motion
+     3-generic                    reset
+     4-elements                   bare HTML elements
+     5-skeleton                   layout objects
+     6-components                 UI components (BEM)
+     7-utilities                  helpers, states
+     shame.css                    hacks, documented
+
+   See docs/css-architecture.md for what belongs in each layer.
+   ========================================================================== */
+
+/* Declared first so the @custom-media rules are in scope for every layer
+   below, including 1-settings, which is itself responsive. */
+@import './2-design-tokens/breakpoints.css';
+
+@import './1-settings/layout.css';
+@import './1-settings/z-index.css';
+
+@import './2-design-tokens/color.css';
+@import './2-design-tokens/typography.css';
+@import './2-design-tokens/motion.css';
+
+@import './3-generic/reset.css';
+
+@import './4-elements/typography.css';
+@import './4-elements/links.css';
+@import './4-elements/forms.css';
+
+@import './5-skeleton/wrap.css';
+@import './5-skeleton/ribbon.css';
+
+@import './6-components/button.css';
+@import './6-components/site-header.css';
+@import './6-components/site-footer.css';
+@import './6-components/page-hero.css';
+@import './6-components/breadcrumbs.css';
+@import './6-components/form.css';
+@import './6-components/login-card.css';
+@import './6-components/admin-bar.css';
+@import './6-components/admin-nav.css';
+@import './6-components/admin-shell.css';
+@import './6-components/panel.css';
+
+@import './7-utilities/visually-hidden.css';
+@import './7-utilities/text.css';
+@import './7-utilities/state.css';
+
+@import './shame.css';

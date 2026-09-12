@@ -1,37 +1,102 @@
 ---
-// Intentionally unstyled scaffolding — the mockup's design is ported later.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+
 if (Astro.locals.user) {
   return Astro.redirect('/admin');
 }
 
+// The endpoint at src/pages/api/login.ts redirects back here with these codes.
 const errors: Record<string, string> = {
-  invalid: 'Incorrect email or password.',
-  missing: 'Please enter both an email and a password.',
+  invalid: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
+  missing: 'يرجى إدخال البريد الإلكتروني وكلمة المرور.',
 };
 const error = errors[Astro.url.searchParams.get('error') ?? ''];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Sign in</title>
-  </head>
-  <body>
-    <h1>Sign in</h1>
+<Layout title="تسجيل الدخول" description="تسجيل الدخول لأعضاء شريط شراكات الابتكار المائي.">
+  <PageHero
+    title="دخول الأعضاء"
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'تسجيل الدخول' }]}
+  />
 
-    {error && <p role="alert" style="color:#b00">{error}</p>}
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="login-card">
+        <p class="login-card__eyebrow">منطقة الأعضاء</p>
+        <h2 class="login-card__title">تسجيل الدخول</h2>
+        <p class="login-card__lede">دخول أعضاء الشريط إلى مركز تحكّم المحتوى.</p>
 
-    <form method="POST" action="/api/login">
-      <p>
-        <label for="email">Email</label><br />
-        <input id="email" name="email" type="email" required autocomplete="username" />
-      </p>
-      <p>
-        <label for="password">Password</label><br />
-        <input id="password" name="password" type="password" required autocomplete="current-password" />
-      </p>
-      <button type="submit">Sign in</button>
-    </form>
-  </body>
-</html>
+        <form class="form login-card__form" method="POST" action="/api/login">
+          {
+            error && (
+              <p class="form__error" role="alert">
+                <svg
+                  class="form__error-icon"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  height="16"
+                  width="16"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 7.5v5.5M12 16.2v.4" />
+                </svg>
+                <span>{error}</span>
+              </p>
+            )
+          }
+
+          <div class="form__field">
+            <label class="form__label" for="email">البريد الإلكتروني</label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              required
+              autocomplete="username"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+          </div>
+
+          <div class="form__field">
+            <label class="form__label" for="password">كلمة المرور</label>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              required
+              autocomplete="current-password"
+            />
+          </div>
+
+          <div class="form__actions">
+            <button class="button button--solid button--block" type="submit">
+              <span>تسجيل الدخول</span>
+              <svg
+                class="button__icon button__icon--directional"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.6"
+                height="16"
+                width="16"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path d="M5 12h13M13 6l6 6-6 6" />
+              </svg>
+            </button>
+          </div>
+        </form>
+
+        <p class="login-card__note">
+          الحسابات يُنشئها مدير النظام. للاستفسار
+          <a class="u-ltr" href="mailto:support@waterstrip.org">support@waterstrip.org</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

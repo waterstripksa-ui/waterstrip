@@ -1,0 +1,39 @@
+---
+// The title band at the top of an inner page.
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  title: string;
+  lede?: string;
+  crumbs?: Crumb[];
+}
+
+const { title, lede, crumbs = [] } = Astro.props;
+---
+
+<section class="page-hero">
+  <div class="wrap page-hero__inner">
+    {
+      crumbs.length > 0 && (
+        <nav class="breadcrumbs" aria-label="مسار التنقل">
+          {crumbs.map((crumb, i) => (
+            <>
+              {i > 0 && <span class="breadcrumbs__sep" aria-hidden="true">/</span>}
+              {crumb.href ? (
+                <a class="breadcrumbs__link" href={crumb.href}>{crumb.label}</a>
+              ) : (
+                <span class="breadcrumbs__current" aria-current="page">{crumb.label}</span>
+              )}
+            </>
+          ))}
+        </nav>
+      )
+    }
+
+    <h1 class="page-hero__title">{title}</h1>
+    {lede && <p class="page-hero__lede">{lede}</p>}
+  </div>
+</section>

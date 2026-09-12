@@ -1,22 +1,32 @@
 ---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
 // Access is enforced in src/middleware.ts; a user is guaranteed here.
 const user = Astro.locals.user!;
+
+const roleLabels: Record<string, string> = {
+  admin: 'مدير',
+  user: 'عضو',
+};
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>Dashboard</title>
-  </head>
-  <body>
-    <h1>Dashboard</h1>
+<AdminLayout title="نظرة عامة" lede="إدارة محتوى موقع شريط شراكات الابتكار المائي.">
+  <div class="panel">
+    <h2 class="panel__title">الحساب</h2>
+    <dl class="panel__facts">
+      <dt class="panel__term">الاسم</dt>
+      <dd class="panel__detail">{user.name}</dd>
 
-    <p>Signed in as <strong>{user.email}</strong> ({user.name})</p>
-    <p>Role: <strong>{user.role}</strong></p>
+      <dt class="panel__term">البريد الإلكتروني</dt>
+      <dd class="panel__detail panel__detail--ltr">{user.email}</dd>
 
-    <form method="POST" action="/api/logout">
-      <button type="submit">Sign out</button>
-    </form>
-  </body>
-</html>
+      <dt class="panel__term">الصلاحية</dt>
+      <dd class="panel__detail">{roleLabels[user.role ?? ''] ?? user.role}</dd>
+    </dl>
+  </div>
+
+  <div class="panel">
+    <h2 class="panel__title">المحتوى</h2>
+    <p>لم تُضَف أقسام المحتوى بعد. ستظهر هنا فور ربط جداول المحتوى بلوحة التحكّم.</p>
+  </div>
+</AdminLayout>

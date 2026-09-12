@@ -1,0 +1,52 @@
+---
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import '../styles/main.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  /**
+   * The mockup ships every page noindex and the site is not launched, so that
+   * stays the default. Flipping it is step 1 of the pre-launch checklist in
+   * docs/porting-the-mockup.md.
+   */
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description = 'شريط شراكات الابتكار المائي — مبادرة سعودية للابتكار في قطاع المياه.',
+  noindex = true,
+} = Astro.props;
+
+const fullTitle = `${title} | شريط شراكات الابتكار المائي`;
+---
+
+<html dir="rtl" lang="ar">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#154A91" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="icon" type="image/png" href="/img/favicon-192.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700;800&display=swap"
+    />
+  </head>
+
+  <body>
+    <a class="u-visually-hidden u-skip-link" href="#main">تخطَّ إلى المحتوى</a>
+    <SiteHeader />
+    <main id="main">
+      <slot />
+    </main>
+    <SiteFooter />
+  </body>
+</html>

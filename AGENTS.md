@@ -57,11 +57,17 @@ Copy [.env.example](.env.example) to `.env` before anything else. `.env` and `da
   native binding fails to load.
 - **[tsconfig.json](tsconfig.json) excludes `waterstrip/` and `drizzle/`** so the mockup's
   vendored JS does not pollute `astro check`.
+- **CSS goes in the right layer, never at the bottom of an existing file.**
+  [src/styles/](src/styles/) is layered 1-settings -> 7-utilities and a layer may only depend on
+  the layers above it. Breakpoints are `@media (--bp-tab)`, never a literal pixel value, and
+  everything is authored with logical properties because the site is RTL. Read
+  [docs/css-architecture.md](docs/css-architecture.md) before writing any CSS.
 
 ## Reference
 
 - [docs/architecture.md](docs/architecture.md) — stack, decisions and why, request flow, file map
 - [docs/better-auth.md](docs/better-auth.md) — version-specific auth API, seeding, session access
+- [docs/css-architecture.md](docs/css-architecture.md) — style layers, BEM, breakpoints, RTL rules
 - [docs/porting-the-mockup.md](docs/porting-the-mockup.md) — mockup inventory, porting order, CMS content model
 
 ## Astro docs

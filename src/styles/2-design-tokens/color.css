@@ -1,0 +1,55 @@
+/* -----------------------------------------------------------------------------
+   Design tokens / colour
+   The palette comes from the official Water STRIP identity. Components must
+   use the semantic aliases below, not the raw --brand-* values, so a future
+   palette change stays a one-file edit.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Raw brand palette — الألوان الرسمية من ملف الهوية */
+  --brand-blue-deep: #154a91;
+  --brand-blue-mid: #1a77bc;
+  --brand-blue: #2b8ccc;
+  --brand-blue-light: #2fb2dc;
+  --brand-blue-pale: #61cbf1;
+
+  --brand-ink: #0b2540;
+  --brand-white: #ffffff;
+
+  /* Semantic aliases — this is what components reference. */
+  --c-text: var(--brand-ink);
+  --c-text-soft: #4a6480;
+  --c-text-invert: var(--brand-white);
+  --c-text-invert-soft: rgba(255, 255, 255, 0.88);
+
+  --c-surface: var(--brand-white);
+  --c-surface-sunken: #f1f6fb;
+  --c-surface-dark: var(--brand-ink);
+
+  --c-line: #d4e2ef;
+  --c-line-strong: #b9cfe4;
+
+  --c-action: var(--brand-blue-deep);
+  --c-action-hover: #103a72;
+  --c-focus-ring: rgba(47, 178, 220, 0.35);
+
+  --c-link: var(--brand-blue-deep);
+
+  --c-danger: #c0392b;
+  --c-danger-surface: #fdf1f0;
+
+  /* The identity gradient: pale blue -> light blue -> deep blue. */
+  --g-brand: linear-gradient(
+    90deg,
+    var(--brand-blue-pale) 0%,
+    var(--brand-blue-light) 46%,
+    var(--brand-blue-deep) 100%
+  );
+
+  /* Scrim laid over hero imagery so white text keeps its contrast. */
+  --g-hero-scrim: linear-gradient(
+    120deg,
+    rgba(21, 74, 145, 1) 0%,
+    rgba(19, 69, 132, 1) 55%,
+    rgba(4, 52, 44, 1) 100%
+  );
+}

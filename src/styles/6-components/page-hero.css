@@ -1,0 +1,48 @@
+/* -----------------------------------------------------------------------------
+   Component / page-hero
+   The title band at the top of an inner page. The base has no photograph and
+   paints the identity gradient; a `--image` modifier arrives with the first
+   page that actually has hero art.
+   -------------------------------------------------------------------------- */
+.page-hero {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  color: var(--c-text-invert);
+  background: var(--c-action);
+  padding-block: 54px 46px;
+}
+
+.page-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--g-hero-scrim);
+}
+
+.page-hero__inner {
+  position: relative;
+  z-index: var(--z-base);
+  width: 100%;
+}
+
+.page-hero__title {
+  margin-block-start: 16px;
+  max-width: 900px;
+  color: var(--c-text-invert);
+}
+
+.page-hero__lede {
+  margin-block-start: 18px;
+  max-width: 760px;
+  font-size: var(--fs-lede);
+  line-height: var(--lh-lede);
+  color: var(--c-text-invert-soft);
+}
+
+@media (--bp-tab) {
+  .page-hero {
+    padding-block: 38px 32px;
+  }
+}

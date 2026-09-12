@@ -1,0 +1,62 @@
+/* -----------------------------------------------------------------------------
+   Component / form
+   Field layout, labelling and messaging. Control appearance itself is set on
+   the bare elements in 4-elements/forms.css.
+   -------------------------------------------------------------------------- */
+.form {
+  display: grid;
+  gap: 22px;
+}
+
+.form__field {
+  display: block;
+}
+
+.form__label {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.45;
+  font-weight: var(--fw-semibold);
+  color: var(--c-text-soft);
+  margin-block-end: 9px;
+}
+
+.form__required {
+  color: var(--c-danger);
+  font-weight: var(--fw-bold);
+  margin-inline-start: 3px;
+}
+
+.form__hint {
+  font-size: var(--fs-micro);
+  line-height: var(--lh-micro);
+  color: var(--c-text-soft);
+  margin-block-start: 7px;
+}
+
+.form__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  margin-block-start: 8px;
+}
+
+/* Inline validation / submission feedback. */
+.form__error {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 16px;
+  border-radius: 4px;
+  border: 1px solid color-mix(in srgb, var(--c-danger) 30%, transparent);
+  background: var(--c-danger-surface);
+  color: var(--c-danger);
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+}
+
+.form__error-icon {
+  flex: none;
+  margin-block-start: 2px;
+}

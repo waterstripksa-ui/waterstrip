@@ -1,0 +1,48 @@
+/* -----------------------------------------------------------------------------
+   Component / site-header
+   The public header. This is the solid inner-page variant: pages with a hero
+   image behind the header will add a transparent modifier when they land.
+   -------------------------------------------------------------------------- */
+.site-header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-header);
+  background: var(--c-surface-dark);
+  color: var(--c-text-invert);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  height: var(--header-h);
+}
+
+.site-header__brand {
+  display: flex;
+  align-items: center;
+  /* Pushes the logo to the start edge (the right, in RTL). */
+  margin-inline-end: auto;
+}
+
+.site-header__logo {
+  height: 42px;
+  width: auto;
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+@media (--bp-phone) {
+  .site-header__logo {
+    height: 34px;
+  }
+
+  .site-header__actions .button--pill {
+    padding-inline: 16px;
+    font-size: 12.5px;
+  }
+}
