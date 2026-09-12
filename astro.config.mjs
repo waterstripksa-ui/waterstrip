@@ -6,4 +6,9 @@ import node from '@astrojs/node';
 export default defineConfig({
   output: 'server',
   adapter: node({ mode: 'standalone' }),
+  security: {
+    allowedDomains: [
+      { hostname: "waterstrip.org", protocol: "https" }
+    ]
+  }
 });
