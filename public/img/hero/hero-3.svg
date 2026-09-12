@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" width="1600" height="900" preserveAspectRatio="xMidYMid slice">
+<defs><linearGradient id="g" x1="0" y1="1" x2="1" y2="0">
+<stop offset="0" stop-color="#154A91"/><stop offset=".55" stop-color="#1A77BC"/><stop offset="1" stop-color="#2B8CCC"/></linearGradient>
+<radialGradient id="v" cx=".5" cy=".42" r=".78"><stop offset=".45" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#05203f" stop-opacity=".55"/></radialGradient></defs>
+<rect width="1600" height="900" fill="url(#g)"/>
+<path d="M0 180.0 Q160.0 182.3 320.0 187.0 Q480.0 208.1 640.0 187.4 Q800.0 203.1 960.0 179.7 Q1120.0 172.9 1280.0 172.3 Q1440.0 150.5 1600.0 173.3" fill="none" stroke="#61CBF1" stroke-opacity="0.12" stroke-width="1.6" stroke-linecap="round"/>
+<path d="M0 235.3 Q160.0 259.8 320.0 245.9 Q480.0 272.1 640.0 239.8 Q800.0 244.1 960.0 228.7 Q1120.0 206.5 1280.0 224.9 Q1440.0 200.3 1600.0 232.4" fill="none" stroke="#61CBF1" stroke-opacity="0.15" stroke-width="1.7" stroke-linecap="round"/>
+<path d="M0 290.6 Q160.0 318.8 320.0 287.7 Q480.0 271.8 640.0 278.3 Q800.0 245.3 960.0 282.3 Q1120.0 268.3 1280.0 295.3 Q1440.0 315.6 1600.0 303.2" fill="none" stroke="#61CBF1" stroke-opacity="0.17" stroke-width="1.9" stroke-linecap="round"/>
+<path d="M0 345.9 Q160.0 297.6 320.0 332.8 Q480.0 305.0 640.0 346.1 Q800.0 357.1 960.0 359.1 Q1120.0 396.9 1280.0 357.7 Q1440.0 381.0 1600.0 343.3" fill="none" stroke="#61CBF1" stroke-opacity="0.20" stroke-width="2.1" stroke-linecap="round"/>
+<path d="M0 401.1 Q160.0 447.3 320.0 417.7 Q480.0 456.6 640.0 405.6 Q800.0 405.4 960.0 388.7 Q1120.0 349.5 1280.0 385.3 Q1440.0 350.0 1600.0 399.3" fill="none" stroke="#61CBF1" stroke-opacity="0.23" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M0 456.4 Q160.0 500.4 320.0 475.4 Q480.0 522.3 640.0 464.4 Q800.0 472.2 960.0 444.7 Q1120.0 404.9 1280.0 437.8 Q1440.0 393.9 1600.0 451.2" fill="none" stroke="#61CBF1" stroke-opacity="0.26" stroke-width="2.4" stroke-linecap="round"/>
+<path d="M0 511.7 Q160.0 586.4 320.0 526.6 Q480.0 553.3 640.0 505.2 Q800.0 474.7 960.0 490.9 Q1120.0 436.6 1280.0 499.4 Q1440.0 480.6 1600.0 521.3" fill="none" stroke="#61CBF1" stroke-opacity="0.28" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M0 567.0 Q160.0 484.4 320.0 553.5 Q480.0 533.1 640.0 577.6 Q800.0 618.8 960.0 590.2 Q1120.0 647.9 1280.0 577.4 Q1440.0 588.6 1600.0 553.3" fill="none" stroke="#61CBF1" stroke-opacity="0.31" stroke-width="2.7" stroke-linecap="round"/>
+<path d="M0 622.3 Q160.0 694.4 320.0 646.7 Q480.0 703.3 640.0 627.7 Q800.0 623.7 960.0 602.8 Q1120.0 542.6 1280.0 599.2 Q1440.0 548.6 1600.0 620.8" fill="none" stroke="#61CBF1" stroke-opacity="0.34" stroke-width="2.9" stroke-linecap="round"/>
+<path d="M0 677.6 Q160.0 580.1 320.0 659.4 Q480.0 628.3 640.0 687.5 Q800.0 730.3 960.0 704.8 Q1120.0 774.7 1280.0 692.3 Q1440.0 713.0 1600.0 663.8" fill="none" stroke="#61CBF1" stroke-opacity="0.36" stroke-width="3.1" stroke-linecap="round"/>
+<path d="M0 732.9 Q160.0 643.4 320.0 705.2 Q480.0 643.1 640.0 729.3 Q800.0 741.0 960.0 757.3 Q1120.0 829.9 1280.0 758.6 Q1440.0 812.8 1600.0 731.8" fill="none" stroke="#61CBF1" stroke-opacity="0.39" stroke-width="3.2" stroke-linecap="round"/>
+<path d="M0 788.1 Q160.0 873.3 320.0 819.1 Q480.0 892.4 640.0 797.0 Q800.0 797.5 960.0 765.2 Q1120.0 692.4 1280.0 758.5 Q1440.0 691.9 1600.0 784.2" fill="none" stroke="#61CBF1" stroke-opacity="0.42" stroke-width="3.4" stroke-linecap="round"/>
+<path d="M0 843.4 Q160.0 816.8 320.0 813.1 Q480.0 727.0 640.0 816.7 Q800.0 764.5 960.0 849.5 Q1120.0 888.2 1280.0 875.7 Q1440.0 963.0 1600.0 866.6" fill="none" stroke="#61CBF1" stroke-opacity="0.45" stroke-width="3.6" stroke-linecap="round"/>
+<path d="M0 898.7 Q160.0 939.8 320.0 879.4 Q480.0 809.8 640.0 863.2 Q800.0 776.9 960.0 885.8 Q1120.0 877.2 1280.0 922.5 Q1440.0 1001.0 1600.0 933.2" fill="none" stroke="#61CBF1" stroke-opacity="0.47" stroke-width="3.7" stroke-linecap="round"/>
+<path d="M0 954.0 Q160.0 1024.5 320.0 941.0 Q480.0 883.4 640.0 916.5 Q800.0 819.4 960.0 932.9 Q1120.0 902.6 1280.0 972.4 Q1440.0 1041.9 1600.0 991.8" fill="none" stroke="#61CBF1" stroke-opacity="0.50" stroke-width="3.9" stroke-linecap="round"/>
+<rect width="1600" height="900" fill="url(#v)"/>
+</svg>

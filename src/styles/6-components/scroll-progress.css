@@ -1,0 +1,16 @@
+/* -----------------------------------------------------------------------------
+   Component / scroll-progress
+   Thin identity-gradient bar tracking scroll position, fixed above the header.
+   -------------------------------------------------------------------------- */
+.scroll-progress {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  height: 3px;
+  width: 100%;
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  background: var(--g-brand);
+  z-index: var(--z-overlay);
+  pointer-events: none;
+}

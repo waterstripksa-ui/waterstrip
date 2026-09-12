@@ -37,7 +37,17 @@
 @import './5-skeleton/ribbon.css';
 
 @import './6-components/button.css';
+@import './6-components/eyebrow.css';
+@import './6-components/lede.css';
 @import './6-components/site-header.css';
+@import './6-components/scroll-progress.css';
+@import './6-components/drawer.css';
+@import './6-components/hero.css';
+@import './6-components/tile.css';
+@import './6-components/challenge-slider.css';
+@import './6-components/awards.css';
+@import './6-components/partners.css';
+@import './6-components/about-banner.css';
 @import './6-components/site-footer.css';
 @import './6-components/page-hero.css';
 @import './6-components/breadcrumbs.css';
@@ -51,5 +61,6 @@
 @import './7-utilities/visually-hidden.css';
 @import './7-utilities/text.css';
 @import './7-utilities/state.css';
+@import './7-utilities/reveal.css';
 
 @import './shame.css';

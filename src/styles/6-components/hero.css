@@ -1,0 +1,217 @@
+/* -----------------------------------------------------------------------------
+   Component / hero
+   The home page's full-bleed slide carousel with tabbed panels.
+   -------------------------------------------------------------------------- */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 680px;
+  overflow: hidden;
+  background: var(--c-surface-dark);
+}
+
+.hero__stage {
+  position: absolute;
+  inset: 0;
+}
+
+.hero__slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 1s ease,
+    visibility 1s;
+}
+
+.hero__slide.is-active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hero__slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: var(--g-hero-scrim);
+  opacity: 0.75;
+}
+
+.hero__copy {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-raised);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.hero__copy.wrap {
+  width: 100%;
+  display: grid;
+}
+
+.hero__panel {
+  grid-area: 1 / 1;
+  max-width: 700px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(16px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease,
+    visibility 0s linear 0.3s;
+  pointer-events: none;
+}
+
+.hero__panel.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+  transition:
+    opacity 0.55s ease 0.3s,
+    transform 0.7s var(--ease-out) 0.3s,
+    visibility 0s;
+}
+
+.hero__panel .eyebrow {
+  margin-block-end: 26px;
+}
+
+.hero__panel h1 {
+  color: var(--c-text-invert);
+}
+
+.hero__actions {
+  margin-block-start: 34px;
+}
+
+.cta-circle {
+  display: inline-flex;
+  align-items: center;
+  gap: 20px;
+  color: var(--c-text-invert);
+  font-size: var(--fs-small);
+}
+
+.cta-circle .circ {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition:
+    background var(--dur-base),
+    color var(--dur-base);
+}
+
+.cta-circle .circ svg {
+  transform: scaleX(-1);
+}
+
+.cta-circle:hover .circ {
+  background: var(--c-text-invert);
+  color: var(--c-action);
+}
+
+.hero__tabs {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 46px;
+  z-index: var(--z-raised);
+}
+
+.hero__tabs .wrap {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.hero-tab {
+  position: relative;
+  text-align: start;
+  padding-block-end: 14px;
+  color: var(--c-text-invert);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+.hero-tab span {
+  font-size: 12px;
+  letter-spacing: 1.1px;
+  text-transform: uppercase;
+  font-weight: var(--fw-semibold);
+  opacity: 0.55;
+  transition: opacity var(--dur-base);
+}
+
+.hero-tab.is-active span {
+  opacity: 1;
+}
+
+.hero-tab::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.hero-tab i {
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-end: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--g-brand);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  font-style: normal;
+}
+
+.hero-tab.is-active i {
+  animation: hero-fill var(--hero-dur, 8s) linear forwards;
+}
+
+@keyframes hero-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (--bp-tab) {
+  .hero {
+    height: 88vh;
+    min-height: 560px;
+  }
+
+  .hero__panel {
+    max-width: none;
+  }
+
+  .hero__tabs .wrap {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+}
+
+@media (--motion-reduce) {
+  .hero-tab.is-active i {
+    animation: none;
+    transform: scaleX(1);
+  }
+}

@@ -81,6 +81,27 @@
   width: auto;
 }
 
+.site-footer__totop {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border: 1px solid var(--c-text-invert);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--c-text-invert);
+  background: none;
+  cursor: pointer;
+  transition:
+    background var(--dur-base),
+    color var(--dur-base);
+}
+
+.site-footer__totop:hover {
+  background: var(--c-text-invert);
+  color: var(--c-surface-dark);
+}
+
 @media (--bp-tab) {
   .site-footer {
     padding-block: 48px 24px;

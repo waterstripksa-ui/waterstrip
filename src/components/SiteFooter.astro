@@ -88,6 +88,11 @@ const contactLinks = [
       <small class="site-footer__copyright">
         © {year} شريط شراكات الابتكار المائي (Water STRIP).
       </small>
+      <button class="site-footer__totop" id="toTop" aria-label="العودة إلى الأعلى" type="button">
+        <svg fill="none" stroke="currentColor" stroke-width="1.8" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 19V5M6 11l6-6 6 6"></path>
+        </svg>
+      </button>
       <a href="/" aria-label="Water STRIP — شريط شراكات الابتكار المائي">
         <img
           class="site-footer__logo"
@@ -100,3 +105,9 @@ const contactLinks = [
     </div>
   </div>
 </footer>
+
+<script>
+  document.getElementById('toTop')?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>

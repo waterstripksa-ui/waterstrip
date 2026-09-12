@@ -1,20 +1,422 @@
 ---
+// Ported from waterstrip/index.html. Links to pages that have not been
+// ported yet point at "#", matching the convention already used in
+// SiteHeader/SiteFooter — they get filled in as those pages land.
 import Layout from '../layouts/Layout.astro';
-import PageHero from '../components/PageHero.astro';
 
-// Placeholder only — the real home page is ported from waterstrip/index.html
-// later. This exists so the public shell is viewable.
+const heroSlides = ['/img/hero/hero-1.svg', '/img/hero/hero-2.svg', '/img/hero/hero-3.svg'];
+
+const heroPanels = [
+  {
+    eyebrow: 'رؤى الشريط',
+    heading: 'معرفة تطبيقية تسرّع تبنّي تقنيات المياه في المملكة.',
+    ctaLabel: 'استعرض الرؤى',
+    href: '#',
+  },
+  {
+    eyebrow: 'الشراكات',
+    heading: 'جهات حكومية ومؤسسات بحثية وقطاع خاص — شريط واحد للابتكار المائي.',
+    ctaLabel: 'تعرّف على الأعضاء',
+    href: '#',
+  },
+  {
+    eyebrow: 'الإعلانات',
+    heading: 'وزارة البيئة والمياه والزراعة تُطلق شريط شراكات الابتكار المائي من جدة.',
+    ctaLabel: 'اعرف المزيد',
+    href: '#',
+  },
+];
+
+const challenges = [
+  { img: '/img/ph/ph-scarcity.svg', label: 'ندرة الموارد المائية' },
+  { img: '/img/ph/ph-desal.svg', label: 'ارتفاع تكاليف التحلية' },
+  { img: '/img/ph/ph-wastewater.svg', label: 'ضعف كفاءة معالجة مياه الصرف الصحي' },
+  { img: '/img/ph/ph-infra.svg', label: 'تقادم البنية التحتية' },
+  { img: '/img/ph/ph-consumption.svg', label: 'ارتفاع استهلاك الفرد من المياه' },
+  { img: '/img/ph/ph-groundwater.svg', label: 'الاعتماد على المياه الجوفية غير المتجددة' },
+  { img: '/img/ph/ph-fragmentation.svg', label: 'تشتّت الجهات والخبرات' },
+];
+
+const awards = [
+  { no: '01', title: 'جائزة Global ESG', body: 'تكريم حصل عليه الشريط في 2025.' },
+  { no: '02', title: "جائزة Steve's Award", body: 'تكريم حصل عليه الشريط في 2026.' },
+  {
+    no: '03',
+    title: 'ترشيح — التميّز في الشراكات بين القطاعين العام والخاص',
+    body: 'ضمن جوائز IDRA للصناعة والاستدامة.',
+  },
+  {
+    no: '04',
+    title: 'ترشيح — القيادة الملهمة في سياسات إعادة استخدام المياه',
+    body: 'ضمن جوائز IDRA للصناعة والاستدامة.',
+  },
+];
+
+const partners = [
+  'الهيئة السعودية للمياه',
+  'الشركة الوطنية للمياه',
+  'جامعة الملك عبدالله للعلوم والتقنية',
+  'أكوا باور',
+  'فيوليا',
+  'نيوم ENOWA',
+  'مدينة الملك عبدالله الاقتصادية',
+];
 ---
 
 <Layout title="الرئيسية">
-  <PageHero
-    title="شريط شراكات الابتكار المائي"
-    lede="مبادرة سعودية لتسريع الابتكار في قطاع المياه عبر الشراكة بين القطاعين."
-  />
+  <section class="hero" id="hero">
+    <div class="hero__stage">
+      {heroSlides.map((src, i) => (
+        <div class:list={['hero__slide', i === 0 && 'is-active']} data-slide={i}>
+          <img src={src} alt="" />
+        </div>
+      ))}
+      <div class="hero__scrim"></div>
+      <div class="wrap hero__copy">
+        {heroPanels.map((panel, i) => (
+          <div class:list={['hero__panel', i === 0 && 'is-active']} data-panel={i}>
+            <p class="eyebrow eyebrow--light">{panel.eyebrow}</p>
+            {i === 0 ? <h1>{panel.heading}</h1> : <h2>{panel.heading}</h2>}
+            <div class="hero__actions">
+              <a class="cta-circle" href={panel.href}>
+                <span>{panel.ctaLabel}</span>
+                <span class="circ">
+                  <svg fill="none" stroke="currentColor" stroke-width="1.6" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M5 12h13M13 6l6 6-6 6"></path>
+                  </svg>
+                </span>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="hero__tabs">
+      <div class="wrap">
+        {heroPanels.map((panel, i) => (
+          <button class:list={['hero-tab', i === 0 && 'is-active']} data-tab={i} type="button">
+            <span>{panel.eyebrow}</span>
+            <i></i>
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
 
-  <section class="ribbon">
-    <div class="wrap wrap--narrow">
-      <p>الموقع قيد الإنشاء.</p>
+  <section class="ribbon ribbon--sunken discover">
+    <div class="wrap">
+      <div class="discover__intro u-reveal">
+        <p class="eyebrow">تعرّف على الشريط</p>
+        <h2>
+          شريط شراكات الابتكار المائي مبادرة وطنية تمتدّ على ساحل البحر الأحمر، تجمع الجهات
+          الحكومية والمؤسسات البحثية والقطاع الخاص لتسريع تطوير تقنيات المياه وتبنّيها في المملكة.
+        </h2>
+      </div>
+      <div class="card-row u-reveal" style="margin-top: 66px">
+        <a class="tile" href="#">
+          <img src="/img/ph/ph-group.svg" alt="" />
+          <div class="tile__txt">
+            <p class="eyebrow eyebrow--light">مجموعات العمل</p>
+            <h3>٨ مجموعات عمل تعالج تحديات قطاع المياه في المملكة</h3>
+          </div>
+          <span class="tile__arrow">
+            <svg fill="none" stroke="currentColor" stroke-width="1.8" height="14" width="14" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h13M13 6l6 6-6 6"></path>
+            </svg>
+          </span>
+        </a>
+        <a class="tile" href="#">
+          <img src="/img/ph/ph-whatwedo.svg" alt="" />
+          <div class="tile__txt">
+            <p class="eyebrow eyebrow--light">ما نقوم به</p>
+            <h3>من التحلية وإعادة الاستخدام إلى الإدارة الذكية للمياه — الابتكار هو المفتاح</h3>
+          </div>
+          <span class="tile__arrow">
+            <svg fill="none" stroke="currentColor" stroke-width="1.8" height="14" width="14" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h13M13 6l6 6-6 6"></path>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="ribbon challenges" id="challenges">
+    <div class="wrap">
+      <div class="challenge-slider__intro u-reveal">
+        <p class="eyebrow">التحديات</p>
+        <h2>
+          يواجه قطاع المياه في المملكة تحديات مترابطة تؤثّر في كفاءة الموارد وتكلفة الخدمة
+          واستدامة الإمداد.
+        </h2>
+        <div class="slider-nav" id="challengeNav">
+          <button class="slider-nav__btn" data-dir="prev" type="button" aria-label="السابق">
+            <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M19 12H6M13 6l-6 6 6 6"></path>
+            </svg>
+          </button>
+          <button class="slider-nav__btn" data-dir="next" type="button" aria-label="التالي">
+            <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h13M13 6l6 6-6 6"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div class="challenge-slider u-reveal" id="challengeSlider" role="group" tabindex="0">
+        <div class="challenge-slider__track">
+          {challenges.map((c) => (
+            <article class="challenge-slide">
+              <figure><img src={c.img} alt={c.label} /></figure>
+              <h4>{c.label}</h4>
+            </article>
+          ))}
+        </div>
+      </div>
+      <div class="challenge-slider__bar" id="challengeBar"><i></i></div>
+    </div>
+  </section>
+
+  <section class="awards" id="awards">
+    <div class="wrap">
+      <div class="awards__panel">
+        <div class="awards__head">
+          <p class="eyebrow eyebrow--light">التميّز</p>
+          <h2>الجوائز والتكريم</h2>
+          <p class="lede">
+            تكريمات نالها الشريط وترشيحات دخلها خلال سنته الأولى، تعكس أثر العمل المشترك بين
+            أعضائه في قطاع المياه.
+          </p>
+          <a class="button button--brand" href="#">
+            <span>انضم إلى الشريط</span>
+            <svg class="button__icon" fill="none" stroke="currentColor" stroke-width="1.9" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 12h13M13 6l6 6-6 6"></path>
+            </svg>
+          </a>
+        </div>
+        <ol class="awards__cats">
+          {awards.map((a) => (
+            <li class="award">
+              <span class="award__no" aria-hidden="true">{a.no}</span>
+              <h3>{a.title}</h3>
+              <p>{a.body}</p>
+              <i class="award__rule"></i>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="partners" aria-label="الجهات الاستراتيجية">
+    <div class="wrap">
+      <p class="partners__label">الجهات الاستراتيجية</p>
+      <div class="partners__viewport">
+        <div class="partners__track" id="partnersTrack">
+          {partners.map((name) => (
+            <a class="partner" href="#" title={name}>
+              <img src="/img/mark-waterstrip.svg" alt={name} loading="lazy" />
+            </a>
+          ))}
+        </div>
+      </div>
+      <p class="partners__note">جهات استراتيجية ضمن شريط شراكات الابتكار المائي.</p>
+    </div>
+  </section>
+
+  <section class="about-banner">
+    <img src="/img/hero/banner.svg" alt="" loading="lazy" />
+    <div class="about-banner__in">
+      <p class="eyebrow eyebrow--light">العضوية</p>
+      <h2>انضم إلى الشريط</h2>
+      <p class="about-banner__lede">شارك في تشكيل مستقبل قطاع المياه في المملكة.</p>
+      <a class="button button--brand" href="#">
+        <span>سجّل اهتمامك</span>
+        <svg class="button__icon" fill="none" stroke="currentColor" stroke-width="1.9" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M5 12h13M13 6l6 6-6 6"></path>
+        </svg>
+      </a>
     </div>
   </section>
 </Layout>
+
+<script>
+  const HERO_DURATION = 8000;
+  const heroEl = document.getElementById('hero');
+  const slides = Array.from(document.querySelectorAll('.hero__slide'));
+  const panels = Array.from(document.querySelectorAll('.hero__panel'));
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.hero-tab'));
+  let heroIndex = 0;
+  let heroTimer: ReturnType<typeof setInterval> | null = null;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.documentElement.style.setProperty('--hero-dur', `${HERO_DURATION / 1000}s`);
+
+  function goToSlide(i: number) {
+    heroIndex = (i + slides.length) % slides.length;
+    slides.forEach((s, n) => s.classList.toggle('is-active', n === heroIndex));
+    panels.forEach((p, n) => p.classList.toggle('is-active', n === heroIndex));
+    tabs.forEach((t, n) => {
+      t.classList.toggle('is-active', n === heroIndex);
+      const fill = t.querySelector('i');
+      if (fill && n === heroIndex) {
+        fill.style.animation = 'none';
+        void fill.offsetWidth;
+        fill.style.animation = '';
+      }
+    });
+  }
+
+  function stopHero() {
+    if (heroTimer) clearInterval(heroTimer);
+    heroTimer = null;
+  }
+  function startHero() {
+    stopHero();
+    if (reduceMotion) return;
+    heroTimer = setInterval(() => goToSlide(heroIndex + 1), HERO_DURATION);
+  }
+
+  tabs.forEach((t) => {
+    t.addEventListener('click', () => {
+      goToSlide(Number(t.dataset.tab));
+      startHero();
+    });
+  });
+
+  if (slides.length && heroEl) {
+    goToSlide(0);
+    startHero();
+    document.addEventListener('visibilitychange', () => {
+      document.hidden ? stopHero() : startHero();
+    });
+  }
+
+  // --- challenges drag slider ------------------------------------------
+  const slider = document.getElementById('challengeSlider');
+  const sBar = document.getElementById('challengeBar');
+  if (slider) {
+    const track = slider.querySelector<HTMLElement>('.challenge-slider__track')!;
+    let maxX = 0;
+    let x = 0;
+    let down = false;
+    let startX = 0;
+    let startPos = 0;
+
+    const mqNative = window.matchMedia('(max-width: 900px)');
+    const nativeMode = () => mqNative.matches;
+    const sign = () => (document.documentElement.dir === 'rtl' ? 1 : -1);
+
+    function measure() {
+      maxX = Math.max(0, track.scrollWidth - slider!.clientWidth);
+      setX(Math.min(x, maxX));
+      syncBtns();
+    }
+
+    function setX(v: number) {
+      if (nativeMode()) return;
+      x = Math.max(0, Math.min(maxX, v));
+      track.style.transform = `translate3d(${sign() * x}px,0,0)`;
+      if (sBar) {
+        const ratio = maxX > 0 ? x / maxX : 0;
+        const thumb = sBar.querySelector<HTMLElement>('i')!;
+        const visible = slider!.clientWidth / track.scrollWidth;
+        thumb.style.width = `${visible * 100}%`;
+        thumb.style.transform = `translateX(${(-sign() * ratio * (100 / visible - 100))}%)`;
+      }
+    }
+
+    slider.addEventListener('pointerdown', (e) => {
+      if (nativeMode()) return;
+      down = true;
+      startX = e.clientX;
+      startPos = x;
+      slider.classList.add('is-dragging');
+      slider.setPointerCapture(e.pointerId);
+    });
+    slider.addEventListener('pointermove', (e) => {
+      if (!down) return;
+      setX(startPos - (e.clientX - startX));
+    });
+    ['pointerup', 'pointercancel'].forEach((ev) => {
+      slider.addEventListener(ev, () => {
+        down = false;
+        slider.classList.remove('is-dragging');
+        syncBtns();
+      });
+    });
+    slider.addEventListener('dragstart', (e) => e.preventDefault());
+
+    const nav = document.getElementById('challengeNav');
+    const btns = nav ? Array.from(nav.querySelectorAll<HTMLButtonElement>('.slider-nav__btn')) : [];
+
+    function step() {
+      const card = track.querySelector<HTMLElement>('.challenge-slide');
+      if (!card) return 320;
+      const gap = parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap) || 20;
+      return card.getBoundingClientRect().width + gap;
+    }
+    function syncBtns() {
+      btns.forEach((b) => {
+        b.disabled = b.dataset.dir === 'prev' ? x <= 1 : x >= maxX - 1;
+      });
+    }
+    btns.forEach((b) => {
+      b.addEventListener('click', () => {
+        setX(x + (b.dataset.dir === 'next' ? step() : -step()));
+        syncBtns();
+      });
+    });
+
+    slider.addEventListener(
+      'wheel',
+      (e) => {
+        if (nativeMode()) return;
+        const d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.shiftKey ? e.deltaY : 0;
+        if (!d) return;
+        e.preventDefault();
+        setX(x + d);
+        syncBtns();
+      },
+      { passive: false },
+    );
+
+    slider.addEventListener('keydown', (e) => {
+      const rtl = document.documentElement.dir === 'rtl';
+      const fwd = rtl ? 'ArrowLeft' : 'ArrowRight';
+      const bwd = rtl ? 'ArrowRight' : 'ArrowLeft';
+      if (e.key === fwd) {
+        e.preventDefault();
+        setX(x + step());
+        syncBtns();
+      } else if (e.key === bwd) {
+        e.preventDefault();
+        setX(x - step());
+        syncBtns();
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        setX(0);
+        syncBtns();
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        setX(maxX);
+        syncBtns();
+      }
+    });
+
+    window.addEventListener('resize', measure);
+    if (document.fonts?.ready) document.fonts.ready.then(measure);
+    measure();
+  }
+
+  // --- partner marquee: clone the track for a seamless loop -------------
+  const pTrack = document.getElementById('partnersTrack');
+  if (pTrack && !pTrack.dataset.cloned) {
+    pTrack.innerHTML += pTrack.innerHTML;
+    const kids = Array.from(pTrack.children);
+    kids.slice(kids.length / 2).forEach((el) => {
+      el.setAttribute('aria-hidden', 'true');
+      el.setAttribute('tabindex', '-1');
+    });
+    pTrack.dataset.cloned = '1';
+  }
+</script>

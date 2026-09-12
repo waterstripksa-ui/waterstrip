@@ -1,0 +1,129 @@
+/* -----------------------------------------------------------------------------
+   Component / awards
+   The dark "awards and recognition" panel with a category grid.
+   -------------------------------------------------------------------------- */
+.awards {
+  position: relative;
+  background: var(--c-surface-dark);
+}
+
+.awards::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: var(--g-brand);
+}
+
+.awards__panel {
+  padding-block: 78px;
+}
+
+.awards__head {
+  max-width: 760px;
+  margin-block-end: 52px;
+}
+
+.awards__head .eyebrow {
+  margin-block-end: 16px;
+}
+
+.awards__head h2 {
+  color: var(--c-text-invert);
+  font-weight: var(--fw-bold);
+  margin-block-end: 18px;
+}
+
+.awards__head .lede {
+  color: var(--c-text-invert-soft);
+  max-width: 62ch;
+  margin-block-end: 30px;
+}
+
+.awards__cats {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.award {
+  position: relative;
+  padding: 26px 22px 24px;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  transition:
+    background var(--dur-slow),
+    border-color var(--dur-slow),
+    transform var(--dur-slow) var(--ease-out);
+}
+
+.award:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
+}
+
+.award__no {
+  display: block;
+  font-family: var(--f-head);
+  font-size: 34px;
+  line-height: 1;
+  font-weight: var(--fw-bold);
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(47, 178, 220, 0.75);
+  margin-block-end: 16px;
+  letter-spacing: 1px;
+}
+
+.award h3 {
+  font-size: 17px;
+  line-height: 25px;
+  font-weight: var(--fw-bold);
+  color: var(--c-text-invert);
+  margin-block-end: 8px;
+}
+
+.award p {
+  font-size: var(--fs-small);
+  color: var(--c-text-invert-soft);
+}
+
+.award__rule {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 2px;
+  background: var(--g-brand);
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform 0.5s var(--ease-out);
+}
+
+.award:hover .award__rule {
+  transform: scaleX(1);
+}
+
+@media (--bp-tab) {
+  .awards__panel {
+    padding-block: 40px 44px;
+  }
+
+  .awards__head {
+    margin-block-end: 28px;
+  }
+
+  .awards__cats {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .awards__cats {
+    grid-template-columns: 1fr;
+  }
+}

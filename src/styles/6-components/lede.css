@@ -1,0 +1,9 @@
+/* -----------------------------------------------------------------------------
+   Component / lede
+   The reading-length description paragraph under a section intro.
+   -------------------------------------------------------------------------- */
+.lede {
+  font-size: var(--fs-lede);
+  line-height: var(--lh-lede);
+  font-weight: var(--fw-regular);
+}

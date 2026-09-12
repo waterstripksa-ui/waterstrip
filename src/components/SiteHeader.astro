@@ -1,8 +1,21 @@
 ---
-// The public header, ported from waterstrip/login.html. This is the solid
-// inner-page variant; the mobile drawer and nav links need main.js ported and
-// are deliberately left out for now.
+// The public header, ported from waterstrip/index.html. Carries the mobile
+// drawer (the site's only nav — the header itself shows just the brand and
+// the register CTA, at every viewport width) and the top scroll-progress bar.
+const navLinks = [
+  { label: 'الرئيسية', href: '/' },
+  { label: 'عن الشريط', href: '#' },
+  { label: 'مجموعات العمل', href: '#' },
+  { label: 'الأعضاء', href: '#' },
+  { label: 'الجوائز والتكريم', href: '#awards' },
+  { label: 'الأخبار والفعاليات', href: '#' },
+  { label: 'تواصل معنا', href: '#' },
+];
+
+const path = Astro.url.pathname;
 ---
+
+<div class="scroll-progress" id="scrollProgress"></div>
 
 <header class="site-header">
   <div class="wrap site-header__inner">
@@ -25,6 +38,70 @@
       <a class="button button--pill button--pill-solid" href="#">
         <span>سجّل اهتمامك</span>
       </a>
+      <button
+        class="nav-toggle"
+        id="navToggle"
+        type="button"
+        aria-controls="drawer"
+        aria-expanded="false"
+        aria-label="القائمة"
+      >
+        <svg fill="none" stroke="currentColor" stroke-width="1.7" height="24" width="24" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18"></path>
+        </svg>
+      </button>
     </div>
   </div>
 </header>
+
+<div class="drawer" id="drawer" aria-hidden="true">
+  <button class="drawer__close" id="drawerClose" type="button" aria-label="إغلاق">×</button>
+  <nav class="drawer__nav">
+    {navLinks.map((link) => (
+      <a class:list={[link.href === '/' && path === '/' && 'is-current']} href={link.href}>
+        {link.label}
+      </a>
+    ))}
+  </nav>
+  <div class="drawer__cta">
+    <a class="button button--pill button--pill-solid" href="#">سجّل اهتمامك</a>
+  </div>
+</div>
+
+<script>
+  const bar = document.getElementById('scrollProgress');
+  function updateProgress() {
+    if (!bar) return;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    bar.style.transform = `scaleX(${p})`;
+  }
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  const drawer = document.getElementById('drawer');
+  const navToggle = document.getElementById('navToggle');
+  const drawerClose = document.getElementById('drawerClose');
+
+  function openDrawer() {
+    drawer?.classList.add('is-open');
+    document.body.classList.add('drawer-open');
+    navToggle?.setAttribute('aria-expanded', 'true');
+  }
+  function closeDrawer() {
+    drawer?.classList.remove('is-open');
+    document.body.classList.remove('drawer-open');
+    navToggle?.setAttribute('aria-expanded', 'false');
+  }
+
+  navToggle?.addEventListener('click', openDrawer);
+  drawerClose?.addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer?.classList.contains('is-open')) closeDrawer();
+  });
+  drawer?.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement)?.closest('a[href]');
+    if (a) closeDrawer();
+  });
+</script>
