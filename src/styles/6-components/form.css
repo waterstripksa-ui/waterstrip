@@ -12,6 +12,35 @@
   display: block;
 }
 
+/* A field pair on one line — e.g. email and phone side by side. */
+.form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+}
+
+@media (--bp-tab) {
+  .form__row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* The card-style variant used where a form sits beside other content. */
+.form--panel {
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  border-radius: 18px;
+  padding: 40px 42px;
+  box-shadow: 0 10px 40px rgba(11, 44, 37, 0.06);
+}
+
+@media (--bp-tab) {
+  .form--panel {
+    padding: 24px 20px;
+    border-radius: 14px;
+  }
+}
+
 .form__label {
   display: block;
   font-size: 13.5px;
@@ -68,4 +97,18 @@
   font-weight: var(--fw-semibold);
   color: var(--c-danger);
   margin-block-start: 7px;
+}
+
+/* Whole-form submission feedback, next to the submit button. Hidden by
+   default; a page's inline script reveals it once the form validates. */
+.form__status {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--fs-small);
+  color: var(--c-action);
+}
+
+.form__status[hidden] {
+  display: none;
 }

@@ -1,0 +1,38 @@
+---
+// The contact page's editable surfaces. Each panel is a React island that PUTs
+// to /admin/api/content/<key>; reads go through the content cache, as they
+// must. Image fields upload to /admin/api/media and put the returned id in the
+// draft.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getMedia, getSingleton, type MediaView } from '../../lib/content/cache.ts';
+import { collectMediaIds } from '../../lib/content/schemas/fields.ts';
+import { singletons, type SingletonKey } from '../../lib/content/schemas/index.ts';
+import ContactHeroEditor from '../../components/admin/contact/ContactHeroEditor.tsx';
+import ContactInfoEditor from '../../components/admin/contact/ContactInfoEditor.tsx';
+import ContactBannerEditor from '../../components/admin/contact/ContactBannerEditor.tsx';
+
+// The cache deep-freezes what it returns, and React needs to build new objects
+// from these, so each island gets a structural clone as its initial draft.
+const hero = structuredClone(getSingleton('contact_hero'));
+const info = structuredClone(getSingleton('contact_info'));
+const banner = structuredClone(getSingleton('contact_banner'));
+
+// Previews for every image the saved content already references.
+const media: Record<string, MediaView> = {};
+const surfaces: Array<[SingletonKey, unknown]> = [['contact_banner', banner]];
+for (const [key, data] of surfaces) {
+  for (const ref of collectMediaIds(singletons[key].schema, data)) {
+    const view = getMedia(ref.id);
+    if (view) media[ref.id] = { ...view };
+  }
+}
+---
+
+<AdminLayout
+  title="صفحة تواصل معنا"
+  lede="تحرير نصوص صفحة تواصل معنا. كل قسم يُحفظ على حدة، ويظهر التغيير في الموقع مباشرة بعد الحفظ."
+>
+  <ContactHeroEditor initial={hero} client:load />
+  <ContactInfoEditor initial={info} client:load />
+  <ContactBannerEditor initial={banner} media={media} client:load />
+</AdminLayout>

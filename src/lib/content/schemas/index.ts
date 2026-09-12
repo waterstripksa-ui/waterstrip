@@ -16,6 +16,9 @@ import { aboutChallenges } from './about-challenges.ts';
 import { aboutGoals } from './about-goals.ts';
 import { aboutFoundingStatement } from './about-founding-statement.ts';
 import { aboutBanner } from './about-banner.ts';
+import { contactHero } from './contact-hero.ts';
+import { contactInfo } from './contact-info.ts';
+import { contactBanner } from './contact-banner.ts';
 import type { SingletonDefinition } from './types.ts';
 
 /** Iteration type. The payload generic is erased because the surfaces differ. */
@@ -36,6 +39,9 @@ export const singletons = {
   about_goals: aboutGoals,
   about_founding_statement: aboutFoundingStatement,
   about_banner: aboutBanner,
+  contact_hero: contactHero,
+  contact_info: contactInfo,
+  contact_banner: contactBanner,
 } as const;
 
 export type SingletonKey = keyof typeof singletons;
@@ -62,5 +68,8 @@ export {
   aboutGoals,
   aboutFoundingStatement,
   aboutBanner,
+  contactHero,
+  contactInfo,
+  contactBanner,
 };
 export type { SingletonDefinition };

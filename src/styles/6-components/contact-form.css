@@ -1,0 +1,142 @@
+/* -----------------------------------------------------------------------------
+   Component / contact-form
+   The two-column shell on /contact: the form panel plus a sticky "direct
+   contact" aside. Collapses to one column at --bp-lap.
+   -------------------------------------------------------------------------- */
+.contact-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 56px;
+  align-items: start;
+}
+
+@media (--bp-lap) {
+  .contact-form {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.contact-form__aside {
+  background: var(--c-action);
+  color: var(--c-text-invert);
+  border-radius: 18px;
+  padding: 34px 32px;
+  position: sticky;
+  inset-block-start: 108px;
+}
+
+@media (--bp-lap) {
+  .contact-form__aside {
+    position: static;
+  }
+}
+
+@media (--bp-tab) {
+  .contact-form__aside {
+    padding: 24px 20px;
+    border-radius: 14px;
+  }
+}
+
+.contact-form__aside h3 {
+  color: var(--c-text-invert);
+  font-size: 21px;
+  font-weight: var(--fw-semibold);
+  margin-block-end: 10px;
+}
+
+@media (--bp-tab) {
+  .contact-form__aside h3 {
+    font-size: 18px;
+  }
+}
+
+.contact-form__lede {
+  font-size: 14.5px;
+  line-height: 26px;
+  color: var(--c-text-invert-soft);
+  margin-block-end: 26px;
+}
+
+.contact-form__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 20px;
+}
+
+.contact-form__item {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+}
+
+.contact-form__icon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--brand-blue-pale);
+}
+
+.contact-form__label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: var(--fw-semibold);
+  color: rgba(255, 255, 255, 0.62);
+  margin-block-end: 3px;
+}
+
+.contact-form__value {
+  font-size: 14.5px;
+  line-height: 21px;
+  font-weight: var(--fw-medium);
+  color: var(--c-text-invert);
+}
+
+a.contact-form__value {
+  text-decoration: none;
+  border-block-end: 1px solid rgba(255, 255, 255, 0.3);
+  padding-block-end: 1px;
+}
+
+a.contact-form__value:hover {
+  border-block-end-color: var(--c-text-invert);
+}
+
+.contact-form__social {
+  margin-block-start: 30px;
+  padding-block-start: 22px;
+  border-block-start: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.contact-form__social p {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.62);
+  margin-block-end: 12px;
+}
+
+.contact-form__social-links {
+  display: flex;
+  gap: 10px;
+}
+
+.contact-form__social-links a {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--c-text-invert);
+  transition: background var(--dur-base);
+}
+
+.contact-form__social-links a:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
