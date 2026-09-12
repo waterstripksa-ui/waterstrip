@@ -1,7 +1,7 @@
 ---
-// Ported from waterstrip/index.html. All copy comes from the content cache and
-// is editable at /admin/home; imagery stays a build-time asset (src/lib/home-assets.ts)
-// until the media pipeline lands. Links to pages that have not been ported yet
+// Ported from waterstrip/index.html. All copy and imagery come from the content
+// cache and are editable at /admin/home; an image slot with no upload shows its
+// placeholder artwork (src/lib/home-assets.ts). Links to pages that have not been ported yet
 // hold "#", matching the convention in SiteHeader/SiteFooter.
 import Layout from '../layouts/Layout.astro';
 import { getSingleton } from '../lib/content/cache.ts';
@@ -12,6 +12,7 @@ import {
   heroSlideImages,
   imageFor,
   partnerLogos,
+  resolveImage,
 } from '../lib/home-assets.ts';
 
 const hero = getSingleton('home_hero');
@@ -30,7 +31,7 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
     <div class="hero__stage">
       {hero.panels.map((panel, i) => (
         <div class:list={['hero__slide', i === 0 && 'is-active']} data-slide={i}>
-          <img src={imageFor(heroSlideImages, panel.id)} alt="" />
+          <img {...resolveImage(panel.imageId, imageFor(heroSlideImages, panel.id))} alt="" />
         </div>
       ))}
       <div class="hero__scrim"></div>
@@ -74,7 +75,7 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
       <div class="card-row u-reveal">
         {discover.tiles.map((tile) => (
           <a class="tile" href={tile.href}>
-            <img src={imageFor(discoverTileImages, tile.id)} alt="" />
+            <img {...resolveImage(tile.imageId, imageFor(discoverTileImages, tile.id))} alt="" />
             <div class="tile__txt">
               <p class="eyebrow eyebrow--light">{tile.eyebrowAr}</p>
               <h3>{tile.headingAr}</h3>
@@ -112,7 +113,9 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
         <div class="challenge-slider__track">
           {challenges.items.map((c) => (
             <article class="challenge-slide">
-              <figure><img src={imageFor(challengeImages, c.id)} alt={c.labelAr} /></figure>
+              <figure>
+                <img {...resolveImage(c.imageId, imageFor(challengeImages, c.id))} alt={c.labelAr} />
+              </figure>
               <h4>{c.labelAr}</h4>
             </article>
           ))}
@@ -159,7 +162,7 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
         <div class="partners__track" id="partnersTrack">
           {partners.items.map((partner) => (
             <a class="partner" href={partner.href} title={partner.nameAr}>
-              <img src={imageFor(partnerLogos, partner.id)} alt={partner.nameAr} />
+              <img {...resolveImage(partner.logoId, imageFor(partnerLogos, partner.id))} alt={partner.nameAr} />
             </a>
           ))}
         </div>
@@ -169,7 +172,7 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
   </section>
 
   <section class="about-banner">
-    <img src={ABOUT_BANNER_IMG} alt="" loading="lazy" />
+    <img {...resolveImage(aboutBanner.imageId, ABOUT_BANNER_IMG)} alt="" loading="lazy" />
     <div class="about-banner__in">
       <p class="eyebrow eyebrow--light">{aboutBanner.eyebrowAr}</p>
       <h2>{aboutBanner.headingAr}</h2>

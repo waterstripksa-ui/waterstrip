@@ -34,6 +34,28 @@ export const contentSingleton = sqliteTable('content_singleton', {
 });
 
 /**
+ * Uploaded images. The bytes live on disk under `UPLOAD_PATH`; this row is the
+ * metadata, and the only thing content refers to.
+ *
+ * `id` is the SHA-256 of the stored file, so it is stable across environments
+ * and the file path is derived from it — a user-supplied filename never reaches
+ * the filesystem. See docs/content-storage.md#media-uploaded-images.
+ */
+export const media = sqliteTable('media', {
+  id: text('id').primaryKey(),
+  ext: text('ext').notNull(),
+  mimeType: text('mime_type').notNull(),
+  bytes: integer('bytes').notNull(),
+  width: integer('width').notNull(),
+  height: integer('height').notNull(),
+  altAr: text('alt_ar').notNull(),
+  /** Display only; never a path. */
+  originalName: text('original_name'),
+  updatedAt: updatedAt(),
+  updatedBy: text('updated_by').references(() => user.id, { onDelete: 'set null' }),
+});
+
+/**
  * Events, ported from `waterstrip/assets/js/events-data.js`.
  *
  * The mockup carries both `x` and `x_ar` variants of every string; the site is

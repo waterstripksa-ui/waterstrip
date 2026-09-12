@@ -5,8 +5,16 @@ import { SectionForm } from './SectionForm.tsx';
 import { ItemList } from './ItemList.tsx';
 import { TextField } from './fields/TextField.tsx';
 import { TextAreaField } from './fields/TextAreaField.tsx';
+import { ImageField } from './fields/ImageField.tsx';
+import type { MediaView } from '../../lib/content/cache.ts';
 
-export default function ChallengesEditor({ initial }: { initial: HomeChallenges }) {
+export default function ChallengesEditor({
+  initial,
+  media,
+}: {
+  initial: HomeChallenges;
+  media: Record<string, MediaView>;
+}) {
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
     'home_challenges',
     initial,
@@ -15,7 +23,7 @@ export default function ChallengesEditor({ initial }: { initial: HomeChallenges 
   return (
     <SectionForm
       title="التحديات"
-      lede="عناصر شريط التحديات. الرسم التوضيحي لكل عنصر ثابت ويُحدَّد برمجيًا؛ العناصر المضافة تظهر بالشعار الافتراضي."
+      lede="عناصر شريط التحديات. العنصر الذي لا صورة له يظهر برسم توضيحي افتراضي."
       dirty={dirty}
       status={status}
       message={message}
@@ -41,7 +49,7 @@ export default function ChallengesEditor({ initial }: { initial: HomeChallenges 
       <ItemList<HomeChallenge>
         items={draft.items}
         onChange={(items) => update({ ...draft, items })}
-        makeItem={(id) => ({ id, labelAr: 'تحدٍّ جديد' })}
+        makeItem={(id) => ({ id, labelAr: 'تحدٍّ جديد', imageId: null })}
         idPrefix="ch"
         min={1}
         max={12}
@@ -49,13 +57,25 @@ export default function ChallengesEditor({ initial }: { initial: HomeChallenges 
         addLabel="إضافة تحدٍّ"
       >
         {(item, i, patch) => (
-          <TextField
-            label="النص"
-            value={item.labelAr}
-            onChange={(v) => patch({ labelAr: v })}
-            name={`items.${i}.labelAr`}
-            error={errors[`items.${i}.labelAr`]}
-          />
+          <>
+            <TextField
+              label="النص"
+              value={item.labelAr}
+              onChange={(v) => patch({ labelAr: v })}
+              name={`items.${i}.labelAr`}
+              error={errors[`items.${i}.labelAr`]}
+            />
+            <ImageField
+              label="الصورة"
+              value={item.imageId}
+              onChange={(v) => patch({ imageId: v })}
+              name={`items.${i}.imageId`}
+              error={errors[`items.${i}.imageId`]}
+              hint="صورة أفقية لا يقل عرضها عن 800 بكسل؛ تُقصّ لتملأ إطارًا منخفض الارتفاع."
+              defaultAlt={item.labelAr}
+              known={media}
+            />
+          </>
         )}
       </ItemList>
     </SectionForm>

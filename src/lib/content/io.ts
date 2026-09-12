@@ -9,13 +9,16 @@
  * Export is **content only**. `user`, `session` and `account` rows never enter the
  * envelope: password hashes must not leave in a file an admin can download.
  */
-import { asc } from 'drizzle-orm';
+import { existsSync } from 'node:fs';
+import { asc, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../../db/index.ts';
-import { contentSingleton, event } from '../../db/content-schema.ts';
+import { contentSingleton, event, media } from '../../db/content-schema.ts';
 import { singletons, singletonList, type SingletonKey } from './schemas/index.ts';
 import { upgrade } from './migrate.ts';
-import { eventInput, replaceEvents, ContentValidationError } from './repo.ts';
+import { eventInput, mediaInput, replaceEvents, ContentValidationError } from './repo.ts';
+import { collectMediaIds } from './schemas/fields.ts';
+import { mediaFilePath } from './media-paths.ts';
 import { invalidateAll } from './cache.ts';
 
 export const FORMAT = 'waterstrip-content';
@@ -29,7 +32,11 @@ const envelopeSchema = z.object({
     z.string(),
     z.object({ schemaVersion: z.number().int().min(1), data: z.unknown() }),
   ),
-  collections: z.object({ events: z.array(z.unknown()) }),
+  collections: z.object({
+    events: z.array(z.unknown()),
+    // Absent from envelopes written before media existed; they still import.
+    media: z.array(z.unknown()).default([]),
+  }),
 });
 
 export type Envelope = z.infer<typeof envelopeSchema>;
@@ -55,19 +62,36 @@ export function exportContent(): Envelope {
     // environment where the user ids differ.
     .map(({ updatedAt: _u, updatedBy: _b, ...rest }) => rest);
 
+  // Metadata only. The files travel separately (`rsync data/uploads/`): see
+  // docs/content-storage.md#import-and-export.
+  const mediaRows = db
+    .select()
+    .from(media)
+    .orderBy(asc(media.id))
+    .all()
+    .map(({ updatedAt: _u, updatedBy: _b, ...rest }) => rest);
+
   return {
     format: FORMAT,
     formatVersion: FORMAT_VERSION,
     exportedAt: new Date().toISOString(),
     singletons: out,
-    collections: { events },
+    collections: { events, media: mediaRows },
   };
 }
 
 export interface ImportReport {
   singletons: Array<{ key: string; from: number; to: number; migrated: boolean }>;
   events: number;
+  media: number;
   skippedSingletons: string[];
+  /**
+   * Media rows whose file is not under UPLOAD_PATH. A warning, not a failure: the
+   * rows import, and every reference resolves once the files are copied across.
+   */
+  missingBlobs: string[];
+  /** Singleton image references with no media row in the database or the envelope. */
+  danglingMedia: Array<{ key: string; path: string; id: string }>;
   dryRun: boolean;
 }
 
@@ -128,6 +152,40 @@ export function importContent(
     return result.data;
   });
 
+  const mediaRows = envelope.collections.media.map((m, i) => {
+    const result = mediaInput.safeParse(m);
+    if (!result.success) {
+      throw new ContentValidationError(
+        `media[${i}] is not valid: ` +
+          result.error.issues
+            .map((issue) => `${issue.path.join('.') || '(root)'} ${issue.message}`)
+            .join('; '),
+        result.error.issues,
+      );
+    }
+    return result.data;
+  });
+
+  // References are tolerated, not enforced — see the note on `mediaId` in fields.ts.
+  const refs = prepared.flatMap((p) =>
+    collectMediaIds(singletons[p.key].schema, p.data).map((ref) => ({
+      key: p.key,
+      path: ref.path.join('.'),
+      id: ref.id,
+    })),
+  );
+  const knownIds = new Set(mediaRows.map((m) => m.id));
+  const unresolved = [...new Set(refs.map((r) => r.id).filter((id) => !knownIds.has(id)))];
+  if (unresolved.length) {
+    for (const row of db
+      .select({ id: media.id })
+      .from(media)
+      .where(inArray(media.id, unresolved))
+      .all()) {
+      knownIds.add(row.id);
+    }
+  }
+
   const report: ImportReport = {
     singletons: prepared.map((p) => ({
       key: p.key,
@@ -136,7 +194,10 @@ export function importContent(
       migrated: p.from !== p.version,
     })),
     events: events.length,
+    media: mediaRows.length,
     skippedSingletons,
+    missingBlobs: mediaRows.filter((m) => !existsSync(mediaFilePath(m.id, m.ext))).map((m) => m.id),
+    danglingMedia: refs.filter((r) => !knownIds.has(r.id)),
     dryRun,
   };
 
@@ -144,6 +205,23 @@ export function importContent(
 
   // Phase 2: write. Nothing here can fail validation.
   db.transaction((tx) => {
+    // Upserted, never replaced: media rows are immutable apart from alt text, and
+    // deleting rows absent from the envelope would orphan their files.
+    for (const row of mediaRows) {
+      tx.insert(media)
+        .values({ ...row, updatedBy: options.updatedBy ?? null, updatedAt: new Date() })
+        .onConflictDoUpdate({
+          target: media.id,
+          set: {
+            altAr: row.altAr,
+            originalName: row.originalName,
+            updatedBy: options.updatedBy ?? null,
+            updatedAt: new Date(),
+          },
+        })
+        .run();
+    }
+
     for (const item of prepared) {
       tx.insert(contentSingleton)
         .values({
@@ -175,5 +253,6 @@ export function importContent(
 export function isContentEmpty(): boolean {
   const singleton = db.select({ key: contentSingleton.key }).from(contentSingleton).get();
   const anyEvent = db.select({ slug: event.slug }).from(event).get();
-  return !singleton && !anyEvent;
+  const anyMedia = db.select({ id: media.id }).from(media).get();
+  return !singleton && !anyEvent && !anyMedia;
 }

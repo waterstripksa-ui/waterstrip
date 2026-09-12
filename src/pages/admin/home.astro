@@ -1,8 +1,11 @@
 ---
 // The index page's editable surfaces. Each panel is a React island that PUTs to
 // /admin/api/content/<key>; reads go through the content cache, as they must.
+// Image fields upload to /admin/api/media and put the returned id in the draft.
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import { getSingleton } from '../../lib/content/cache.ts';
+import { getMedia, getSingleton, type MediaView } from '../../lib/content/cache.ts';
+import { collectMediaIds } from '../../lib/content/schemas/fields.ts';
+import { singletons, type SingletonKey } from '../../lib/content/schemas/index.ts';
 import HeroEditor from '../../components/admin/HeroEditor.tsx';
 import DiscoverEditor from '../../components/admin/DiscoverEditor.tsx';
 import ChallengesEditor from '../../components/admin/ChallengesEditor.tsx';
@@ -18,16 +21,33 @@ const challenges = structuredClone(getSingleton('home_challenges'));
 const awards = structuredClone(getSingleton('home_awards'));
 const partners = structuredClone(getSingleton('home_partners'));
 const aboutBanner = structuredClone(getSingleton('home_about_banner'));
+
+// Previews for every image the saved content already references. One map is
+// shared by all six islands; it is a handful of small records.
+const media: Record<string, MediaView> = {};
+const surfaces: Array<[SingletonKey, unknown]> = [
+  ['home_hero', hero],
+  ['home_discover', discover],
+  ['home_challenges', challenges],
+  ['home_partners', partners],
+  ['home_about_banner', aboutBanner],
+];
+for (const [key, data] of surfaces) {
+  for (const ref of collectMediaIds(singletons[key].schema, data)) {
+    const view = getMedia(ref.id);
+    if (view) media[ref.id] = { ...view };
+  }
+}
 ---
 
 <AdminLayout
   title="الصفحة الرئيسية"
-  lede="تحرير نصوص الصفحة الرئيسية. كل قسم يُحفظ على حدة، ويظهر التغيير في الموقع مباشرة بعد الحفظ."
+  lede="تحرير نصوص الصفحة الرئيسية وصورها. كل قسم يُحفظ على حدة، ويظهر التغيير في الموقع مباشرة بعد الحفظ."
 >
-  <HeroEditor initial={hero} client:load />
-  <DiscoverEditor initial={discover} client:load />
-  <ChallengesEditor initial={challenges} client:load />
+  <HeroEditor initial={hero} media={media} client:load />
+  <DiscoverEditor initial={discover} media={media} client:load />
+  <ChallengesEditor initial={challenges} media={media} client:load />
   <AwardsEditor initial={awards} client:load />
-  <PartnersEditor initial={partners} client:load />
-  <AboutBannerEditor initial={aboutBanner} client:load />
+  <PartnersEditor initial={partners} media={media} client:load />
+  <AboutBannerEditor initial={aboutBanner} media={media} client:load />
 </AdminLayout>

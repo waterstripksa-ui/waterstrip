@@ -17,14 +17,27 @@
  */
 import { asc, eq } from 'drizzle-orm';
 import { db } from '../../db/index.ts';
-import { contentSingleton, event } from '../../db/content-schema.ts';
+import { contentSingleton, event, media } from '../../db/content-schema.ts';
 import { singletons, type SingletonData, type SingletonKey } from './schemas/index.ts';
 import { upgrade } from './migrate.ts';
+import { mediaUrl } from './media-paths.ts';
 
 export type Event = typeof event.$inferSelect;
+export type Media = typeof media.$inferSelect;
+
+/** What a page — or a dashboard preview — needs to render an uploaded image. */
+export interface MediaView {
+  id: string;
+  url: string;
+  width: number;
+  height: number;
+  altAr: string;
+}
 
 const singletonCache = new Map<SingletonKey, unknown>();
 let eventCache: readonly Event[] | null = null;
+/** `null` is cached too: a dangling id is looked up once, not on every render. */
+const mediaCache = new Map<string, MediaView | null>();
 
 /** Recursive freeze so a caller cannot mutate cached content in place. */
 function deepFreeze<T>(value: T): T {
@@ -78,6 +91,29 @@ export function listAllEvents(): Event[] {
   return db.select().from(event).orderBy(asc(event.order), asc(event.slug)).all();
 }
 
+/**
+ * One uploaded image's metadata, or `null` when no row has that id — a reference
+ * imported ahead of its media rows. Callers fall back to placeholder artwork.
+ */
+export function getMedia(id: string): MediaView | null {
+  if (!mediaCache.has(id)) {
+    const row = db.select().from(media).where(eq(media.id, id)).get();
+    mediaCache.set(
+      id,
+      row
+        ? deepFreeze({
+            id: row.id,
+            url: mediaUrl(row.id, row.ext),
+            width: row.width,
+            height: row.height,
+            altAr: row.altAr,
+          })
+        : null,
+    );
+  }
+  return mediaCache.get(id)!;
+}
+
 export function invalidateSingleton(key: SingletonKey): void {
   singletonCache.delete(key);
 }
@@ -86,8 +122,13 @@ export function invalidateEvents(): void {
   eventCache = null;
 }
 
+export function invalidateMedia(id: string): void {
+  mediaCache.delete(id);
+}
+
 /** Drops everything. Used after an import, which can touch every surface. */
 export function invalidateAll(): void {
   singletonCache.clear();
   eventCache = null;
+  mediaCache.clear();
 }

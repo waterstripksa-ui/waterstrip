@@ -79,11 +79,12 @@ Copy [.env.example](.env.example) to `.env` before anything else. `.env` and `da
   zero-JS-framework — their interactivity is vanilla inline `<script>`. Do not add a
   `client:*` island to a public page; see
   [docs/architecture.md](docs/architecture.md#why-this-and-not-something-else).
-- **Images are not CMS content yet.** The media pipeline is designed but unbuilt, so the
-  dashboard edits text only and index-page artwork resolves through
-  [src/lib/home-assets.ts](src/lib/home-assets.ts), keyed by each list item's stable `id`.
-  Never add a path, URL or filename as a content field — that is what the `media` table is for
-  ([docs/content-storage.md](docs/content-storage.md#media)).
+- **An image field is a media id, never a path, URL or filename.** Build it from `mediaId` in
+  [src/lib/content/schemas/fields.ts](src/lib/content/schemas/fields.ts) — references are found
+  by that schema object, so a lookalike regex is never existence-checked. Uploads land in
+  `UPLOAD_PATH` (`data/uploads/`), **never `public/`**, which is build input. A slot with no upload
+  renders placeholder art from [src/lib/home-assets.ts](src/lib/home-assets.ts). See
+  [docs/content-storage.md](docs/content-storage.md#media-uploaded-images).
 
 ## Reference
 

@@ -1,6 +1,6 @@
 /**
- * Edits `home_hero`. The panel's background image is not editable here — it
- * resolves from the panel id through src/lib/home-assets.ts.
+ * Edits `home_hero`. A slide with no uploaded background shows its placeholder
+ * artwork from src/lib/home-assets.ts.
  */
 import type { HomeHero, HomeHeroPanel } from '../../lib/content/schemas/home-hero.ts';
 import { useSingletonEditor } from './useSingletonEditor.ts';
@@ -9,8 +9,16 @@ import { ItemList } from './ItemList.tsx';
 import { TextField } from './fields/TextField.tsx';
 import { TextAreaField } from './fields/TextAreaField.tsx';
 import { HrefField } from './fields/HrefField.tsx';
+import { ImageField } from './fields/ImageField.tsx';
+import type { MediaView } from '../../lib/content/cache.ts';
 
-export default function HeroEditor({ initial }: { initial: HomeHero }) {
+export default function HeroEditor({
+  initial,
+  media,
+}: {
+  initial: HomeHero;
+  media: Record<string, MediaView>;
+}) {
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
     'home_hero',
     initial,
@@ -19,7 +27,7 @@ export default function HeroEditor({ initial }: { initial: HomeHero }) {
   return (
     <SectionForm
       title="الواجهة الرئيسية"
-      lede="شرائح الواجهة المتعاقبة. عنوان الشريحة الأولى هو عنوان الصفحة الرئيسي. صورة كل شريحة ثابتة وتُحدَّد برمجيًا."
+      lede="شرائح الواجهة المتعاقبة. عنوان الشريحة الأولى هو عنوان الصفحة الرئيسي."
       dirty={dirty}
       status={status}
       message={message}
@@ -35,6 +43,7 @@ export default function HeroEditor({ initial }: { initial: HomeHero }) {
           headingAr: 'عنوان الشريحة',
           ctaLabelAr: 'اعرف المزيد',
           ctaHref: '#',
+          imageId: null,
         })}
         idPrefix="hero"
         min={1}
@@ -71,6 +80,16 @@ export default function HeroEditor({ initial }: { initial: HomeHero }) {
               onChange={(v) => patch({ ctaHref: v })}
               name={`panels.${i}.ctaHref`}
               error={errors[`panels.${i}.ctaHref`]}
+            />
+            <ImageField
+              label="صورة الخلفية"
+              value={panel.imageId}
+              onChange={(v) => patch({ imageId: v })}
+              name={`panels.${i}.imageId`}
+              error={errors[`panels.${i}.imageId`]}
+              hint="صورة أفقية عريضة لا يقل عرضها عن 1920 بكسل، ويظهر النص فوقها."
+              defaultAlt={panel.headingAr}
+              known={media}
             />
           </>
         )}

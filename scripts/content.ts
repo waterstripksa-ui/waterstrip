@@ -32,8 +32,22 @@ function describe(path: string, report: ReturnType<typeof importContent>) {
     console.log(`  singleton ${s.key}${note}`);
   }
   console.log(`  events: ${report.events}`);
+  console.log(`  media: ${report.media}`);
   for (const key of report.skippedSingletons) {
     console.log(`  skipped unknown singleton "${key}" — not a surface this build knows`);
+  }
+  if (report.missingBlobs.length) {
+    console.warn(
+      `  warning: ${report.missingBlobs.length} media file(s) are not under UPLOAD_PATH yet. ` +
+        'The rows imported; copy the files across (rsync data/uploads/) to resolve them:',
+    );
+    for (const id of report.missingBlobs) console.warn(`    ${id}`);
+  }
+  for (const ref of report.danglingMedia) {
+    console.warn(
+      `  warning: ${ref.key} ${ref.path} references media ${ref.id}, which has no row — ` +
+        'the page shows placeholder artwork there.',
+    );
   }
 }
 

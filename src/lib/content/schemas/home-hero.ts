@@ -3,12 +3,12 @@
  *
  * Every field is a named, typed value the hero component reads by name — never
  * HTML, never a list of component names (AGENTS.md, "Admins edit content, never
- * structure"). A panel's background image is *not* content: it resolves from the
- * panel `id` through the build-time map in src/lib/home-assets.ts.
+ * structure"). A panel's background image is a `media` id; with none set, the
+ * panel shows the placeholder artwork keyed by its `id` in src/lib/home-assets.ts.
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText, itemId, siteHref } from './fields.ts';
+import { arText, itemId, mediaId, siteHref } from './fields.ts';
 
 const v1 = z.object({
   /** The `h1` in `waterstrip/index.html`. Plain text: the component adds markup. */
@@ -29,8 +29,17 @@ const v2 = z.object({
   panels: z.array(heroPanel).min(1).max(6),
 });
 
-export type HomeHeroPanel = z.infer<typeof heroPanel>;
-export type HomeHero = z.infer<typeof v2>;
+const heroPanelV3 = heroPanel.extend({
+  /** The slide background. Decorative: the panel's heading carries the meaning. */
+  imageId: mediaId.nullable(),
+});
+
+const v3 = z.object({
+  panels: z.array(heroPanelV3).min(1).max(6),
+});
+
+export type HomeHeroPanel = z.infer<typeof heroPanelV3>;
+export type HomeHero = z.infer<typeof v3>;
 
 /**
  * v1 stored a single `titleAr` — the first panel's heading. The other two panels
@@ -67,11 +76,17 @@ function v1_to_v2(data: unknown): unknown {
   };
 }
 
+/** v3 made each slide's background an uploadable image. Existing slides start with none. */
+function v2_to_v3(data: unknown): unknown {
+  const prev = data as z.infer<typeof v2>;
+  return { ...prev, panels: prev.panels.map((panel) => ({ ...panel, imageId: null })) };
+}
+
 export const homeHero = defineSingleton<HomeHero>({
   key: 'home_hero',
-  version: 2,
-  schema: v2,
-  migrations: [v1_to_v2],
+  version: 3,
+  schema: v3,
+  migrations: [v1_to_v2, v2_to_v3],
   initial: {
     panels: [
       {
@@ -80,6 +95,7 @@ export const homeHero = defineSingleton<HomeHero>({
         headingAr: 'معرفة تطبيقية تسرّع تبنّي تقنيات المياه في المملكة.',
         ctaLabelAr: 'استعرض الرؤى',
         ctaHref: '#',
+        imageId: null,
       },
       {
         id: 'hero-2',
@@ -87,6 +103,7 @@ export const homeHero = defineSingleton<HomeHero>({
         headingAr: 'جهات حكومية ومؤسسات بحثية وقطاع خاص — شريط واحد للابتكار المائي.',
         ctaLabelAr: 'تعرّف على الأعضاء',
         ctaHref: '#',
+        imageId: null,
       },
       {
         id: 'hero-3',
@@ -94,6 +111,7 @@ export const homeHero = defineSingleton<HomeHero>({
         headingAr: 'وزارة البيئة والمياه والزراعة تُطلق شريط شراكات الابتكار المائي من جدة.',
         ctaLabelAr: 'اعرف المزيد',
         ctaHref: '#',
+        imageId: null,
       },
     ],
   },

@@ -125,7 +125,7 @@ Not started: the remaining 17 mockup pages, the collection-backed surfaces (work
 articles, events have a table but no dashboard), the member area, and password reset (there is
 no email sender configured).
 
-**Media uploads are not built**, which is why the dashboard edits text only: every image on the
-index page is still a build-time asset resolved through `src/lib/home-assets.ts`. The pipeline
-is designed in [content-storage.md](content-storage.md#media) and that module goes away when it
-lands.
+**Media uploads** cover every image slot on the index page: the dashboard uploads to
+`/admin/api/media`, and the section stores the returned media id. A slot with no upload shows
+placeholder artwork from `src/lib/home-assets.ts`. See
+[content-storage.md](content-storage.md#media-uploaded-images).

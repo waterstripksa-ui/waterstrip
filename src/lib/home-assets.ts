@@ -1,19 +1,18 @@
 /**
- * Build-time imagery for the home page. **This is not CMS content.**
+ * Resolves the home page's images: an uploaded `media` row when the payload
+ * references one, placeholder artwork otherwise.
  *
- * The dashboard edits text only. Images stay repo assets under `public/img/`
- * because the media pipeline (a `media` table, hashed blobs on disk, an upload
- * endpoint) is designed in docs/content-storage.md but not built yet, and that
- * doc rules out storing a path, a URL or a filename as a content value.
+ * The placeholders are repo assets under `public/img/` and are **not content** —
+ * they are what a slot shows until an admin uploads a photo, so the page never
+ * renders an empty frame. Each map is keyed by the *stable item id* in the
+ * singleton payload, not by list position, so reordering or removing an item
+ * cannot shuffle the artwork. An item an admin adds has no entry and falls back
+ * to the shared mark.
  *
- * Each map is keyed by the *stable item id* in the singleton payload, not by list
- * position, so an admin reordering or removing an item cannot shuffle the
- * artwork. An item an admin adds has no entry here and falls back to the
- * placeholder below — giving it real artwork is a code change, by design.
- *
- * When the media pipeline lands, these maps become media ids on the payload and
- * this module goes away.
+ * Never add a path here that stands in for a real photo: that is what an upload
+ * is for.
  */
+import { getMedia } from './content/cache.ts';
 
 /** Shown for any list item without an entry in the maps below. */
 export const PLACEHOLDER_IMG = '/img/mark-waterstrip.svg';
@@ -39,12 +38,33 @@ export const challengeImages: Record<string, string> = {
   'ch-fragmentation': '/img/ph/ph-fragmentation.svg',
 };
 
-/** Every partner shows the shared mark until real logos are supplied. */
+/** Every partner shows the shared mark until a logo is uploaded. */
 export const partnerLogos: Record<string, string> = {};
 
-/** The closing membership banner's artwork. Fixed — the banner is not a list. */
+/** The closing membership banner's placeholder. Fixed — the banner is not a list. */
 export const ABOUT_BANNER_IMG = '/img/hero/banner.svg';
 
 export function imageFor(map: Record<string, string>, id: string): string {
   return map[id] ?? PLACEHOLDER_IMG;
+}
+
+/** Spread onto an `<img>`. Dimensions are present only for uploads, which store them. */
+export interface ResolvedImage {
+  src: string;
+  width?: number;
+  height?: number;
+}
+
+/**
+ * An uploaded image when `mediaId` resolves, `fallback` when it is null or
+ * dangling — a reference imported ahead of its media rows renders the
+ * placeholder rather than a broken image.
+ *
+ * Alt text is the caller's decision, not the media row's: a hero background is
+ * decorative (`alt=""`) wherever it is used, and a partner logo is named by the
+ * partner, not by how the file was described at upload.
+ */
+export function resolveImage(mediaId: string | null, fallback: string): ResolvedImage {
+  const media = mediaId ? getMedia(mediaId) : null;
+  return media ? { src: media.url, width: media.width, height: media.height } : { src: fallback };
 }

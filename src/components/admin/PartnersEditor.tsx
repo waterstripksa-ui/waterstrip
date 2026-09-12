@@ -1,6 +1,6 @@
 /**
- * Edits `home_partners`. Logos are not editable here — every partner shows the
- * shared mark until real logos are supplied in src/lib/home-assets.ts.
+ * Edits `home_partners`. A partner with no uploaded logo shows the shared
+ * Water STRIP mark.
  */
 import type { HomePartner, HomePartners } from '../../lib/content/schemas/home-partners.ts';
 import { useSingletonEditor } from './useSingletonEditor.ts';
@@ -8,8 +8,16 @@ import { SectionForm } from './SectionForm.tsx';
 import { ItemList } from './ItemList.tsx';
 import { TextField } from './fields/TextField.tsx';
 import { HrefField } from './fields/HrefField.tsx';
+import { ImageField } from './fields/ImageField.tsx';
+import type { MediaView } from '../../lib/content/cache.ts';
 
-export default function PartnersEditor({ initial }: { initial: HomePartners }) {
+export default function PartnersEditor({
+  initial,
+  media,
+}: {
+  initial: HomePartners;
+  media: Record<string, MediaView>;
+}) {
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
     'home_partners',
     initial,
@@ -18,7 +26,7 @@ export default function PartnersEditor({ initial }: { initial: HomePartners }) {
   return (
     <SectionForm
       title="الجهات الاستراتيجية"
-      lede="أسماء الجهات وروابطها. الشعارات ثابتة وتُحدَّد برمجيًا."
+      lede="أسماء الجهات وروابطها وشعاراتها. الجهة التي لا شعار لها تظهر بشعار الشريط."
       dirty={dirty}
       status={status}
       message={message}
@@ -43,7 +51,7 @@ export default function PartnersEditor({ initial }: { initial: HomePartners }) {
       <ItemList<HomePartner>
         items={draft.items}
         onChange={(items) => update({ ...draft, items })}
-        makeItem={(id) => ({ id, nameAr: 'اسم الجهة', href: '#' })}
+        makeItem={(id) => ({ id, nameAr: 'اسم الجهة', href: '#', logoId: null })}
         idPrefix="pa"
         min={1}
         max={20}
@@ -64,6 +72,17 @@ export default function PartnersEditor({ initial }: { initial: HomePartners }) {
               onChange={(v) => patch({ href: v })}
               name={`items.${i}.href`}
               error={errors[`items.${i}.href`]}
+            />
+            <ImageField
+              label="الشعار"
+              value={partner.logoId}
+              onChange={(v) => patch({ logoId: v })}
+              name={`items.${i}.logoId`}
+              error={errors[`items.${i}.logoId`]}
+              hint="يُفضَّل PNG بخلفية شفافة. يُعرض داخل مساحة 150×75 بكسل دون قص."
+              defaultAlt={`شعار ${partner.nameAr}`}
+              known={media}
+              variant="logo"
             />
           </>
         )}

@@ -1,14 +1,13 @@
 /**
  * The home page strategic-partners strip.
  *
- * A partner's logo is not content — it resolves from the item `id` through the
- * build-time map in src/lib/home-assets.ts, which currently points every partner
- * at the shared placeholder mark. The marquee duplication is presentation and is
+ * A partner's logo is a `media` id; with none set, the partner shows the shared
+ * placeholder mark from src/lib/home-assets.ts. The marquee duplication is presentation and is
  * done in the page's script, not stored here.
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText, itemId, siteHref } from './fields.ts';
+import { arText, itemId, mediaId, siteHref } from './fields.ts';
 
 const partner = z.object({
   id: itemId,
@@ -23,25 +22,40 @@ const v1 = z.object({
   items: z.array(partner).min(1).max(20),
 });
 
-export type HomePartner = z.infer<typeof partner>;
-export type HomePartners = z.infer<typeof v1>;
+const partnerV2 = partner.extend({
+  /** A transparent PNG works best: it keeps its alpha through normalisation. */
+  logoId: mediaId.nullable(),
+});
+
+const v2 = v1.extend({
+  items: z.array(partnerV2).min(1).max(20),
+});
+
+export type HomePartner = z.infer<typeof partnerV2>;
+export type HomePartners = z.infer<typeof v2>;
+
+/** v2 made each partner's logo uploadable. Existing partners start with none. */
+function v1_to_v2(data: unknown): unknown {
+  const prev = data as z.infer<typeof v1>;
+  return { ...prev, items: prev.items.map((item) => ({ ...item, logoId: null })) };
+}
 
 export const homePartners = defineSingleton<HomePartners>({
   key: 'home_partners',
-  version: 1,
-  schema: v1,
-  migrations: [],
+  version: 2,
+  schema: v2,
+  migrations: [v1_to_v2],
   initial: {
     labelAr: 'الجهات الاستراتيجية',
     noteAr: 'جهات استراتيجية ضمن شريط شراكات الابتكار المائي.',
     items: [
-      { id: 'pa-swa', nameAr: 'الهيئة السعودية للمياه', href: '#' },
-      { id: 'pa-nwc', nameAr: 'الشركة الوطنية للمياه', href: '#' },
-      { id: 'pa-kaust', nameAr: 'جامعة الملك عبدالله للعلوم والتقنية', href: '#' },
-      { id: 'pa-acwa', nameAr: 'أكوا باور', href: '#' },
-      { id: 'pa-veolia', nameAr: 'فيوليا', href: '#' },
-      { id: 'pa-enowa', nameAr: 'نيوم ENOWA', href: '#' },
-      { id: 'pa-kaec', nameAr: 'مدينة الملك عبدالله الاقتصادية', href: '#' },
+      { id: 'pa-swa', nameAr: 'الهيئة السعودية للمياه', href: '#', logoId: null },
+      { id: 'pa-nwc', nameAr: 'الشركة الوطنية للمياه', href: '#', logoId: null },
+      { id: 'pa-kaust', nameAr: 'جامعة الملك عبدالله للعلوم والتقنية', href: '#', logoId: null },
+      { id: 'pa-acwa', nameAr: 'أكوا باور', href: '#', logoId: null },
+      { id: 'pa-veolia', nameAr: 'فيوليا', href: '#', logoId: null },
+      { id: 'pa-enowa', nameAr: 'نيوم ENOWA', href: '#', logoId: null },
+      { id: 'pa-kaec', nameAr: 'مدينة الملك عبدالله الاقتصادية', href: '#', logoId: null },
     ],
   },
 });

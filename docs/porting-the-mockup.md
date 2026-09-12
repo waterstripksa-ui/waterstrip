@@ -66,8 +66,8 @@ order**. That is enforced by schema design, not by UI politeness:
    [src/pages/index.astro](../src/pages/index.astro) replaced the placeholder, and brought the
    mobile drawer, the nav links and the `about-banner` CTA with it. Its copy is **not**
    hardcoded: it reads six singletons through the content cache, editable at `/admin/home`
-   (see step 5). Imagery is still build-time — [src/lib/home-assets.ts](../src/lib/home-assets.ts)
-   maps a list item's stable `id` to an asset, because the media pipeline is not built yet.
+   (see step 5). Its imagery is uploadable too; a slot with no upload falls back to placeholder
+   artwork that [src/lib/home-assets.ts](../src/lib/home-assets.ts) keys by the item's stable `id`.
 3. The remaining static pages, which mostly reuse the same components.
 4. Data-driven pages (`working-group`, `article`, `media`, `members`) as dynamic routes reading
    from the database.

@@ -1,13 +1,13 @@
 /**
  * The home page "التحديات" slider: an intro plus the slide labels.
  *
- * A slide's illustration is not content — it resolves from the item `id` through
- * the build-time map in src/lib/home-assets.ts. The slider itself is presentation:
+ * A slide's illustration is a `media` id; with none set, the slide shows the
+ * placeholder artwork keyed by its `id` in src/lib/home-assets.ts. The slider itself is presentation:
  * admins change what the slides say, never how many columns or how they animate.
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText, itemId } from './fields.ts';
+import { arText, itemId, mediaId } from './fields.ts';
 
 const challenge = z.object({
   id: itemId,
@@ -21,26 +21,40 @@ const v1 = z.object({
   items: z.array(challenge).min(1).max(12),
 });
 
-export type HomeChallenge = z.infer<typeof challenge>;
-export type HomeChallenges = z.infer<typeof v1>;
+const challengeV2 = challenge.extend({
+  imageId: mediaId.nullable(),
+});
+
+const v2 = v1.extend({
+  items: z.array(challengeV2).min(1).max(12),
+});
+
+export type HomeChallenge = z.infer<typeof challengeV2>;
+export type HomeChallenges = z.infer<typeof v2>;
+
+/** v2 made each slide's illustration uploadable. Existing slides start with none. */
+function v1_to_v2(data: unknown): unknown {
+  const prev = data as z.infer<typeof v1>;
+  return { ...prev, items: prev.items.map((item) => ({ ...item, imageId: null })) };
+}
 
 export const homeChallenges = defineSingleton<HomeChallenges>({
   key: 'home_challenges',
-  version: 1,
-  schema: v1,
-  migrations: [],
+  version: 2,
+  schema: v2,
+  migrations: [v1_to_v2],
   initial: {
     eyebrowAr: 'التحديات',
     headingAr:
       'يواجه قطاع المياه في المملكة تحديات مترابطة تؤثّر في كفاءة الموارد وتكلفة الخدمة واستدامة الإمداد.',
     items: [
-      { id: 'ch-scarcity', labelAr: 'ندرة الموارد المائية' },
-      { id: 'ch-desal', labelAr: 'ارتفاع تكاليف التحلية' },
-      { id: 'ch-wastewater', labelAr: 'ضعف كفاءة معالجة مياه الصرف الصحي' },
-      { id: 'ch-infra', labelAr: 'تقادم البنية التحتية' },
-      { id: 'ch-consumption', labelAr: 'ارتفاع استهلاك الفرد من المياه' },
-      { id: 'ch-groundwater', labelAr: 'الاعتماد على المياه الجوفية غير المتجددة' },
-      { id: 'ch-fragmentation', labelAr: 'تشتّت الجهات والخبرات' },
+      { id: 'ch-scarcity', labelAr: 'ندرة الموارد المائية', imageId: null },
+      { id: 'ch-desal', labelAr: 'ارتفاع تكاليف التحلية', imageId: null },
+      { id: 'ch-wastewater', labelAr: 'ضعف كفاءة معالجة مياه الصرف الصحي', imageId: null },
+      { id: 'ch-infra', labelAr: 'تقادم البنية التحتية', imageId: null },
+      { id: 'ch-consumption', labelAr: 'ارتفاع استهلاك الفرد من المياه', imageId: null },
+      { id: 'ch-groundwater', labelAr: 'الاعتماد على المياه الجوفية غير المتجددة', imageId: null },
+      { id: 'ch-fragmentation', labelAr: 'تشتّت الجهات والخبرات', imageId: null },
     ],
   },
 });

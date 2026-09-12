@@ -6,8 +6,16 @@ import { ItemList } from './ItemList.tsx';
 import { TextField } from './fields/TextField.tsx';
 import { TextAreaField } from './fields/TextAreaField.tsx';
 import { HrefField } from './fields/HrefField.tsx';
+import { ImageField } from './fields/ImageField.tsx';
+import type { MediaView } from '../../lib/content/cache.ts';
 
-export default function DiscoverEditor({ initial }: { initial: HomeDiscover }) {
+export default function DiscoverEditor({
+  initial,
+  media,
+}: {
+  initial: HomeDiscover;
+  media: Record<string, MediaView>;
+}) {
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
     'home_discover',
     initial,
@@ -16,7 +24,7 @@ export default function DiscoverEditor({ initial }: { initial: HomeDiscover }) {
   return (
     <SectionForm
       title="تعرّف على الشريط"
-      lede="النص التعريفي والبطاقات أسفله. صورة كل بطاقة ثابتة وتُحدَّد برمجيًا."
+      lede="النص التعريفي والبطاقات أسفله."
       dirty={dirty}
       status={status}
       message={message}
@@ -42,7 +50,13 @@ export default function DiscoverEditor({ initial }: { initial: HomeDiscover }) {
       <ItemList<HomeDiscoverTile>
         items={draft.tiles}
         onChange={(tiles) => update({ ...draft, tiles })}
-        makeItem={(id) => ({ id, eyebrowAr: 'عنوان فرعي', headingAr: 'عنوان البطاقة', href: '#' })}
+        makeItem={(id) => ({
+          id,
+          eyebrowAr: 'عنوان فرعي',
+          headingAr: 'عنوان البطاقة',
+          href: '#',
+          imageId: null,
+        })}
         idPrefix="tile"
         min={1}
         max={4}
@@ -70,6 +84,16 @@ export default function DiscoverEditor({ initial }: { initial: HomeDiscover }) {
               onChange={(v) => patch({ href: v })}
               name={`tiles.${i}.href`}
               error={errors[`tiles.${i}.href`]}
+            />
+            <ImageField
+              label="صورة البطاقة"
+              value={tile.imageId}
+              onChange={(v) => patch({ imageId: v })}
+              name={`tiles.${i}.imageId`}
+              error={errors[`tiles.${i}.imageId`]}
+              hint="صورة عمودية تقريبًا (نحو 720×840 بكسل)، ويظهر النص فوق أسفلها."
+              defaultAlt={tile.headingAr}
+              known={media}
             />
           </>
         )}

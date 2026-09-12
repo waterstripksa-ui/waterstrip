@@ -78,8 +78,11 @@ treat a loosened singleton schema the same way they would treat a block builder.
 The third shape, and the only one whose payload does not live in SQLite. **Bytes go on disk under
 `UPLOAD_PATH`; SQLite holds one metadata row per image.**
 
-> Status: designed and agreed, **not yet implemented**. The table, module and commands below are
-> the intended shape, not a description of code that exists.
+> Status: **implemented** for the index page. The pipeline is
+> [media.ts](../src/lib/content/media.ts), the upload endpoint is
+> [/admin/api/media](../src/pages/admin/api/media/index.ts), and the dashboard control is
+> [ImageField.tsx](../src/components/admin/fields/ImageField.tsx). Not built yet: a picker for
+> reusing an existing upload, editing alt text after upload, deletion, and `content:media-gc`.
 
 BLOB columns were considered and rejected. SQLite would handle them perfectly well — the problem
 is everything downstream. The cache holds deep-frozen content objects, so a BLOB means either
@@ -124,7 +127,7 @@ user-visible edge of dedupe, and it belongs in explicit copy rather than arrivin
 ```ts
 export const media = sqliteTable('media', {
   id: text('id').primaryKey(),            // sha256 hex — stable across environments
-  ext: text('ext').notNull(),             // 'webp' | 'jpg' | 'png'
+  ext: text('ext').notNull(),             // always 'webp' today; 'jpg' | 'png' reserved
   mimeType: text('mime_type').notNull(),
   bytes: integer('bytes').notNull(),
   width: integer('width').notNull(),
@@ -150,18 +153,40 @@ imageId: text('image_id').references(() => media.id, { onDelete: 'restrict' }),
 ```
 
 `restrict`, not `set null` — deleting an image the live home page still uses must fail loudly in
-the dashboard instead of silently blanking the hero.
+the dashboard instead of silently blanking the hero. (No collection references media yet.)
 
 **Singletons cannot have that foreign key, and this is the first place the JSON-payload deviation
-costs something concrete.** The reference lives inside the payload — the `image_key` field that
-[porting-the-mockup.md](porting-the-mockup.md#content-model-rules) already anticipates — so two
-things move into code that a column would otherwise have guaranteed:
+costs something concrete.** The reference lives inside the payload, so two things move into code
+that a column would otherwise have guaranteed:
 
 - `repo.ts` checks the media row exists when validating a singleton write. Zod can assert the
-  *shape* of a media id; only the repository can assert that it resolves.
+  *shape* of a media id; only the repository can assert that it resolves. The failure carries the
+  field path, so the dashboard marks the image field rather than the whole section.
 - `migrate.ts` must tolerate a dangling id. A payload imported from another environment can
   legitimately reference an image whose row and blob have not arrived yet, and failing the whole
   import over that would make backups unusable. See the import rules below.
+
+In a payload an image field is built from the `mediaId` schema in
+[fields.ts](../src/lib/content/schemas/fields.ts) and is nullable:
+
+```ts
+const heroPanelV3 = heroPanel.extend({ imageId: mediaId.nullable() });
+```
+
+`collectMediaIds(schema, data)` finds references by walking the schema and payload together and
+matching that exact schema object — not by field name — so `home_partners` can call its field
+`logoId` and still be checked. **Build every image field from `mediaId` itself;** a lookalike
+`z.string().regex(...)` would validate but never be existence-checked.
+
+`null` means "no upload yet", and the page renders placeholder artwork keyed by the item's stable
+`id` ([home-assets.ts](../src/lib/home-assets.ts)), so launching before real photos exist never
+shows an empty frame. A dangling id renders the same placeholder, since `getMedia()` returns
+`null` for it.
+
+Alt text belongs to the placement, not only to the file. The public page decides: hero, tile and
+banner backgrounds are decorative (`alt=""`) and a partner logo is named by its partner. The
+stored `altAr` is what a placement uses when the image *is* the content — an article photo, a
+gallery.
 
 ### Processing: one sharp pass on upload
 
@@ -169,9 +194,15 @@ things move into code that a column would otherwise have guaranteed:
 dependency: no install cost, and it pins the version this project actually tests against instead
 of inheriting whatever Astro bumps to.
 
-On upload, once: reject anything sharp cannot identify, strip EXIF, cap the long edge at 2400px,
-convert raster input to WebP, and record the real dimensions. EXIF stripping is not pedantry —
-staff upload photos straight off phones, and those carry GPS coordinates.
+On upload, once: reject anything sharp cannot identify, apply the EXIF orientation, strip EXIF,
+cap the long edge at 2400px, convert to WebP, and record the real dimensions. EXIF stripping is not
+pedantry — staff upload photos straight off phones, and those carry GPS coordinates.
+
+Accepted input is JPEG, PNG, WebP and AVIF. Output is **always WebP**, which is what makes the
+hash a working dedupe key — the same source normalises to the same bytes. A PNG with an alpha
+channel, or one of at most 1 MP, is encoded lossless: that is a logo or a diagram, and lossy
+compression would smear its edges. Everything else is lossy at quality 82. Decoding refuses
+anything over ~120 MP, which is a decompression bomb rather than a photo.
 
 Two deliberate omissions:
 
@@ -198,17 +229,36 @@ One URL shape, `/media/<hash>.<ext>`, served two ways:
 
 - **Production:** the reverse proxy serves `UPLOAD_PATH` directly with `expires max`. Node never
   sees an image request.
-- **Development:** `src/pages/media/[...file].ts` streams from `UPLOAD_PATH` with the hash as the
-  ETag.
+- **Development:** [src/pages/media/[file].ts](../src/pages/media/[file].ts) streams from
+  `UPLOAD_PATH` with the hash as the ETag. It validates the filename against a strict pattern
+  before touching the filesystem, and the middleware skips its session lookup for `/media/`.
 
 The endpoint is the fallback, not the primary — but write it correctly anyway, so
 `npm run build && npm start` works on a bare box with no proxy configured.
+
+The proxy side, for nginx, where the path in `alias` is the absolute `UPLOAD_PATH`:
+
+```nginx
+client_max_body_size 8m;
+
+location ~ "^/media/(([0-9a-f]{2})([0-9a-f]{2})[0-9a-f]{60}\.(webp|jpg|png))$" {
+  alias /srv/waterstrip/data/uploads/$2/$3/$1;
+  expires max;
+  add_header Cache-Control "public, immutable";
+  add_header X-Content-Type-Options nosniff;
+}
+```
 
 ### Size limits belong at three layers
 
 Reverse proxy `client_max_body_size`, a `Content-Length` check in the endpoint, and the sharp
 pass. 8 MB. The proxy limit is the one that matters most: without it an oversized upload is
 rejected only after being buffered in full.
+
+Behind those, the node adapter's `bodySizeLimit` is set to 10 MB in
+[astro.config.mjs](../astro.config.mjs). Its default is 1 GB, so without it a bare `npm start`
+would buffer anything a client cared to send. It applies to built output only; `astro dev` does
+not enforce it.
 
 ### Deferred: orphan collection
 
@@ -284,7 +334,11 @@ One envelope, one code path, used for seeding as well as for backups.
   case is importing a production backup onto a development machine to reproduce a content bug,
   where 200 MB of photos are not wanted. Because ids are content hashes, a row and its file cannot
   drift apart — rsync the directory later and every reference resolves with no fixup step. This is
-  also why a dangling `image_key` inside a singleton payload must not fail a migration.
+  also why a dangling `imageId` inside a singleton payload must not fail a migration. The import
+  report lists both `missingBlobs` and `danglingMedia` (a reference with no row at all).
+- **`collections.media` is optional on import.** Envelopes written before media existed still
+  import unchanged. Media rows are upserted, never replaced: deleting rows missing from the
+  envelope would orphan their files.
 - **Base64-in-the-envelope was rejected.** A 20 MB gallery becomes a ~27 MB JSON document that
   `JSON.parse` must hold whole in memory. If a genuinely self-contained bundle is ever needed,
   bump `formatVersion` to 2 and make the container a tar holding `content.json` plus `uploads/` —
@@ -322,7 +376,8 @@ src/lib/content/
   repo.ts         # the only writer; after commit, refreshes the affected key
   migrate.ts      # runs a payload up its ladder; pure, no database access
   io.ts           # export / import envelope
-  media.ts        # upload pipeline: hash, sharp normalise, write to disk
+  media.ts        # upload pipeline: identify, sharp normalise, hash, write to disk
+  media-paths.ts  # file path + URL for a media id; pure, safe on the render path
   schemas/
     types.ts      # the SingletonDefinition contract + defineSingleton()
     index.ts      # the registry everything else iterates
@@ -354,9 +409,10 @@ in [AGENTS.md](../AGENTS.md#hard-rules).
 **Zod 4** — installed. It is what turns a JSON column into a fixed field set, and a form boundary
 needs it regardless of storage choice.
 
-**sharp** — to be promoted from a transitive Astro dependency to a direct one when media lands. It
-does the single normalise pass on upload and doubles as the format validator, since identifying
-the bytes is the only trustworthy type check.
+**sharp** — installed, promoted from a transitive Astro dependency so the version is pinned here.
+It does the single normalise pass on upload and doubles as the format validator, since
+identifying the bytes is the only trustworthy type check. Its 0.35 ESM typings have no `sharp`
+namespace: import types by name (`import sharp, { type Metadata } from 'sharp'`).
 
 `drizzle-zod` was considered for deriving collection input schemas from the tables and rejected:
 the input schema is deliberately *not* the table shape. `eventInput` in

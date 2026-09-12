@@ -7,10 +7,10 @@
  * ad-hoc script — breaks the cache's single-source invalidation and will serve
  * stale content until the process restarts.
  */
-import { eq } from 'drizzle-orm';
+import { eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../../db/index.ts';
-import { contentSingleton, event } from '../../db/content-schema.ts';
+import { contentSingleton, event, media } from '../../db/content-schema.ts';
 import {
   singletons,
   singletonList,
@@ -18,8 +18,15 @@ import {
   type SingletonData,
   type SingletonKey,
 } from './schemas/index.ts';
-import { siteHref } from './schemas/fields.ts';
-import { invalidateEvents, invalidateSingleton, invalidateAll } from './cache.ts';
+import type { MediaRef } from './schemas/fields.ts';
+import { arText, collectMediaIds, mediaId, siteHref } from './schemas/fields.ts';
+import {
+  invalidateEvents,
+  invalidateSingleton,
+  invalidateAll,
+  invalidateMedia,
+  type Media,
+} from './cache.ts';
 
 /**
  * Note the plain field assignment rather than a TypeScript parameter property:
@@ -78,6 +85,7 @@ export function setSingleton<K extends SingletonKey>(
   // `SingletonData<K>`. The cast on the return below is what re-narrows it.
   const def: AnySingleton = singletons[key];
   const valid = parse(def.schema, data, `singleton "${key}"`);
+  assertMediaExists(collectMediaIds(def.schema, valid));
 
   db.insert(contentSingleton)
     .values({
@@ -170,4 +178,79 @@ export function replaceEvents(inputs: unknown[], updatedBy?: string | null): num
   });
   invalidateEvents();
   return valid.length;
+}
+
+/**
+ * Alt text is required on every upload. Optional alt text is how alt text ends
+ * up empty everywhere; see docs/content-storage.md#the-table.
+ */
+export const mediaAlt = arText(1, 200);
+
+/**
+ * A media row as the pipeline produces it and as an import envelope carries it.
+ * `updatedAt`/`updatedBy` are server-owned, as on every other content table.
+ */
+export const mediaInput = z.object({
+  id: mediaId,
+  ext: z.enum(['webp', 'jpg', 'png']),
+  mimeType: z.enum(['image/webp', 'image/jpeg', 'image/png']),
+  bytes: z.number().int().positive(),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  altAr: mediaAlt,
+  originalName: z.string().max(200).nullable().default(null),
+});
+
+export type MediaInput = z.input<typeof mediaInput>;
+
+export function findMedia(id: string): Media | null {
+  return db.select().from(media).where(eq(media.id, id)).get() ?? null;
+}
+
+/**
+ * Singleton payloads cannot carry a foreign key, so this is the check a column
+ * would otherwise have guaranteed. Issues carry the field path, so the dashboard
+ * marks the image field that failed rather than the whole section.
+ */
+function assertMediaExists(refs: MediaRef[]): void {
+  if (!refs.length) return;
+  const ids = [...new Set(refs.map((r) => r.id))];
+  const found = new Set(
+    db.select({ id: media.id }).from(media).where(inArray(media.id, ids)).all().map((r) => r.id),
+  );
+  const missing = refs.filter((r) => !found.has(r.id));
+  if (!missing.length) return;
+
+  throw new ContentValidationError(
+    `unknown media id(s): ${missing.map((r) => r.id).join(', ')}`,
+    missing.map((r) => ({
+      code: 'custom',
+      path: r.path,
+      message: 'الصورة غير موجودة. ارفعها من جديد.',
+      input: r.id,
+    })) as z.core.$ZodIssue[],
+  );
+}
+
+/**
+ * Records an uploaded image. Idempotent by content hash: inserting bytes that are
+ * already stored returns the existing row, alt text included, and says so.
+ */
+export function insertMedia(
+  input: MediaInput,
+  updatedBy?: string | null,
+): { media: Media; duplicate: boolean } {
+  const valid = parse(mediaInput, input, 'media');
+  const inserted = db
+    .insert(media)
+    .values({ ...valid, updatedBy: updatedBy ?? null, updatedAt: new Date() })
+    .onConflictDoNothing({ target: media.id })
+    .returning()
+    .get();
+
+  if (inserted) {
+    invalidateMedia(inserted.id);
+    return { media: inserted, duplicate: false };
+  }
+  return { media: findMedia(valid.id)!, duplicate: true };
 }

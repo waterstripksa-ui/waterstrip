@@ -5,8 +5,16 @@ import { SectionForm } from './SectionForm.tsx';
 import { TextField } from './fields/TextField.tsx';
 import { TextAreaField } from './fields/TextAreaField.tsx';
 import { HrefField } from './fields/HrefField.tsx';
+import { ImageField } from './fields/ImageField.tsx';
+import type { MediaView } from '../../lib/content/cache.ts';
 
-export default function AboutBannerEditor({ initial }: { initial: HomeAboutBanner }) {
+export default function AboutBannerEditor({
+  initial,
+  media,
+}: {
+  initial: HomeAboutBanner;
+  media: Record<string, MediaView>;
+}) {
   const { draft, update, dirty, status, message, errors, save, reset } = useSingletonEditor(
     'home_about_banner',
     initial,
@@ -15,7 +23,7 @@ export default function AboutBannerEditor({ initial }: { initial: HomeAboutBanne
   return (
     <SectionForm
       title="بانر العضوية"
-      lede="القسم الأخير في الصفحة. صورة الخلفية ثابتة وتُحدَّد برمجيًا."
+      lede="القسم الأخير في الصفحة."
       dirty={dirty}
       status={status}
       message={message}
@@ -56,6 +64,16 @@ export default function AboutBannerEditor({ initial }: { initial: HomeAboutBanne
         onChange={(v) => update({ ...draft, ctaHref: v })}
         name="ctaHref"
         error={errors.ctaHref}
+      />
+      <ImageField
+        label="صورة الخلفية"
+        value={draft.imageId}
+        onChange={(v) => update({ ...draft, imageId: v })}
+        name="imageId"
+        error={errors.imageId}
+        hint="صورة أفقية عريضة لا يقل عرضها عن 1920 بكسل، ويظهر النص فوق وسطها."
+        defaultAlt={draft.headingAr}
+        known={media}
       />
     </SectionForm>
   );
