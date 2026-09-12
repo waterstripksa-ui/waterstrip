@@ -1,5 +1,13 @@
 ---
 import AdminBar from '../components/AdminBar.astro';
+import '@fontsource/ibm-plex-sans-arabic/400.css';
+import '@fontsource/ibm-plex-sans-arabic/500.css';
+import '@fontsource/ibm-plex-sans-arabic/600.css';
+import '@fontsource/ibm-plex-sans-arabic/700.css';
+import '@fontsource/tajawal/400.css';
+import '@fontsource/tajawal/500.css';
+import '@fontsource/tajawal/700.css';
+import '@fontsource/tajawal/800.css';
 import '../styles/main.css';
 
 interface Props {
@@ -28,13 +36,6 @@ const currentPath = Astro.url.pathname;
     {/* The dashboard is never indexable, launched or not. */}
     <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" type="image/png" href="/img/favicon-192.png" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Tajawal:wght@400;500;700;800&display=swap"
-    />
   </head>
 
   <body>
