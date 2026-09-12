@@ -17,12 +17,16 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     if (!result.ok) {
+      // Server-side only — never let this detail reach the user (see docs/better-auth.md).
+      const body = await result.clone().text();
+      console.error(`[login] signInEmail not ok for ${email}: ${result.status} ${body}`);
       return redirectWithCookies('/login?error=invalid', []);
     }
 
     // Forward the session cookie onto our own redirect response.
     return redirectWithCookies('/admin', result.headers.getSetCookie());
-  } catch {
+  } catch (err) {
+    console.error(`[login] signInEmail threw for ${email}:`, err);
     return redirectWithCookies('/login?error=invalid', []);
   }
 };
