@@ -1,0 +1,215 @@
+/* -----------------------------------------------------------------------------
+   Component / info-card
+   The sticky blue aside next to a form (see form-layout.css). Its body varies
+   by page — a list of contact channels, a numbered set of next-steps — so
+   this file carries both content variants; a page uses whichever it needs.
+   -------------------------------------------------------------------------- */
+.info-card {
+  background: var(--c-action);
+  color: var(--c-text-invert);
+  border-radius: 18px;
+  padding: 34px 32px;
+  position: sticky;
+  inset-block-start: 108px;
+}
+
+@media (--bp-lap) {
+  .info-card {
+    position: static;
+  }
+}
+
+@media (--bp-tab) {
+  .info-card {
+    padding: 24px 20px;
+    border-radius: 14px;
+  }
+}
+
+.info-card h3 {
+  color: var(--c-text-invert);
+  font-size: 21px;
+  font-weight: var(--fw-semibold);
+  margin-block-end: 10px;
+}
+
+@media (--bp-tab) {
+  .info-card h3 {
+    font-size: 18px;
+  }
+}
+
+.info-card__lede {
+  font-size: 14.5px;
+  line-height: 26px;
+  color: var(--c-text-invert-soft);
+  margin-block-end: 26px;
+}
+
+/* --- List variant: an icon, a label and a value per channel. ------------- */
+
+.info-card__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 20px;
+}
+
+.info-card__item {
+  display: flex;
+  gap: 13px;
+  align-items: flex-start;
+}
+
+.info-card__icon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--brand-blue-pale);
+}
+
+.info-card__label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: var(--fw-semibold);
+  color: rgba(255, 255, 255, 0.62);
+  margin-block-end: 3px;
+}
+
+.info-card__value {
+  font-size: 14.5px;
+  line-height: 21px;
+  font-weight: var(--fw-medium);
+  color: var(--c-text-invert);
+}
+
+a.info-card__value {
+  text-decoration: none;
+  border-block-end: 1px solid rgba(255, 255, 255, 0.3);
+  padding-block-end: 1px;
+}
+
+a.info-card__value:hover {
+  border-block-end-color: var(--c-text-invert);
+}
+
+/* --- Steps variant: a numbered ordered list. ------------------------------ */
+
+.info-card__steps {
+  list-style: none;
+  counter-reset: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 22px;
+}
+
+.info-card__step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.info-card__step-no {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  font-weight: var(--fw-bold);
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--brand-blue-pale);
+}
+
+@media (--bp-tab) {
+  .info-card__step-no {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+}
+
+.info-card__step-title {
+  display: block;
+  font-size: 13px;
+  font-weight: var(--fw-semibold);
+  margin-block-end: 3px;
+}
+
+.info-card__step-body {
+  font-size: 14px;
+  line-height: 22px;
+  color: var(--c-text-invert-soft);
+}
+
+/* --- Footer: a small note under the list/steps, e.g. a support link. ----- */
+
+.info-card__footer {
+  margin-block-start: 30px;
+  padding-block-start: 22px;
+  border-block-start: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.info-card__footer p {
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.62);
+  margin-block-end: 12px;
+}
+
+.info-card__footer-links {
+  display: flex;
+  gap: 10px;
+}
+
+.info-card__footer-links a {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--c-text-invert);
+  transition: background var(--dur-base);
+}
+
+.info-card__footer-links a:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* A single mail-pill footer, e.g. "got a question?" + one address. */
+.info-card__mail {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: var(--fw-medium);
+  color: var(--c-text-invert);
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 11px 14px;
+}
+
+.info-card__mail svg {
+  flex: none;
+  color: var(--brand-blue-pale);
+}
+
+.info-card__mail span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  direction: ltr;
+}
+
+.info-card__mail:hover {
+  background: rgba(255, 255, 255, 0.18);
+}

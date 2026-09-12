@@ -1,0 +1,190 @@
+---
+// Ported from waterstrip/register-interest.html. Hero and aside copy come
+// from the content cache and are editable at /admin/register-interest. The
+// form itself is fixed structure like contact.astro's — it has no real
+// backend yet (deliberately deferred, see docs/porting-the-mockup.md's
+// pre-launch checklist item 5), so its submit handling ports the mockup's
+// client-side validation faithfully rather than posting anywhere. Unlike
+// contact.html, this page has no closing membership banner: the page itself
+// is already the membership CTA's destination.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+
+const hero = getSingleton('register_hero');
+const info = getSingleton('register_info');
+
+const entityTypes = ['جهة حكومية', 'مؤسسة أكاديمية', 'شركة من القطاع الخاص', 'منظمة غير ربحية', 'مبتكر فرد'];
+const interestAreas = [
+  'ندرة الموارد المائية',
+  'ارتفاع تكاليف التحلية',
+  'ضعف كفاءة معالجة مياه الصرف',
+  'تقادم البنية التحتية',
+  'تشتّت الجهود والخبرات',
+  'أخرى / غير محدد بعد',
+];
+---
+
+<Layout title={hero.titleAr} description={hero.ledeAr}>
+  <PageHero
+    title={hero.titleAr}
+    lede={hero.ledeAr}
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: hero.titleAr }]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="form-layout">
+        <form class="form form--panel" id="register-form" novalidate>
+          <div class="form__row">
+            <div class="form__field">
+              <label class="form__label" for="ri-name">الاسم الكامل</label>
+              <input id="ri-name" name="name" required />
+            </div>
+            <div class="form__field">
+              <label class="form__label" for="ri-entity">اسم الجهة</label>
+              <input id="ri-entity" name="entity" required />
+            </div>
+          </div>
+
+          <div class="form__row">
+            <div class="form__field">
+              <label class="form__label" for="ri-type">نوع الجهة</label>
+              <select id="ri-type" name="type" required>
+                <option value="">اختر…</option>
+                {entityTypes.map((type) => <option value={type}>{type}</option>)}
+              </select>
+            </div>
+            <div class="form__field">
+              <label class="form__label" for="ri-email">البريد الإلكتروني للعمل</label>
+              <input id="ri-email" name="email" type="email" required />
+            </div>
+          </div>
+
+          <div class="form__row">
+            <div class="form__field">
+              <label class="form__label" for="ri-phone">رقم الجوال</label>
+              <input id="ri-phone" name="phone" type="tel" />
+            </div>
+            <div class="form__field">
+              <label class="form__label" for="ri-site">الموقع الإلكتروني</label>
+              <input id="ri-site" name="website" placeholder="https://" />
+            </div>
+          </div>
+
+          <div class="form__field">
+            <label class="form__label" for="ri-area">مجال الاهتمام</label>
+            <select id="ri-area" name="area" required>
+              <option value="" selected>اختر…</option>
+              {interestAreas.map((area) => <option value={area}>{area}</option>)}
+            </select>
+            <p class="form__hint">مرتبط بالتحديات الخمسة التي يعمل عليها الشريط في قطاع المياه.</p>
+          </div>
+
+          <div class="form__field">
+            <label class="form__label" for="ri-msg">لماذا ترغب بالانضمام؟</label>
+            <textarea id="ri-msg" name="message"></textarea>
+          </div>
+
+          <div class="form__field">
+            <label class="form__label" for="ri-file">ملف الأعمال أو العرض التعريفي</label>
+            <p class="form__hint">PDF أو PPTX أو DOCX · حتى 10 م.ب · اختياري</p>
+            <div class="filepick">
+              <input class="filepick__input" id="ri-file" name="portfolio" type="file" accept=".pdf,.ppt,.pptx,.doc,.docx" />
+              <label class="filepick__btn" for="ri-file">
+                <svg fill="none" stroke="currentColor" stroke-width="1.8" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 16V4m0 0L7 9m5-5l5 5M4 20h16"></path>
+                </svg>
+                <span>اختر ملفًا</span>
+              </label>
+              <span class="filepick__name" id="ri-file-name">لم يُختر أي ملف</span>
+            </div>
+          </div>
+
+          <label class="form__check">
+            <input type="checkbox" required />
+            <span>
+              أُقرّ بأنني مخوّل بتقديم هذا الطلب نيابةً عن الجهة المذكورة أعلاه، وأوافق على
+              {' '}<a href="#">الشروط والأحكام</a> و<a href="#">سياسة الخصوصية</a>.
+            </span>
+          </label>
+
+          <div class="form__actions">
+            <button class="button button--solid" type="submit">
+              <span>إرسال التسجيل</span>
+              <svg class="button__icon" fill="none" stroke="currentColor" stroke-width="1.6" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6"></path>
+              </svg>
+            </button>
+            <span class="form__status" id="register-form-status" hidden>
+              <svg fill="none" stroke="currentColor" stroke-width="2" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5"></path>
+              </svg>
+              <span>شكرًا لك — تم تسجيل طلبك بنجاح.</span>
+            </span>
+          </div>
+        </form>
+
+        <aside class="info-card">
+          <h3>{info.headingAr}</h3>
+          <p class="info-card__lede">{info.ledeAr}</p>
+          <ol class="info-card__steps">
+            {info.steps.map((step, i) => (
+              <li class="info-card__step">
+                <span class="info-card__step-no">{i + 1}</span>
+                <span>
+                  <b class="info-card__step-title">{step.titleAr}</b>
+                  <span class="info-card__step-body">{step.bodyAr}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+          <div class="info-card__footer">
+            <p>{info.questionLabelAr}</p>
+            <a class="info-card__mail" href={`mailto:${info.supportEmail}`}>
+              <svg fill="none" stroke="currentColor" stroke-width="1.7" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"></rect>
+                <path d="M3 6.5l9 6.5 9-6.5"></path>
+              </svg>
+              <span>{info.supportEmail}</span>
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // Client-side validation + confirmation only — no backend yet, matching the
+  // mockup's own behaviour (see docs/porting-the-mockup.md's pre-launch
+  // checklist item 5, which defers a real handler to a follow-up).
+  const form = document.getElementById('register-form') as HTMLFormElement | null;
+  const status = document.getElementById('register-form-status');
+  const fileInput = document.getElementById('ri-file') as HTMLInputElement | null;
+  const fileName = document.getElementById('ri-file-name');
+
+  fileInput?.addEventListener('change', () => {
+    if (!fileName) return;
+    const name = fileInput.files?.[0]?.name;
+    fileName.textContent = name ?? 'لم يُختر أي ملف';
+  });
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let ok = true;
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[required]').forEach((field) => {
+      const bad = field.type === 'checkbox' ? !field.checked : !field.value.trim();
+      field.style.borderColor = bad ? '#C0392B' : '';
+      if (bad) ok = false;
+    });
+    if (!ok) return;
+    status?.removeAttribute('hidden');
+    form.querySelector('button[type="submit"]')?.setAttribute('disabled', '');
+  });
+
+  form?.addEventListener('input', (e) => {
+    const target = e.target as HTMLElement;
+    target.style.borderColor = '';
+  });
+</script>

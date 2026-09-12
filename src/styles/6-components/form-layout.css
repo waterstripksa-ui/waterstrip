@@ -1,0 +1,19 @@
+/* -----------------------------------------------------------------------------
+   Component / form-layout
+   The two-column shell used by a page whose main content is a form: the
+   panel on one side, an `.info-card` aside on the other. Collapses to one
+   column at --bp-lap. See info-card.css for the aside itself.
+   -------------------------------------------------------------------------- */
+.form-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 56px;
+  align-items: start;
+}
+
+@media (--bp-lap) {
+  .form-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}

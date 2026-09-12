@@ -39,7 +39,7 @@ const sectors = [
 
   <section class="ribbon">
     <div class="wrap">
-      <div class="contact-form">
+      <div class="form-layout">
         <form class="form form--panel" id="contact-form" novalidate>
           <div class="form__field">
             <label class="form__label" for="c-name">الاسم الكامل</label>
@@ -96,61 +96,61 @@ const sectors = [
           </div>
         </form>
 
-        <aside class="contact-form__aside">
+        <aside class="info-card">
           <h3>{info.headingAr}</h3>
-          <p class="contact-form__lede">{info.ledeAr}</p>
-          <ul class="contact-form__list">
-            <li class="contact-form__item">
-              <span class="contact-form__icon">
+          <p class="info-card__lede">{info.ledeAr}</p>
+          <ul class="info-card__list">
+            <li class="info-card__item">
+              <span class="info-card__icon">
                 <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
                   <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"></rect>
                   <path d="M3 6.5l9 6.5 9-6.5"></path>
                 </svg>
               </span>
               <span>
-                <b class="contact-form__label">{info.supportLabelAr}</b>
-                <a class="contact-form__value" href={`mailto:${info.supportEmail}`}>{info.supportEmail}</a>
+                <b class="info-card__label">{info.supportLabelAr}</b>
+                <a class="info-card__value" href={`mailto:${info.supportEmail}`}>{info.supportEmail}</a>
               </span>
             </li>
-            <li class="contact-form__item">
-              <span class="contact-form__icon">
+            <li class="info-card__item">
+              <span class="info-card__icon">
                 <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 5v14M5 12h14"></path>
                 </svg>
               </span>
               <span>
-                <b class="contact-form__label">العضوية</b>
-                <a class="contact-form__value" href="/register-interest">{info.membershipLabelAr}</a>
+                <b class="info-card__label">العضوية</b>
+                <a class="info-card__value" href="/register-interest">{info.membershipLabelAr}</a>
               </span>
             </li>
-            <li class="contact-form__item">
-              <span class="contact-form__icon">
+            <li class="info-card__item">
+              <span class="info-card__icon">
                 <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M4 5h16v14H4z"></path>
                   <path d="M8 9h8M8 13h5"></path>
                 </svg>
               </span>
               <span>
-                <b class="contact-form__label">الاستفسارات الإعلامية</b>
-                <a class="contact-form__value" href="/media">{info.mediaLabelAr}</a>
+                <b class="info-card__label">الاستفسارات الإعلامية</b>
+                <a class="info-card__value" href="/media">{info.mediaLabelAr}</a>
               </span>
             </li>
-            <li class="contact-form__item">
-              <span class="contact-form__icon">
+            <li class="info-card__item">
+              <span class="info-card__icon">
                 <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
                   <circle cx="12" cy="12" r="9"></circle>
                   <path d="M12 7v5l3 2"></path>
                 </svg>
               </span>
               <span>
-                <b class="contact-form__label">{info.responseLabelAr}</b>
-                <span class="contact-form__value">{info.responseTextAr}</span>
+                <b class="info-card__label">{info.responseLabelAr}</b>
+                <span class="info-card__value">{info.responseTextAr}</span>
               </span>
             </li>
           </ul>
-          <div class="contact-form__social">
+          <div class="info-card__footer">
             <p>تابعنا</p>
-            <div class="contact-form__social-links">
+            <div class="info-card__footer-links">
               <a href="#" rel="noopener" target="_blank" aria-label="LinkedIn">
                 <svg fill="currentColor" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95C20.4 8.75 21 11 21 14v7h-4v-6.2c0-1.5-.03-3.4-2.1-3.4-2.1 0-2.4 1.6-2.4 3.3V21H9z"></path>

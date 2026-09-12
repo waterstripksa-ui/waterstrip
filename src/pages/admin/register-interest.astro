@@ -1,0 +1,22 @@
+---
+// The register-interest page's editable surfaces. Each panel is a React
+// island that PUTs to /admin/api/content/<key>; reads go through the content
+// cache, as they must. This page has no image fields.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getSingleton } from '../../lib/content/cache.ts';
+import RegisterHeroEditor from '../../components/admin/register/RegisterHeroEditor.tsx';
+import RegisterInfoEditor from '../../components/admin/register/RegisterInfoEditor.tsx';
+
+// The cache deep-freezes what it returns, and React needs to build new objects
+// from these, so each island gets a structural clone as its initial draft.
+const hero = structuredClone(getSingleton('register_hero'));
+const info = structuredClone(getSingleton('register_info'));
+---
+
+<AdminLayout
+  title="صفحة سجّل اهتمامك"
+  lede="تحرير نصوص صفحة سجّل اهتمامك. كل قسم يُحفظ على حدة، ويظهر التغيير في الموقع مباشرة بعد الحفظ."
+>
+  <RegisterHeroEditor initial={hero} client:load />
+  <RegisterInfoEditor initial={info} client:load />
+</AdminLayout>

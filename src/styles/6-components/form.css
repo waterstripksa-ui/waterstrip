@@ -63,6 +63,20 @@
   margin-block-start: 7px;
 }
 
+/* A checkbox with its label wrapping to multiple lines, e.g. a consent line
+   with inline links — the checkbox stays aligned to the first line. */
+.form__check {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  font-size: var(--fs-small);
+  line-height: var(--lh-small);
+}
+
+.form__check input {
+  margin-block-start: 2px;
+}
+
 .form__actions {
   display: flex;
   flex-direction: column;
