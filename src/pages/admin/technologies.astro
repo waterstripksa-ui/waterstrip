@@ -1,0 +1,30 @@
+---
+// The technologies/working-groups surface. Unlike about/contact/etc. the
+// group list edits a real collection table (working_group), not a singleton,
+// so it gets its own bulk editor rather than a SectionForm panel — see
+// src/components/admin/useCollectionEditor.ts. The closing banner on the
+// detail page is a normal singleton and follows the usual pattern.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getMedia, getSingleton, listAllWorkingGroups, type MediaView } from '../../lib/content/cache.ts';
+import { collectMediaIds } from '../../lib/content/schemas/fields.ts';
+import { singletons } from '../../lib/content/schemas/index.ts';
+import WorkingGroupsEditor from '../../components/admin/working-groups/WorkingGroupsEditor.tsx';
+import TechnologiesBannerEditor from '../../components/admin/technologies/TechnologiesBannerEditor.tsx';
+
+const groups = listAllWorkingGroups();
+const banner = structuredClone(getSingleton('technologies_banner'));
+
+const media: Record<string, MediaView> = {};
+for (const ref of collectMediaIds(singletons.technologies_banner.schema, banner)) {
+  const view = getMedia(ref.id);
+  if (view) media[ref.id] = { ...view };
+}
+---
+
+<AdminLayout
+  title="مجموعات العمل"
+  lede="تحرير مجموعات عمل الخبراء المعروضة في صفحة «مجموعات العمل» وصفحاتها التفصيلية."
+>
+  <WorkingGroupsEditor initial={groups} client:load />
+  <TechnologiesBannerEditor initial={banner} media={media} client:load />
+</AdminLayout>

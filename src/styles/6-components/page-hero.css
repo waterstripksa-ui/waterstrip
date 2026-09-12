@@ -47,6 +47,26 @@
   }
 }
 
+/* The `--image` modifier promised above: a full-bleed photo under the scrim. */
+.page-hero--image {
+  padding-block: 90px 46px;
+}
+
+.page-hero__image {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (--bp-tab) {
+  .page-hero--image {
+    padding-block: 64px 32px;
+  }
+}
+
 /* Shorter, solid band for utility pages that have no lede or hero art. */
 .page-hero--plain {
   align-items: flex-start;

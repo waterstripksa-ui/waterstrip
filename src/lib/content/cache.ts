@@ -17,13 +17,14 @@
  */
 import { asc, eq } from 'drizzle-orm';
 import { db } from '../../db/index.ts';
-import { contentSingleton, event, media } from '../../db/content-schema.ts';
+import { contentSingleton, event, media, workingGroup } from '../../db/content-schema.ts';
 import { singletons, type SingletonData, type SingletonKey } from './schemas/index.ts';
 import { upgrade } from './migrate.ts';
 import { mediaUrl } from './media-paths.ts';
 
 export type Event = typeof event.$inferSelect;
 export type Media = typeof media.$inferSelect;
+export type WorkingGroup = typeof workingGroup.$inferSelect;
 
 /** What a page — or a dashboard preview — needs to render an uploaded image. */
 export interface MediaView {
@@ -36,6 +37,7 @@ export interface MediaView {
 
 const singletonCache = new Map<SingletonKey, unknown>();
 let eventCache: readonly Event[] | null = null;
+let workingGroupCache: readonly WorkingGroup[] | null = null;
 /** `null` is cached too: a dangling id is looked up once, not on every render. */
 const mediaCache = new Map<string, MediaView | null>();
 
@@ -91,6 +93,31 @@ export function listAllEvents(): Event[] {
   return db.select().from(event).orderBy(asc(event.order), asc(event.slug)).all();
 }
 
+/** Published working groups, in list order. Ordering within a list is not layout. */
+export function listWorkingGroups(): readonly WorkingGroup[] {
+  if (!workingGroupCache) {
+    workingGroupCache = deepFreeze(
+      db
+        .select()
+        .from(workingGroup)
+        .where(eq(workingGroup.published, true))
+        .orderBy(asc(workingGroup.order), asc(workingGroup.slug))
+        .all(),
+    );
+  }
+  return workingGroupCache;
+}
+
+/** One published working group by slug, or `null` if it does not exist or is unpublished. */
+export function getWorkingGroup(slug: string): WorkingGroup | null {
+  return listWorkingGroups().find((g) => g.slug === slug) ?? null;
+}
+
+/** Every working group including unpublished ones — for the dashboard, not the public site. */
+export function listAllWorkingGroups(): WorkingGroup[] {
+  return db.select().from(workingGroup).orderBy(asc(workingGroup.order), asc(workingGroup.slug)).all();
+}
+
 /**
  * One uploaded image's metadata, or `null` when no row has that id — a reference
  * imported ahead of its media rows. Callers fall back to placeholder artwork.
@@ -122,6 +149,10 @@ export function invalidateEvents(): void {
   eventCache = null;
 }
 
+export function invalidateWorkingGroups(): void {
+  workingGroupCache = null;
+}
+
 export function invalidateMedia(id: string): void {
   mediaCache.delete(id);
 }
@@ -130,5 +161,6 @@ export function invalidateMedia(id: string): void {
 export function invalidateAll(): void {
   singletonCache.clear();
   eventCache = null;
+  workingGroupCache = null;
   mediaCache.clear();
 }

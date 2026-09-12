@@ -80,3 +80,42 @@ export const event = sqliteTable(
   },
   (table) => [index('event_order_idx').on(table.order)],
 );
+
+/**
+ * Expert working groups, ported from `waterstrip/assets/js/wg-data.js`.
+ *
+ * As with `event`, only the `_ar` string variants come forward — the site is
+ * Arabic-only. `stats` and `recs` are small open repeatable lists (see
+ * docs/porting-the-mockup.md#content-model-rules); every group in the reference
+ * currently has both empty, so they store as JSON rather than earning their own
+ * tables. `challenge` drives which of the mockup's four fixed icon/colour themes
+ * a group's card renders with (src/lib/wg-visuals.ts) — it is a closed set, not
+ * free text.
+ */
+export const workingGroup = sqliteTable(
+  'working_group',
+  {
+    slug: text('slug').primaryKey(),
+    /** Display ordinal as printed in the reference, e.g. "01". Not a sort key. */
+    no: text('no').notNull(),
+    challenge: text('challenge', { enum: ['supply', 'treat', 'reuse', 'smart'] }).notNull(),
+    nameAr: text('name_ar').notNull(),
+    statusAr: text('status_ar').notNull().default(''),
+    leadAr: text('lead_ar').notNull(),
+    headAr: text('head_ar').notNull(),
+    orgsAr: text('orgs_ar').notNull(),
+    scopeAr: text('scope_ar').notNull(),
+    stats: text('stats', { mode: 'json' }).notNull().$type<{ n: string; labelAr: string }[]>(),
+    recs: text('recs', { mode: 'json' })
+      .notNull()
+      .$type<{ titleAr: string; bodyAr: string }[]>(),
+    noteAr: text('note_ar').notNull().default(''),
+    src: text('src').notNull(),
+    /** Ordering within the list only — not layout. Lower sorts first. */
+    order: integer('order').notNull().default(0),
+    published: integer('published', { mode: 'boolean' }).notNull().default(true),
+    updatedAt: updatedAt(),
+    updatedBy: text('updated_by').references(() => user.id, { onDelete: 'set null' }),
+  },
+  (table) => [index('working_group_order_idx').on(table.order)],
+);

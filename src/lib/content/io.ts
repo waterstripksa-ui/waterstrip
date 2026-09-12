@@ -13,10 +13,17 @@ import { existsSync } from 'node:fs';
 import { asc, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../../db/index.ts';
-import { contentSingleton, event, media } from '../../db/content-schema.ts';
+import { contentSingleton, event, media, workingGroup } from '../../db/content-schema.ts';
 import { singletons, singletonList, type SingletonKey } from './schemas/index.ts';
 import { upgrade } from './migrate.ts';
-import { eventInput, mediaInput, replaceEvents, ContentValidationError } from './repo.ts';
+import {
+  eventInput,
+  mediaInput,
+  workingGroupInput,
+  replaceEvents,
+  replaceWorkingGroups,
+  ContentValidationError,
+} from './repo.ts';
 import { collectMediaIds } from './schemas/fields.ts';
 import { mediaFilePath } from './media-paths.ts';
 import { invalidateAll } from './cache.ts';
@@ -36,6 +43,8 @@ const envelopeSchema = z.object({
     events: z.array(z.unknown()),
     // Absent from envelopes written before media existed; they still import.
     media: z.array(z.unknown()).default([]),
+    // Absent from envelopes written before working groups existed; they still import.
+    workingGroups: z.array(z.unknown()).default([]),
   }),
 });
 
@@ -71,18 +80,26 @@ export function exportContent(): Envelope {
     .all()
     .map(({ updatedAt: _u, updatedBy: _b, ...rest }) => rest);
 
+  const workingGroups = db
+    .select()
+    .from(workingGroup)
+    .orderBy(asc(workingGroup.order), asc(workingGroup.slug))
+    .all()
+    .map(({ updatedAt: _u, updatedBy: _b, ...rest }) => rest);
+
   return {
     format: FORMAT,
     formatVersion: FORMAT_VERSION,
     exportedAt: new Date().toISOString(),
     singletons: out,
-    collections: { events, media: mediaRows },
+    collections: { events, media: mediaRows, workingGroups },
   };
 }
 
 export interface ImportReport {
   singletons: Array<{ key: string; from: number; to: number; migrated: boolean }>;
   events: number;
+  workingGroups: number;
   media: number;
   skippedSingletons: string[];
   /**
@@ -166,6 +183,20 @@ export function importContent(
     return result.data;
   });
 
+  const workingGroups = envelope.collections.workingGroups.map((g, i) => {
+    const result = workingGroupInput.safeParse(g);
+    if (!result.success) {
+      throw new ContentValidationError(
+        `workingGroups[${i}] is not valid: ` +
+          result.error.issues
+            .map((issue) => `${issue.path.join('.') || '(root)'} ${issue.message}`)
+            .join('; '),
+        result.error.issues,
+      );
+    }
+    return result.data;
+  });
+
   // References are tolerated, not enforced — see the note on `mediaId` in fields.ts.
   const refs = prepared.flatMap((p) =>
     collectMediaIds(singletons[p.key].schema, p.data).map((ref) => ({
@@ -194,6 +225,7 @@ export function importContent(
       migrated: p.from !== p.version,
     })),
     events: events.length,
+    workingGroups: workingGroups.length,
     media: mediaRows.length,
     skippedSingletons,
     missingBlobs: mediaRows.filter((m) => !existsSync(mediaFilePath(m.id, m.ext))).map((m) => m.id),
@@ -245,6 +277,7 @@ export function importContent(
   });
 
   replaceEvents(events, options.updatedBy);
+  replaceWorkingGroups(workingGroups, options.updatedBy);
   invalidateAll();
   return report;
 }
@@ -253,6 +286,7 @@ export function importContent(
 export function isContentEmpty(): boolean {
   const singleton = db.select({ key: contentSingleton.key }).from(contentSingleton).get();
   const anyEvent = db.select({ slug: event.slug }).from(event).get();
+  const anyWorkingGroup = db.select({ slug: workingGroup.slug }).from(workingGroup).get();
   const anyMedia = db.select({ id: media.id }).from(media).get();
-  return !singleton && !anyEvent && !anyMedia;
+  return !singleton && !anyEvent && !anyWorkingGroup && !anyMedia;
 }

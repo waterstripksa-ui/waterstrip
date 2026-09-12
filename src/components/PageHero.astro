@@ -11,12 +11,15 @@ interface Props {
   crumbs?: Crumb[];
   /** Shorter, solid-colour band with no lede — for legal/utility pages. */
   plain?: boolean;
+  /** Background art, e.g. the working-group detail page's hero. Fixed, decorative — not a CMS field. */
+  image?: string;
 }
 
-const { title, lede, crumbs = [], plain = false } = Astro.props;
+const { title, lede, crumbs = [], plain = false, image } = Astro.props;
 ---
 
-<section class:list={['page-hero', plain && 'page-hero--plain']}>
+<section class:list={['page-hero', plain && 'page-hero--plain', image && 'page-hero--image']}>
+  {image && <img class="page-hero__image" src={image} alt="" />}
   <div class="wrap page-hero__inner">
     {
       crumbs.length > 0 && (

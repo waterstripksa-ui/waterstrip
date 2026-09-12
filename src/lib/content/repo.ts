@@ -10,7 +10,7 @@
 import { eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../../db/index.ts';
-import { contentSingleton, event, media } from '../../db/content-schema.ts';
+import { contentSingleton, event, media, workingGroup } from '../../db/content-schema.ts';
 import {
   singletons,
   singletonList,
@@ -22,6 +22,7 @@ import type { MediaRef } from './schemas/fields.ts';
 import { arText, collectMediaIds, mediaId, siteHref } from './schemas/fields.ts';
 import {
   invalidateEvents,
+  invalidateWorkingGroups,
   invalidateSingleton,
   invalidateAll,
   invalidateMedia,
@@ -177,6 +178,82 @@ export function replaceEvents(inputs: unknown[], updatedBy?: string | null): num
     }
   });
   invalidateEvents();
+  return valid.length;
+}
+
+const workingGroupStat = z.object({
+  n: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(20, 'الحد الأقصى 20 حرفًا.'),
+  labelAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(80, 'الحد الأقصى 80 حرفًا.'),
+});
+
+const workingGroupRec = z.object({
+  titleAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  bodyAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(600, 'الحد الأقصى 600 حرف.'),
+});
+
+/** The working-group fields an admin may set. `updatedAt`/`updatedBy` are server-owned. */
+export const workingGroupInput = z.object({
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'must be a lowercase slug, e.g. flood-platform'),
+  no: z.string().trim().min(1).max(8),
+  challenge: z.enum(['supply', 'treat', 'reuse', 'smart']),
+  nameAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  statusAr: z.string().trim().max(60, 'الحد الأقصى 60 حرفًا.').default(''),
+  leadAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  headAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  orgsAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(300, 'الحد الأقصى 300 حرف.'),
+  scopeAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(600, 'الحد الأقصى 600 حرف.'),
+  stats: z.array(workingGroupStat).max(6).default([]),
+  recs: z.array(workingGroupRec).max(12).default([]),
+  noteAr: z.string().trim().max(600, 'الحد الأقصى 600 حرف.').default(''),
+  src: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(300, 'الحد الأقصى 300 حرف.'),
+  order: z.number().int().min(0).max(9999).default(0),
+  published: z.boolean().default(true),
+});
+
+export type WorkingGroupInput = z.input<typeof workingGroupInput>;
+
+export function upsertWorkingGroup(input: WorkingGroupInput, updatedBy?: string | null) {
+  const valid = parse(workingGroupInput, input, 'working group');
+  const row = db
+    .insert(workingGroup)
+    .values({ ...valid, updatedBy: updatedBy ?? null, updatedAt: new Date() })
+    .onConflictDoUpdate({
+      target: workingGroup.slug,
+      set: { ...valid, updatedBy: updatedBy ?? null, updatedAt: new Date() },
+    })
+    .returning()
+    .get();
+
+  invalidateWorkingGroups();
+  return row;
+}
+
+export function deleteWorkingGroup(slug: string): boolean {
+  const removed = db.delete(workingGroup).where(eq(workingGroup.slug, slug)).returning().all();
+  if (removed.length) invalidateWorkingGroups();
+  return removed.length > 0;
+}
+
+/**
+ * Replaces the whole working-group list in one transaction. Used by import and by
+ * the dashboard's bulk editor — with only eight groups today, editing the whole
+ * list at once is simpler than per-row endpoints, unlike `event`'s one-at-a-time
+ * dashboard flow.
+ */
+export function replaceWorkingGroups(inputs: unknown[], updatedBy?: string | null): number {
+  const valid = inputs.map((input, i) => parse(workingGroupInput, input, `workingGroup[${i}]`));
+  db.transaction((tx) => {
+    tx.delete(workingGroup).run();
+    for (const row of valid) {
+      tx.insert(workingGroup)
+        .values({ ...row, updatedBy: updatedBy ?? null, updatedAt: new Date() })
+        .run();
+    }
+  });
+  invalidateWorkingGroups();
   return valid.length;
 }
 

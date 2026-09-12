@@ -1,0 +1,64 @@
+---
+// Ported from waterstrip/technologies.html. The card grid is content-driven
+// from the working_group collection table (src/db/content-schema.ts), rather
+// than the mockup's client-side WSTRIP_GROUPS injection — see
+// docs/porting-the-mockup.md's note on wg-data.js already being a content
+// model. No CMS surface for this page's own copy: the heading/lede are fixed
+// chrome, matching the mockup's own fixed text; the groups themselves are
+// editable at /admin/technologies.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import { listWorkingGroups } from '../lib/content/cache.ts';
+import { iconFor } from '../lib/wg-visuals.ts';
+
+const groups = listWorkingGroups();
+---
+
+<Layout title="مجموعات العمل" description="مجموعات عمل الخبراء في شريط شراكات الابتكار المائي ومجالات عملها في قطاع المياه.">
+  <PageHero
+    plain
+    title="مجموعات العمل"
+    lede="مجموعات عمل الخبراء في الشريط، مصنّفة حسب التحدي الذي تعالجه في قطاع المياه."
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'مجموعات العمل' }]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="section-head u-reveal">
+        <div class="section-head__text">
+          <p class="eyebrow">النطاق</p>
+          <h2>{groups.length} مجموعات عمل خبراء</h2>
+          <p class="lede">
+            مجموعات عمل خبراء تُعنى بتطوير الحلول والمبادرات التقنية التي تسرّع تبنّي تقنيات المياه في منظومة القطاع.
+          </p>
+        </div>
+      </div>
+
+      <div class="wg-grid u-reveal">
+        {
+          groups.map((g) => (
+            <a class="wg-grid__item" href={`/working-group/${g.slug}`}>
+              <figure class={`wg-grid__media wg-grid__media--${g.challenge}`}>
+                <span class="wg-grid__no">{g.no}</span>
+                <svg
+                  class="wg-grid__icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d={iconFor(g.slug, g.challenge)} />
+                </svg>
+              </figure>
+              <h3 class="wg-grid__name">{g.nameAr}</h3>
+              <p class="wg-grid__desc">{g.scopeAr}</p>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>
