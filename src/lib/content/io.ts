@@ -1,0 +1,179 @@
+/**
+ * Content import and export.
+ *
+ * One envelope, one code path — used for backups, for moving content between
+ * environments, and for the initial seed (`content/seed.json`). Exercising the
+ * import path on every fresh install is deliberate: a restore path nobody runs is
+ * a restore path that does not work.
+ *
+ * Export is **content only**. `user`, `session` and `account` rows never enter the
+ * envelope: password hashes must not leave in a file an admin can download.
+ */
+import { asc } from 'drizzle-orm';
+import { z } from 'zod';
+import { db } from '../../db/index.ts';
+import { contentSingleton, event } from '../../db/content-schema.ts';
+import { singletons, singletonList, type SingletonKey } from './schemas/index.ts';
+import { upgrade } from './migrate.ts';
+import { eventInput, replaceEvents, ContentValidationError } from './repo.ts';
+import { invalidateAll } from './cache.ts';
+
+export const FORMAT = 'waterstrip-content';
+export const FORMAT_VERSION = 1;
+
+const envelopeSchema = z.object({
+  format: z.literal(FORMAT),
+  formatVersion: z.number().int().min(1).max(FORMAT_VERSION),
+  exportedAt: z.string(),
+  singletons: z.record(
+    z.string(),
+    z.object({ schemaVersion: z.number().int().min(1), data: z.unknown() }),
+  ),
+  collections: z.object({ events: z.array(z.unknown()) }),
+});
+
+export type Envelope = z.infer<typeof envelopeSchema>;
+
+export function exportContent(): Envelope {
+  const rows = db.select().from(contentSingleton).all();
+  const byKey = new Map(rows.map((r) => [r.key, r]));
+
+  const out: Envelope['singletons'] = {};
+  for (const def of singletonList) {
+    const row = byKey.get(def.key);
+    out[def.key] = row
+      ? { schemaVersion: row.schemaVersion, data: row.data }
+      : { schemaVersion: def.version, data: def.schema.parse(def.initial) };
+  }
+
+  const events = db
+    .select()
+    .from(event)
+    .orderBy(asc(event.order), asc(event.slug))
+    .all()
+    // Server-owned columns are not content; they would be meaningless in another
+    // environment where the user ids differ.
+    .map(({ updatedAt: _u, updatedBy: _b, ...rest }) => rest);
+
+  return {
+    format: FORMAT,
+    formatVersion: FORMAT_VERSION,
+    exportedAt: new Date().toISOString(),
+    singletons: out,
+    collections: { events },
+  };
+}
+
+export interface ImportReport {
+  singletons: Array<{ key: string; from: number; to: number; migrated: boolean }>;
+  events: number;
+  skippedSingletons: string[];
+  dryRun: boolean;
+}
+
+/**
+ * Validates an envelope in full, runs every singleton up its ladder, and only then
+ * writes — inside a single transaction. An envelope that fails validation anywhere
+ * writes nothing at all.
+ */
+export function importContent(
+  input: unknown,
+  options: { dryRun?: boolean; updatedBy?: string | null } = {},
+): ImportReport {
+  const parsed = envelopeSchema.safeParse(input);
+  if (!parsed.success) {
+    throw new ContentValidationError(
+      'not a valid content envelope: ' +
+        parsed.error.issues
+          .map((i) => `${i.path.join('.') || '(root)'} ${i.message}`)
+          .join('; '),
+      parsed.error.issues,
+    );
+  }
+  const envelope = parsed.data;
+  const dryRun = options.dryRun ?? false;
+
+  // Phase 1: validate and migrate everything in memory.
+  const prepared: Array<{ key: SingletonKey; version: number; data: unknown; from: number }> = [];
+  const skippedSingletons: string[] = [];
+
+  for (const [key, record] of Object.entries(envelope.singletons)) {
+    if (!(key in singletons)) {
+      // A surface this build does not know about — an envelope from a newer app, or
+      // a key that has since been retired. Report it rather than failing the import.
+      skippedSingletons.push(key);
+      continue;
+    }
+    const typedKey = key as SingletonKey;
+    const def = singletons[typedKey];
+    prepared.push({
+      key: typedKey,
+      version: def.version,
+      data: upgrade(def, record.schemaVersion, record.data),
+      from: record.schemaVersion,
+    });
+  }
+
+  const events = envelope.collections.events.map((e, i) => {
+    const result = eventInput.safeParse(e);
+    if (!result.success) {
+      throw new ContentValidationError(
+        `events[${i}] is not valid: ` +
+          result.error.issues
+            .map((issue) => `${issue.path.join('.') || '(root)'} ${issue.message}`)
+            .join('; '),
+        result.error.issues,
+      );
+    }
+    return result.data;
+  });
+
+  const report: ImportReport = {
+    singletons: prepared.map((p) => ({
+      key: p.key,
+      from: p.from,
+      to: p.version,
+      migrated: p.from !== p.version,
+    })),
+    events: events.length,
+    skippedSingletons,
+    dryRun,
+  };
+
+  if (dryRun) return report;
+
+  // Phase 2: write. Nothing here can fail validation.
+  db.transaction((tx) => {
+    for (const item of prepared) {
+      tx.insert(contentSingleton)
+        .values({
+          key: item.key,
+          schemaVersion: item.version,
+          data: item.data,
+          updatedBy: options.updatedBy ?? null,
+          updatedAt: new Date(),
+        })
+        .onConflictDoUpdate({
+          target: contentSingleton.key,
+          set: {
+            schemaVersion: item.version,
+            data: item.data,
+            updatedBy: options.updatedBy ?? null,
+            updatedAt: new Date(),
+          },
+        })
+        .run();
+    }
+  });
+
+  replaceEvents(events, options.updatedBy);
+  invalidateAll();
+  return report;
+}
+
+/** True when no content has been imported or edited yet. */
+export function isContentEmpty(): boolean {
+  const singleton = db.select({ key: contentSingleton.key }).from(contentSingleton).get();
+  const anyEvent = db.select({ slug: event.slug }).from(event).get();
+  return !singleton && !anyEvent;
+}

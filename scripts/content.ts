@@ -1,0 +1,72 @@
+/**
+ * Content import/export CLI.
+ *
+ *   node scripts/content.ts export [file]       # defaults to stdout
+ *   node scripts/content.ts import <file>       # transactional; validates first
+ *   node scripts/content.ts import <file> --dry-run
+ *   node scripts/content.ts seed                # import content/seed.json if empty
+ *
+ * `seed` is what `npm run db:seed` calls, so the import path is exercised on every
+ * fresh install rather than only when someone needs a restore.
+ */
+import { readFileSync, writeFileSync } from 'node:fs';
+import { exportContent, importContent, isContentEmpty } from '../src/lib/content/io.ts';
+
+const [command, ...rest] = process.argv.slice(2);
+const dryRun = rest.includes('--dry-run');
+const fileArg = rest.find((a) => !a.startsWith('--'));
+
+function readEnvelope(path: string): unknown {
+  try {
+    return JSON.parse(readFileSync(path, 'utf8'));
+  } catch (cause) {
+    throw new Error(`Could not read ${path}: ${String(cause)}`);
+  }
+}
+
+function describe(path: string, report: ReturnType<typeof importContent>) {
+  const verb = report.dryRun ? 'Would import' : 'Imported';
+  console.log(`[content] ${verb} ${path}:`);
+  for (const s of report.singletons) {
+    const note = s.migrated ? ` (migrated ${s.from} -> ${s.to})` : '';
+    console.log(`  singleton ${s.key}${note}`);
+  }
+  console.log(`  events: ${report.events}`);
+  for (const key of report.skippedSingletons) {
+    console.log(`  skipped unknown singleton "${key}" — not a surface this build knows`);
+  }
+}
+
+switch (command) {
+  case 'export': {
+    const json = JSON.stringify(exportContent(), null, 2) + '\n';
+    if (fileArg) {
+      writeFileSync(fileArg, json);
+      console.log(`[content] Exported to ${fileArg}.`);
+    } else {
+      process.stdout.write(json);
+    }
+    break;
+  }
+
+  case 'import': {
+    if (!fileArg) throw new Error('Usage: node scripts/content.ts import <file> [--dry-run]');
+    describe(fileArg, importContent(readEnvelope(fileArg), { dryRun }));
+    break;
+  }
+
+  case 'seed': {
+    if (!isContentEmpty()) {
+      console.log('[content] Content already present — seed skipped.');
+      break;
+    }
+    const path = fileArg ?? 'content/seed.json';
+    describe(path, importContent(readEnvelope(path), { dryRun }));
+    break;
+  }
+
+  default:
+    throw new Error(`Unknown command "${command ?? ''}". See the header of this file.`);
+}
+
+process.exit(0);

@@ -1,0 +1,57 @@
+{
+  "format": "waterstrip-content",
+  "formatVersion": 1,
+  "exportedAt": "2026-09-12T14:43:03.029Z",
+  "singletons": {
+    "home_hero": {
+      "schemaVersion": 1,
+      "data": {
+        "titleAr": "معرفة تطبيقية تسرّع تبنّي تقنيات المياه في المملكة."
+      }
+    }
+  },
+  "collections": {
+    "events": [
+      {
+        "slug": "ev-saudi-water-week",
+        "day": "27",
+        "monthAr": "يونيو – يوليو",
+        "titleAr": "أسبوع المياه السعودي — الاجتماع الربعي الأول",
+        "descAr": "جدة · أُقيم الاجتماع الربعي الأول لأعضاء الشريط على هامش أسبوع المياه السعودي.",
+        "href": "/register-interest",
+        "order": 10,
+        "published": true
+      },
+      {
+        "slug": "ev-kaust",
+        "day": "29",
+        "monthAr": "سبتمبر",
+        "titleAr": "مجتمع المياه في كاوست — الاجتماع الربعي الثاني",
+        "descAr": "ثول · يُقام الاجتماع الربعي الثاني لأعضاء الشريط على هامش ملتقى مجتمع المياه في كاوست.",
+        "href": "/register-interest",
+        "order": 20,
+        "published": true
+      },
+      {
+        "slug": "ev-idws",
+        "day": "14",
+        "monthAr": "ديسمبر",
+        "titleAr": "مؤتمر IDWS — الاجتماع الربعي الثالث",
+        "descAr": "يُقام الاجتماع الربعي الثالث لأعضاء الشريط على هامش مؤتمر IDWS، ويشمل جلسة حوارية وتسليم جوائز.",
+        "href": "/register-interest",
+        "order": 30,
+        "published": true
+      },
+      {
+        "slug": "ev-idra",
+        "day": "01",
+        "monthAr": "نوفمبر 2026",
+        "titleAr": "المؤتمر العالمي لتحلية المياه وإعادة استخدامها",
+        "descAr": "المملكة · ينظّمه الاتحاد الدولي لتحلية المياه وإعادة استخدامها (IDRA) في 1–5 نوفمبر 2026.",
+        "href": "/register-interest",
+        "order": 40,
+        "published": true
+      }
+    ]
+  }
+}

@@ -17,6 +17,9 @@ Arabic-only, RTL (`<html dir="rtl" lang="ar">`). Deploys to a self-managed VPS.
   set of fields* — never a block/page builder. See [docs/porting-the-mockup.md](docs/porting-the-mockup.md#content-model-rules).
 - **No new infrastructure.** SQLite on local disk, everything server-side. Do not
   introduce a hosted DB, an external auth provider, or a SaaS CMS without asking.
+- **Content lives in SQLite; JSON is only the import/export format.** All CMS reads go through
+  the cache in `src/lib/content/`, all writes through its repository — never straight from a
+  page or endpoint. See [docs/content-storage.md](docs/content-storage.md).
 - **Never edit [waterstrip/](waterstrip/).** It is the read-only design reference.
 - **Public sign-up is disabled.** Accounts are seeded or admin-created.
 
@@ -27,9 +30,13 @@ npm run dev              # migrate + seed, then astro dev
 npm run dev -- --host    # ...exposed on the network
 npm run build            # production build (node adapter, standalone)
 npm start                # migrate + seed, then serve dist/
-npm run db:generate      # drizzle-kit: schema.ts -> drizzle/*.sql
+npm run db:generate      # drizzle-kit: schema.ts + content-schema.ts -> drizzle/*.sql
 npm run db:migrate       # apply migrations
 npm run db:seed          # create/promote the .env admin (idempotent)
+npm run content:migrate  # bring singleton payloads to the current schema version
+npm run content:seed     # import content/seed.json when content tables are empty
+npm run content:export   # write the content envelope to stdout, or to a file argument
+npm run content:import   # node scripts/content.ts import <file> [--dry-run]
 npx astro check          # typecheck — must stay clean
 ```
 
@@ -43,6 +50,11 @@ Copy [.env.example](.env.example) to `.env` before anything else. `.env` and `da
 - **Use explicit `.ts` extensions** in imports under `src/lib/`, `src/db/`, and `scripts/`.
   [scripts/seed-admin.ts](scripts/seed-admin.ts) runs under plain Node, which — unlike Vite —
   resolves neither directory nor extensionless imports.
+- **No TypeScript parameter properties** in anything a script can reach. Node's type-stripping
+  rejects `constructor(readonly x: T)` with `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX`; declare the
+  field and assign it in the body.
+- **CMS tables go in [src/db/content-schema.ts](src/db/content-schema.ts)**, never in
+  [src/db/schema.ts](src/db/schema.ts) — the Better Auth generator overwrites that file whole.
 - **Env comes from `process.env`**, via [src/lib/env.ts](src/lib/env.ts) — not `import.meta.env`,
   which does not exist outside Astro.
 - **Astro's CSRF origin check is on.** Form POSTs without an `Origin` header get a 403.
@@ -66,6 +78,7 @@ Copy [.env.example](.env.example) to `.env` before anything else. `.env` and `da
 ## Reference
 
 - [docs/architecture.md](docs/architecture.md) — stack, decisions and why, request flow, file map
+- [docs/content-storage.md](docs/content-storage.md) — CMS storage, caching, versioning, import/export
 - [docs/better-auth.md](docs/better-auth.md) — version-specific auth API, seeding, session access
 - [docs/css-architecture.md](docs/css-architecture.md) — style layers, BEM, breakpoints, RTL rules
 - [docs/porting-the-mockup.md](docs/porting-the-mockup.md) — mockup inventory, porting order, CMS content model

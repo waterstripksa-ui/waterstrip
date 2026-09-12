@@ -32,9 +32,10 @@ npx auth@1.7.4 generate --config src/lib/auth.ts --output src/db/schema.ts --yes
 npm run db:generate && npm run db:migrate
 ```
 
-The generator **overwrites the whole file**. Once CMS tables live in `src/db/schema.ts`, either
-move them to a separate module that `src/db/index.ts` also re-exports, or re-apply them by hand
-after regenerating. Decide this the first time a CMS table is added.
+The generator **overwrites the whole file**, so CMS tables must never live in it. They are in
+[src/db/content-schema.ts](../src/db/content-schema.ts) instead; `src/db/index.ts` merges both
+modules into one schema object and `drizzle.config.ts` lists both paths. Regenerating auth
+tables therefore cannot touch content tables.
 
 Note the generator prints a "Drizzle schema mismatch / Missing tables" error while loading a
 schema that does not yet match the config. That is expected on first run and it still writes
