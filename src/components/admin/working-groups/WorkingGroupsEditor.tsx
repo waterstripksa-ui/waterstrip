@@ -84,7 +84,13 @@ export default function WorkingGroupsEditor({ initial }: { initial: WorkingGroup
   const [open, setOpen] = useState(false);
   const { draft, update, dirty, status, message, errors, save, reset } = useCollectionEditor<
     GroupRow[]
-  >('/admin/api/working-groups', initial.map(fromRow), toPayload);
+  >(
+    '/admin/api/working-groups',
+    initial.map(fromRow),
+    toPayload,
+    'working-groups',
+    'مجموعات العمل',
+  );
 
   const statusText: Record<string, string> = {
     idle: '',

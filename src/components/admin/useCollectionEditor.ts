@@ -3,12 +3,15 @@
  * collection editor — the working-groups list today.
  *
  * Deliberately not `useSingletonEditor`: that hook PUTs to
- * `/admin/api/content/<SingletonKey>` and registers with the page-wide
- * "Save All" bar, both of which are singleton-specific. A collection editor
- * saves its own array to its own endpoint on its own button, so it stays a
- * separate, smaller hook rather than widening the singleton one to fit.
+ * `/admin/api/content/<SingletonKey>`, which is singleton-specific. A
+ * collection editor saves its own array to its own endpoint on its own
+ * button, so it stays a separate, smaller hook rather than widening the
+ * singleton one to fit. It still registers with the same page-wide
+ * "Save All" bar (editorRegistry.ts) so an unsaved collection draft raises
+ * the same site-wide alert a dirty singleton does.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { registerEditor, unregisterEditor } from './editorRegistry.ts';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -44,6 +47,8 @@ export function useCollectionEditor<T>(
   url: string,
   initial: T,
   toPayload: (draft: T) => unknown,
+  key: string,
+  title: string,
 ): CollectionEditor<T> {
   const [draft, setDraft] = useState<T>(initial);
   const [saved, setSaved] = useState<T>(initial);
@@ -121,6 +126,13 @@ export function useCollectionEditor<T>(
       }
     })();
   }, [draft, url, toPayload]);
+
+  // Registers this panel with the page-wide "Save All" bar, same as
+  // useSingletonEditor — see editorRegistry.ts.
+  useEffect(() => {
+    registerEditor({ key, title, dirty, status, save });
+  }, [key, title, dirty, status, save]);
+  useEffect(() => () => unregisterEditor(key), [key]);
 
   return { draft, update, dirty, status, message, errors, save, reset };
 }
