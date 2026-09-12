@@ -33,6 +33,7 @@ function describe(path: string, report: ReturnType<typeof importContent>) {
   }
   console.log(`  events: ${report.events}`);
   console.log(`  working groups: ${report.workingGroups}`);
+  console.log(`  articles: ${report.articles}`);
   console.log(`  media: ${report.media}`);
   for (const key of report.skippedSingletons) {
     console.log(`  skipped unknown singleton "${key}" — not a surface this build knows`);

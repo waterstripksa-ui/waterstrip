@@ -1,0 +1,30 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getMedia, getSingleton, listAllArticles, listAllEvents, type MediaView } from '../../lib/content/cache.ts';
+import { collectMediaIds } from '../../lib/content/schemas/fields.ts';
+import { singletons } from '../../lib/content/schemas/index.ts';
+import ArticlesEditor from '../../components/admin/articles/ArticlesEditor.tsx';
+import EventsEditor from '../../components/admin/events/EventsEditor.tsx';
+import MediaBannerEditor from '../../components/admin/media/MediaBannerEditor.tsx';
+
+const articles = listAllArticles();
+const events = listAllEvents();
+const banner = structuredClone(getSingleton('media_banner'));
+
+const media: Record<string, MediaView> = {};
+for (const a of articles) {
+  if (!a.imageId) continue;
+  const view = getMedia(a.imageId);
+  if (view) media[a.imageId] = { ...view };
+}
+for (const ref of collectMediaIds(singletons.media_banner.schema, banner)) {
+  const view = getMedia(ref.id);
+  if (view) media[ref.id] = { ...view };
+}
+---
+
+<AdminLayout title="الأخبار والفعاليات" lede="تحرير الأخبار والفعاليات المعروضة في صفحة «الأخبار والفعاليات» وصفحات الأخبار التفصيلية.">
+  <ArticlesEditor initial={articles} media={media} client:load />
+  <EventsEditor initial={events} client:load />
+  <MediaBannerEditor initial={banner} media={media} client:load />
+</AdminLayout>

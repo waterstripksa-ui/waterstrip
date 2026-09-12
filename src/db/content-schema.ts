@@ -119,3 +119,41 @@ export const workingGroup = sqliteTable(
   },
   (table) => [index('working_group_order_idx').on(table.order)],
 );
+
+/**
+ * News articles, ported from `waterstrip/assets/js/article-data.js`.
+ *
+ * As with `event` and `workingGroup`, only the `_ar` string variants come
+ * forward. `blocks` is a small open repeatable list of heading/body pairs, and
+ * `tagsAr` an open list of short labels — both store as JSON rather than
+ * earning their own tables, same reasoning as `workingGroup`'s `stats`/`recs`.
+ * `imageId` is a `media` row id like a singleton's image field, but this is a
+ * plain column rather than something `collectMediaIds` walks: that helper
+ * walks a Zod *schema* tree, which only singletons have. A dangling id here
+ * (imported ahead of its media row) is tolerated the same way — see the note
+ * on `mediaId` in schemas/fields.ts — and simply renders the placeholder.
+ */
+export const article = sqliteTable(
+  'article',
+  {
+    slug: text('slug').primaryKey(),
+    kindAr: text('kind_ar').notNull(),
+    dateAr: text('date_ar').notNull(),
+    readAr: text('read_ar').notNull(),
+    imageId: text('image_id'),
+    titleAr: text('title_ar').notNull(),
+    ledeAr: text('lede_ar').notNull(),
+    blocks: text('blocks', { mode: 'json' })
+      .notNull()
+      .$type<{ headingAr: string; bodyAr: string }[]>(),
+    quoteAr: text('quote_ar').notNull().default(''),
+    quoteByAr: text('quote_by_ar').notNull().default(''),
+    tagsAr: text('tags_ar', { mode: 'json' }).notNull().$type<string[]>(),
+    /** Ordering within the list only — not layout. Lower sorts first. */
+    order: integer('order').notNull().default(0),
+    published: integer('published', { mode: 'boolean' }).notNull().default(true),
+    updatedAt: updatedAt(),
+    updatedBy: text('updated_by').references(() => user.id, { onDelete: 'set null' }),
+  },
+  (table) => [index('article_order_idx').on(table.order)],
+);

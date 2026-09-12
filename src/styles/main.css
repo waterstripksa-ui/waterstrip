@@ -59,6 +59,10 @@
 @import './6-components/goal-grid.css';
 @import './6-components/wg-grid.css';
 @import './6-components/wg-profile.css';
+@import './6-components/news-card.css';
+@import './6-components/mtabs.css';
+@import './6-components/event-list.css';
+@import './6-components/article.css';
 @import './6-components/form.css';
 @import './6-components/filepick.css';
 @import './6-components/form-layout.css';

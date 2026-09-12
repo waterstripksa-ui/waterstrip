@@ -27,6 +27,7 @@ import { legalPrivacy } from './legal-privacy.ts';
 import { legalCookies } from './legal-cookies.ts';
 import { legalAccessibility } from './legal-accessibility.ts';
 import { technologiesBanner } from './technologies-banner.ts';
+import { mediaBanner } from './media-banner.ts';
 import type { SingletonDefinition } from './types.ts';
 
 /** Iteration type. The payload generic is erased because the surfaces differ. */
@@ -58,6 +59,7 @@ export const singletons = {
   legal_cookies: legalCookies,
   legal_accessibility: legalAccessibility,
   technologies_banner: technologiesBanner,
+  media_banner: mediaBanner,
 } as const;
 
 export type SingletonKey = keyof typeof singletons;
@@ -95,5 +97,6 @@ export {
   legalCookies,
   legalAccessibility,
   technologiesBanner,
+  mediaBanner,
 };
 export type { SingletonDefinition };

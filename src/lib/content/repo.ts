@@ -10,7 +10,7 @@
 import { eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../../db/index.ts';
-import { contentSingleton, event, media, workingGroup } from '../../db/content-schema.ts';
+import { article, contentSingleton, event, media, workingGroup } from '../../db/content-schema.ts';
 import {
   singletons,
   singletonList,
@@ -21,6 +21,7 @@ import {
 import type { MediaRef } from './schemas/fields.ts';
 import { arText, collectMediaIds, mediaId, siteHref } from './schemas/fields.ts';
 import {
+  invalidateArticles,
   invalidateEvents,
   invalidateWorkingGroups,
   invalidateSingleton,
@@ -164,8 +165,8 @@ export function deleteEvent(slug: string): boolean {
 }
 
 /**
- * Replaces the whole event list in one transaction. Used by import; the dashboard
- * edits records one at a time through `upsertEvent`.
+ * Replaces the whole event list in one transaction. Used by import and by the
+ * dashboard's bulk editor, same reasoning as `replaceWorkingGroups`.
  */
 export function replaceEvents(inputs: unknown[], updatedBy?: string | null): number {
   const valid = inputs.map((input, i) => parse(eventInput, input, `event[${i}]`));
@@ -254,6 +255,73 @@ export function replaceWorkingGroups(inputs: unknown[], updatedBy?: string | nul
     }
   });
   invalidateWorkingGroups();
+  return valid.length;
+}
+
+const articleBlock = z.object({
+  headingAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(120, 'الحد الأقصى 120 حرفًا.'),
+  bodyAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(2000, 'الحد الأقصى 2000 حرف.'),
+});
+
+/** The article fields an admin may set. `updatedAt`/`updatedBy` are server-owned. */
+export const articleInput = z.object({
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'must be a lowercase slug, e.g. esg-award'),
+  kindAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(40, 'الحد الأقصى 40 حرفًا.'),
+  dateAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(40, 'الحد الأقصى 40 حرفًا.'),
+  readAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(40, 'الحد الأقصى 40 حرفًا.'),
+  imageId: mediaId.nullable().default(null),
+  titleAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  ledeAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(400, 'الحد الأقصى 400 حرف.'),
+  blocks: z.array(articleBlock).max(8).default([]),
+  quoteAr: z.string().trim().max(400, 'الحد الأقصى 400 حرف.').default(''),
+  quoteByAr: z.string().trim().max(120, 'الحد الأقصى 120 حرفًا.').default(''),
+  tagsAr: z.array(z.string().trim().min(1).max(40)).max(8).default([]),
+  order: z.number().int().min(0).max(9999).default(0),
+  published: z.boolean().default(true),
+});
+
+export type ArticleInput = z.input<typeof articleInput>;
+
+export function upsertArticle(input: ArticleInput, updatedBy?: string | null) {
+  const valid = parse(articleInput, input, 'article');
+  const row = db
+    .insert(article)
+    .values({ ...valid, updatedBy: updatedBy ?? null, updatedAt: new Date() })
+    .onConflictDoUpdate({
+      target: article.slug,
+      set: { ...valid, updatedBy: updatedBy ?? null, updatedAt: new Date() },
+    })
+    .returning()
+    .get();
+
+  invalidateArticles();
+  return row;
+}
+
+export function deleteArticle(slug: string): boolean {
+  const removed = db.delete(article).where(eq(article.slug, slug)).returning().all();
+  if (removed.length) invalidateArticles();
+  return removed.length > 0;
+}
+
+/**
+ * Replaces the whole article list in one transaction. Used by import and by the
+ * dashboard's bulk editor, same reasoning as `replaceWorkingGroups`.
+ */
+export function replaceArticles(inputs: unknown[], updatedBy?: string | null): number {
+  const valid = inputs.map((input, i) => parse(articleInput, input, `article[${i}]`));
+  db.transaction((tx) => {
+    tx.delete(article).run();
+    for (const row of valid) {
+      tx.insert(article)
+        .values({ ...row, updatedBy: updatedBy ?? null, updatedAt: new Date() })
+        .run();
+    }
+  });
+  invalidateArticles();
   return valid.length;
 }
 

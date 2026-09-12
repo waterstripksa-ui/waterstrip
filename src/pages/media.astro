@@ -1,0 +1,126 @@
+---
+// Ported from waterstrip/media.html. The news tab is content-driven from the
+// article collection table, and the events tab from the event collection
+// table (both in src/db/content-schema.ts) — see docs/porting-the-mockup.md's
+// note on the mockup's data files already being a content model. No CMS
+// surface for this page's own fixed copy: the heading/lede are static chrome,
+// matching the mockup's own fixed text; the articles/events themselves are
+// editable at /admin/media.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { listArticles, listEvents, getSingleton } from '../lib/content/cache.ts';
+import { imageFor, resolveImage } from '../lib/media-assets.ts';
+import { articleImages } from '../lib/article-assets.ts';
+
+const articles = listArticles();
+const events = listEvents();
+const banner = getSingleton('media_banner');
+---
+
+<Layout title="الأخبار والفعاليات" description="أخبار شريط شراكات الابتكار المائي وفعالياته ومشاركاته.">
+  <PageHero
+    plain
+    title="الأخبار والفعاليات"
+    lede="آخر أخبار الشريط وفعالياته ومشاركاته."
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'الأخبار والفعاليات' }]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="mtabs" role="tablist" aria-label="الأخبار والفعاليات">
+        <button class="mtab is-active" type="button" role="tab" aria-selected="true" data-mtab="news">
+          الأخبار
+        </button>
+        <button class="mtab" type="button" role="tab" aria-selected="false" data-mtab="events">
+          الفعاليات والمعارض
+        </button>
+      </div>
+
+      <div class="mtab-panel is-active" id="news" role="tabpanel">
+        {
+          articles.length > 0 ? (
+            <div class="card-row u-reveal">
+              {articles.map((a) => (
+                <a class="news-card" href={`/article/${a.slug}`}>
+                  <div class="news-card__media">
+                    <img
+                      {...resolveImage(a.imageId, imageFor(articleImages, a.slug))}
+                      alt={a.titleAr}
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="news-card__body">
+                    <p class="news-card__meta">{a.kindAr} · {a.dateAr}</p>
+                    <h3>{a.titleAr}</h3>
+                  </div>
+                  <div class="news-card__foot">
+                    <span class="circ-sm" aria-hidden="true">
+                      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" height="13" width="13">
+                        <path d="M5 12h13M13 6l6 6-6 6"></path>
+                      </svg>
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p class="lede">لا توجد أخبار منشورة حاليًا.</p>
+          )
+        }
+      </div>
+
+      <div class="mtab-panel" hidden id="events" role="tabpanel">
+        {
+          events.length > 0 ? (
+            <div class="u-reveal">
+              {events.map((e) => (
+                <div class="event">
+                  <div class="event__date">
+                    <b>{e.day}</b>
+                    <span>{e.monthAr}</span>
+                  </div>
+                  <div>
+                    <h3>{e.titleAr}</h3>
+                    <p>{e.descAr}</p>
+                  </div>
+                  <a class="cta-circle" href={e.href}>
+                    <span>التفاصيل</span>
+                    <span class="circ" aria-hidden="true">
+                      <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" height="16" width="16">
+                        <path d="M5 12h13M13 6l6 6-6 6"></path>
+                      </svg>
+                    </span>
+                  </a>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p class="lede">لا توجد فعاليات منشورة حاليًا.</p>
+          )
+        }
+      </div>
+    </div>
+  </section>
+
+  <MembershipBanner banner={banner} />
+</Layout>
+
+<script>
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.mtab[data-mtab]'));
+  const panels = Array.from(document.querySelectorAll<HTMLElement>('.mtab-panel'));
+
+  function show(key: string | null) {
+    tabs.forEach((t) => {
+      const on = t.getAttribute('data-mtab') === key;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', String(on));
+    });
+    panels.forEach((p) => {
+      p.classList.toggle('is-active', p.id === key);
+      p.hidden = p.id !== key;
+    });
+  }
+
+  tabs.forEach((t) => t.addEventListener('click', () => show(t.getAttribute('data-mtab'))));
+</script>

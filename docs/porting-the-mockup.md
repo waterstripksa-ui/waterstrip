@@ -23,9 +23,8 @@ Pages: `index`, `about`, `technologies`, `working-group`, `members`, `member`, `
 `cookies`, `accessibility`, `sitemap`, `404`.
 
 Ported so far: `index`, `about`, `contact`, `register-interest`, `terms`, `privacy`, `cookies`,
-`accessibility`, `sitemap`, `404`, `login`, `forgot-password`, `technologies`, `working-group`.
-Remaining: the article/media and events data models, and the member area (see "Suggested
-porting order" below).
+`accessibility`, `sitemap`, `404`, `login`, `forgot-password`, `technologies`, `working-group`,
+`media`, `article`. Remaining: the member area (see "Suggested porting order" below).
 
 Identity: brand colours `#154A91 · #1A77BC · #2B8CCC · #2FB2DC · #61CBF1`; fonts Tajawal
 (headings) and IBM Plex Sans Arabic (body).
