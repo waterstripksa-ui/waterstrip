@@ -1,85 +1,47 @@
 ---
-// Ported from waterstrip/index.html. Links to pages that have not been
-// ported yet point at "#", matching the convention already used in
-// SiteHeader/SiteFooter — they get filled in as those pages land.
+// Ported from waterstrip/index.html. All copy comes from the content cache and
+// is editable at /admin/home; imagery stays a build-time asset (src/lib/home-assets.ts)
+// until the media pipeline lands. Links to pages that have not been ported yet
+// hold "#", matching the convention in SiteHeader/SiteFooter.
 import Layout from '../layouts/Layout.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+import {
+  ABOUT_BANNER_IMG,
+  challengeImages,
+  discoverTileImages,
+  heroSlideImages,
+  imageFor,
+  partnerLogos,
+} from '../lib/home-assets.ts';
 
-const heroSlides = ['/img/hero/hero-1.svg', '/img/hero/hero-2.svg', '/img/hero/hero-3.svg'];
+const hero = getSingleton('home_hero');
+const discover = getSingleton('home_discover');
+const challenges = getSingleton('home_challenges');
+const awards = getSingleton('home_awards');
+const partners = getSingleton('home_partners');
+const aboutBanner = getSingleton('home_about_banner');
 
-const heroPanels = [
-  {
-    eyebrow: 'رؤى الشريط',
-    heading: 'معرفة تطبيقية تسرّع تبنّي تقنيات المياه في المملكة.',
-    ctaLabel: 'استعرض الرؤى',
-    href: '#',
-  },
-  {
-    eyebrow: 'الشراكات',
-    heading: 'جهات حكومية ومؤسسات بحثية وقطاع خاص — شريط واحد للابتكار المائي.',
-    ctaLabel: 'تعرّف على الأعضاء',
-    href: '#',
-  },
-  {
-    eyebrow: 'الإعلانات',
-    heading: 'وزارة البيئة والمياه والزراعة تُطلق شريط شراكات الابتكار المائي من جدة.',
-    ctaLabel: 'اعرف المزيد',
-    href: '#',
-  },
-];
-
-const challenges = [
-  { img: '/img/ph/ph-scarcity.svg', label: 'ندرة الموارد المائية' },
-  { img: '/img/ph/ph-desal.svg', label: 'ارتفاع تكاليف التحلية' },
-  { img: '/img/ph/ph-wastewater.svg', label: 'ضعف كفاءة معالجة مياه الصرف الصحي' },
-  { img: '/img/ph/ph-infra.svg', label: 'تقادم البنية التحتية' },
-  { img: '/img/ph/ph-consumption.svg', label: 'ارتفاع استهلاك الفرد من المياه' },
-  { img: '/img/ph/ph-groundwater.svg', label: 'الاعتماد على المياه الجوفية غير المتجددة' },
-  { img: '/img/ph/ph-fragmentation.svg', label: 'تشتّت الجهات والخبرات' },
-];
-
-const awards = [
-  { no: '01', title: 'جائزة Global ESG', body: 'تكريم حصل عليه الشريط في 2025.' },
-  { no: '02', title: "جائزة Steve's Award", body: 'تكريم حصل عليه الشريط في 2026.' },
-  {
-    no: '03',
-    title: 'ترشيح — التميّز في الشراكات بين القطاعين العام والخاص',
-    body: 'ضمن جوائز IDRA للصناعة والاستدامة.',
-  },
-  {
-    no: '04',
-    title: 'ترشيح — القيادة الملهمة في سياسات إعادة استخدام المياه',
-    body: 'ضمن جوائز IDRA للصناعة والاستدامة.',
-  },
-];
-
-const partners = [
-  'الهيئة السعودية للمياه',
-  'الشركة الوطنية للمياه',
-  'جامعة الملك عبدالله للعلوم والتقنية',
-  'أكوا باور',
-  'فيوليا',
-  'نيوم ENOWA',
-  'مدينة الملك عبدالله الاقتصادية',
-];
+/** The panel's 01, 02, … ordinal — derived from position, never stored. */
+const ordinal = (i: number) => String(i + 1).padStart(2, '0');
 ---
 
 <Layout title="الرئيسية">
   <section class="hero" id="hero">
     <div class="hero__stage">
-      {heroSlides.map((src, i) => (
+      {hero.panels.map((panel, i) => (
         <div class:list={['hero__slide', i === 0 && 'is-active']} data-slide={i}>
-          <img src={src} alt="" />
+          <img src={imageFor(heroSlideImages, panel.id)} alt="" />
         </div>
       ))}
       <div class="hero__scrim"></div>
       <div class="wrap hero__copy">
-        {heroPanels.map((panel, i) => (
+        {hero.panels.map((panel, i) => (
           <div class:list={['hero__panel', i === 0 && 'is-active']} data-panel={i}>
-            <p class="eyebrow eyebrow--light">{panel.eyebrow}</p>
-            {i === 0 ? <h1>{panel.heading}</h1> : <h2>{panel.heading}</h2>}
+            <p class="eyebrow eyebrow--light">{panel.eyebrowAr}</p>
+            {i === 0 ? <h1>{panel.headingAr}</h1> : <h2>{panel.headingAr}</h2>}
             <div class="hero__actions">
-              <a class="cta-circle" href={panel.href}>
-                <span>{panel.ctaLabel}</span>
+              <a class="cta-circle" href={panel.ctaHref}>
+                <span>{panel.ctaLabelAr}</span>
                 <span class="circ">
                   <svg fill="none" stroke="currentColor" stroke-width="1.6" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M5 12h13M13 6l6 6-6 6"></path>
@@ -93,9 +55,9 @@ const partners = [
     </div>
     <div class="hero__tabs">
       <div class="wrap">
-        {heroPanels.map((panel, i) => (
+        {hero.panels.map((panel, i) => (
           <button class:list={['hero-tab', i === 0 && 'is-active']} data-tab={i} type="button">
-            <span>{panel.eyebrow}</span>
+            <span>{panel.eyebrowAr}</span>
             <i></i>
           </button>
         ))}
@@ -106,37 +68,24 @@ const partners = [
   <section class="ribbon ribbon--sunken discover">
     <div class="wrap">
       <div class="discover__intro u-reveal">
-        <p class="eyebrow">تعرّف على الشريط</p>
-        <h2>
-          شريط شراكات الابتكار المائي مبادرة وطنية تمتدّ على ساحل البحر الأحمر، تجمع الجهات
-          الحكومية والمؤسسات البحثية والقطاع الخاص لتسريع تطوير تقنيات المياه وتبنّيها في المملكة.
-        </h2>
+        <p class="eyebrow">{discover.eyebrowAr}</p>
+        <h2>{discover.headingAr}</h2>
       </div>
-      <div class="card-row u-reveal" style="margin-top: 66px">
-        <a class="tile" href="#">
-          <img src="/img/ph/ph-group.svg" alt="" />
-          <div class="tile__txt">
-            <p class="eyebrow eyebrow--light">مجموعات العمل</p>
-            <h3>٨ مجموعات عمل تعالج تحديات قطاع المياه في المملكة</h3>
-          </div>
-          <span class="tile__arrow">
-            <svg fill="none" stroke="currentColor" stroke-width="1.8" height="14" width="14" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12h13M13 6l6 6-6 6"></path>
-            </svg>
-          </span>
-        </a>
-        <a class="tile" href="#">
-          <img src="/img/ph/ph-whatwedo.svg" alt="" />
-          <div class="tile__txt">
-            <p class="eyebrow eyebrow--light">ما نقوم به</p>
-            <h3>من التحلية وإعادة الاستخدام إلى الإدارة الذكية للمياه — الابتكار هو المفتاح</h3>
-          </div>
-          <span class="tile__arrow">
-            <svg fill="none" stroke="currentColor" stroke-width="1.8" height="14" width="14" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12h13M13 6l6 6-6 6"></path>
-            </svg>
-          </span>
-        </a>
+      <div class="card-row u-reveal">
+        {discover.tiles.map((tile) => (
+          <a class="tile" href={tile.href}>
+            <img src={imageFor(discoverTileImages, tile.id)} alt="" />
+            <div class="tile__txt">
+              <p class="eyebrow eyebrow--light">{tile.eyebrowAr}</p>
+              <h3>{tile.headingAr}</h3>
+            </div>
+            <span class="tile__arrow">
+              <svg fill="none" stroke="currentColor" stroke-width="1.8" height="14" width="14" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h13M13 6l6 6-6 6"></path>
+              </svg>
+            </span>
+          </a>
+        ))}
       </div>
     </div>
   </section>
@@ -144,11 +93,8 @@ const partners = [
   <section class="ribbon challenges" id="challenges">
     <div class="wrap">
       <div class="challenge-slider__intro u-reveal">
-        <p class="eyebrow">التحديات</p>
-        <h2>
-          يواجه قطاع المياه في المملكة تحديات مترابطة تؤثّر في كفاءة الموارد وتكلفة الخدمة
-          واستدامة الإمداد.
-        </h2>
+        <p class="eyebrow">{challenges.eyebrowAr}</p>
+        <h2>{challenges.headingAr}</h2>
         <div class="slider-nav" id="challengeNav">
           <button class="slider-nav__btn" data-dir="prev" type="button" aria-label="السابق">
             <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
@@ -164,10 +110,10 @@ const partners = [
       </div>
       <div class="challenge-slider u-reveal" id="challengeSlider" role="group" tabindex="0">
         <div class="challenge-slider__track">
-          {challenges.map((c) => (
+          {challenges.items.map((c) => (
             <article class="challenge-slide">
-              <figure><img src={c.img} alt={c.label} /></figure>
-              <h4>{c.label}</h4>
+              <figure><img src={imageFor(challengeImages, c.id)} alt={c.labelAr} /></figure>
+              <h4>{c.labelAr}</h4>
             </article>
           ))}
         </div>
@@ -180,25 +126,22 @@ const partners = [
     <div class="wrap">
       <div class="awards__panel">
         <div class="awards__head">
-          <p class="eyebrow eyebrow--light">التميّز</p>
-          <h2>الجوائز والتكريم</h2>
-          <p class="lede">
-            تكريمات نالها الشريط وترشيحات دخلها خلال سنته الأولى، تعكس أثر العمل المشترك بين
-            أعضائه في قطاع المياه.
-          </p>
-          <a class="button button--brand" href="#">
-            <span>انضم إلى الشريط</span>
+          <p class="eyebrow eyebrow--light">{awards.eyebrowAr}</p>
+          <h2>{awards.headingAr}</h2>
+          <p class="lede">{awards.ledeAr}</p>
+          <a class="button button--brand" href={awards.ctaHref}>
+            <span>{awards.ctaLabelAr}</span>
             <svg class="button__icon" fill="none" stroke="currentColor" stroke-width="1.9" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
               <path d="M5 12h13M13 6l6 6-6 6"></path>
             </svg>
           </a>
         </div>
         <ol class="awards__cats">
-          {awards.map((a) => (
+          {awards.items.map((a, i) => (
             <li class="award">
-              <span class="award__no" aria-hidden="true">{a.no}</span>
-              <h3>{a.title}</h3>
-              <p>{a.body}</p>
+              <span class="award__no" aria-hidden="true">{ordinal(i)}</span>
+              <h3>{a.titleAr}</h3>
+              <p>{a.bodyAr}</p>
               <i class="award__rule"></i>
             </li>
           ))}
@@ -207,30 +150,32 @@ const partners = [
     </div>
   </section>
 
-  <section class="partners" aria-label="الجهات الاستراتيجية">
+  <section class="partners" aria-label={partners.labelAr}>
     <div class="wrap">
-      <p class="partners__label">الجهات الاستراتيجية</p>
+      <p class="partners__label">{partners.labelAr}</p>
       <div class="partners__viewport">
+        {/* The logos are not lazy: the marquee scrolls every one of them through
+            the viewport by transform, which does not trigger lazy loading. */}
         <div class="partners__track" id="partnersTrack">
-          {partners.map((name) => (
-            <a class="partner" href="#" title={name}>
-              <img src="/img/mark-waterstrip.svg" alt={name} loading="lazy" />
+          {partners.items.map((partner) => (
+            <a class="partner" href={partner.href} title={partner.nameAr}>
+              <img src={imageFor(partnerLogos, partner.id)} alt={partner.nameAr} />
             </a>
           ))}
         </div>
       </div>
-      <p class="partners__note">جهات استراتيجية ضمن شريط شراكات الابتكار المائي.</p>
+      <p class="partners__note">{partners.noteAr}</p>
     </div>
   </section>
 
   <section class="about-banner">
-    <img src="/img/hero/banner.svg" alt="" loading="lazy" />
+    <img src={ABOUT_BANNER_IMG} alt="" loading="lazy" />
     <div class="about-banner__in">
-      <p class="eyebrow eyebrow--light">العضوية</p>
-      <h2>انضم إلى الشريط</h2>
-      <p class="about-banner__lede">شارك في تشكيل مستقبل قطاع المياه في المملكة.</p>
-      <a class="button button--brand" href="#">
-        <span>سجّل اهتمامك</span>
+      <p class="eyebrow eyebrow--light">{aboutBanner.eyebrowAr}</p>
+      <h2>{aboutBanner.headingAr}</h2>
+      <p class="about-banner__lede">{aboutBanner.ledeAr}</p>
+      <a class="button button--brand" href={aboutBanner.ctaHref}>
+        <span>{aboutBanner.ctaLabelAr}</span>
         <svg class="button__icon" fill="none" stroke="currentColor" stroke-width="1.9" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M5 12h13M13 6l6 6-6 6"></path>
         </svg>
@@ -302,6 +247,8 @@ const partners = [
     let startX = 0;
     let startPos = 0;
 
+    // Mirrors --bp-tab in 2-design-tokens/breakpoints.css: below it the track
+    // scrolls natively and the drag maths is bypassed. Keep the two in step.
     const mqNative = window.matchMedia('(max-width: 900px)');
     const nativeMode = () => mqNative.matches;
     const sign = () => (document.documentElement.dir === 'rtl' ? 1 : -1);

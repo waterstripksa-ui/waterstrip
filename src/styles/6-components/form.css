@@ -60,3 +60,12 @@
   flex: none;
   margin-block-start: 2px;
 }
+
+/* Per-field message, sitting under the control the server rejected. */
+.form__message {
+  font-size: var(--fs-micro);
+  line-height: var(--lh-micro);
+  font-weight: var(--fw-semibold);
+  color: var(--c-danger);
+  margin-block-start: 7px;
+}

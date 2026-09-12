@@ -8,11 +8,17 @@
   gap: var(--gap);
 }
 
+/* Separates the row from the section intro above it. */
+.discover__intro + .card-row {
+  margin-block-start: 66px;
+}
+
 .tile {
   position: relative;
   flex: 1 1 0;
   min-width: 0;
-  aspect-ratio: 361 / 545;
+  aspect-ratio: 361 / 420;
+  max-height: 420px;
   overflow: hidden;
   display: block;
   color: var(--c-text-invert);

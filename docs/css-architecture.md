@@ -16,10 +16,14 @@ src/styles/
   3-generic/         reset.css
   4-elements/        typography.css  links.css  forms.css
   5-skeleton/        wrap.css  ribbon.css
-  6-components/      button.css  site-header.css  site-footer.css  page-hero.css
-                     breadcrumbs.css  form.css  login-card.css
+  6-components/      button.css  eyebrow.css  lede.css
+                     site-header.css  scroll-progress.css  drawer.css  site-footer.css
+                     hero.css  tile.css  challenge-slider.css  awards.css
+                     partners.css  about-banner.css
+                     page-hero.css  breadcrumbs.css  form.css  login-card.css
                      admin-bar.css  admin-nav.css  admin-shell.css  panel.css
-  7-utilities/       visually-hidden.css  text.css  state.css
+                     item-list.css  editor.css
+  7-utilities/       visually-hidden.css  text.css  state.css  reveal.css
   shame.css
 ```
 

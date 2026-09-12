@@ -11,7 +11,14 @@ import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../../db/index.ts';
 import { contentSingleton, event } from '../../db/content-schema.ts';
-import { singletons, singletonList, type SingletonData, type SingletonKey } from './schemas/index.ts';
+import {
+  singletons,
+  singletonList,
+  type AnySingleton,
+  type SingletonData,
+  type SingletonKey,
+} from './schemas/index.ts';
+import { siteHref } from './schemas/fields.ts';
 import { invalidateEvents, invalidateSingleton, invalidateAll } from './cache.ts';
 
 /**
@@ -39,12 +46,7 @@ export const eventInput = z.object({
   titleAr: z.string().trim().min(1).max(200),
   descAr: z.string().trim().min(1).max(600),
   /** Relative path or on-site anchor. No absolute URLs: this is not a link manager. */
-  href: z
-    .string()
-    .trim()
-    .min(1)
-    .max(200)
-    .refine((v) => !/^[a-z]+:/i.test(v) && !v.startsWith('//'), 'must be a site-relative path'),
+  href: siteHref,
   order: z.number().int().min(0).max(9999).default(0),
   published: z.boolean().default(true),
 });
@@ -71,7 +73,10 @@ export function setSingleton<K extends SingletonKey>(
   data: unknown,
   updatedBy?: string | null,
 ): SingletonData<K> {
-  const def = singletons[key];
+  // Widened to the erased definition type: with several surfaces registered,
+  // `singletons[key]` is a union whose `schema` TypeScript cannot correlate with
+  // `SingletonData<K>`. The cast on the return below is what re-narrows it.
+  const def: AnySingleton = singletons[key];
   const valid = parse(def.schema, data, `singleton "${key}"`);
 
   db.insert(contentSingleton)

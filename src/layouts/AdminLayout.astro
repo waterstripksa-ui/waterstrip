@@ -20,9 +20,12 @@ const { title, lede } = Astro.props;
 // Access is enforced in src/middleware.ts, so a user is guaranteed here.
 const user = Astro.locals.user!;
 
-// One item today. Adding a CMS section should be an entry here, never a
-// change to the shell's markup.
-const sections = [{ label: 'نظرة عامة', href: '/admin' }];
+// Adding a CMS section should be an entry here, never a change to the shell's
+// markup.
+const sections = [
+  { label: 'نظرة عامة', href: '/admin' },
+  { label: 'الصفحة الرئيسية', href: '/admin/home' },
+];
 
 const currentPath = Astro.url.pathname;
 ---

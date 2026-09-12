@@ -74,11 +74,21 @@ Copy [.env.example](.env.example) to `.env` before anything else. `.env` and `da
   the layers above it. Breakpoints are `@media (--bp-tab)`, never a literal pixel value, and
   everything is authored with logical properties because the site is RTL. Read
   [docs/css-architecture.md](docs/css-architecture.md) before writing any CSS.
+- **React is for `/admin` only.** `@astrojs/react` is installed for the dashboard's editor
+  panels ([src/components/admin/](src/components/admin/)). Public pages stay
+  zero-JS-framework — their interactivity is vanilla inline `<script>`. Do not add a
+  `client:*` island to a public page; see
+  [docs/architecture.md](docs/architecture.md#why-this-and-not-something-else).
+- **Images are not CMS content yet.** The media pipeline is designed but unbuilt, so the
+  dashboard edits text only and index-page artwork resolves through
+  [src/lib/home-assets.ts](src/lib/home-assets.ts), keyed by each list item's stable `id`.
+  Never add a path, URL or filename as a content field — that is what the `media` table is for
+  ([docs/content-storage.md](docs/content-storage.md#media)).
 
 ## Reference
 
 - [docs/architecture.md](docs/architecture.md) — stack, decisions and why, request flow, file map
-- [docs/content-storage.md](docs/content-storage.md) — CMS storage, caching, versioning, import/export
+- [docs/content-storage.md](docs/content-storage.md) — CMS storage, caching, versioning, media, import/export
 - [docs/better-auth.md](docs/better-auth.md) — version-specific auth API, seeding, session access
 - [docs/css-architecture.md](docs/css-architecture.md) — style layers, BEM, breakpoints, RTL rules
 - [docs/porting-the-mockup.md](docs/porting-the-mockup.md) — mockup inventory, porting order, CMS content model

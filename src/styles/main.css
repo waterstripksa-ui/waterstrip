@@ -57,6 +57,8 @@
 @import './6-components/admin-nav.css';
 @import './6-components/admin-shell.css';
 @import './6-components/panel.css';
+@import './6-components/item-list.css';
+@import './6-components/editor.css';
 
 @import './7-utilities/visually-hidden.css';
 @import './7-utilities/text.css';

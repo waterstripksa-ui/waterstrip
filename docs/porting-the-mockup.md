@@ -62,14 +62,20 @@ order**. That is enforced by schema design, not by UI politeness:
    header and footer with `dir="rtl"`; [src/styles/](../src/styles/) holds the layered
    stylesheet. `style.css` is **not** moved in as a block — each page's rules are re-authored
    into the layers as that page lands. See [css-architecture.md](css-architecture.md).
-2. `index.html` as the first real page, replacing the placeholder in
-   [src/pages/index.astro](../src/pages/index.astro). This is also where the mobile drawer,
-   the nav links and the `about-banner` CTA get ported, since the home page is the first page
-   that needs them.
+2. ~~`index.html` as the first real page~~ — **done.**
+   [src/pages/index.astro](../src/pages/index.astro) replaced the placeholder, and brought the
+   mobile drawer, the nav links and the `about-banner` CTA with it. Its copy is **not**
+   hardcoded: it reads six singletons through the content cache, editable at `/admin/home`
+   (see step 5). Imagery is still build-time — [src/lib/home-assets.ts](../src/lib/home-assets.ts)
+   maps a list item's stable `id` to an asset, because the media pipeline is not built yet.
 3. The remaining static pages, which mostly reuse the same components.
 4. Data-driven pages (`working-group`, `article`, `media`, `members`) as dynamic routes reading
    from the database.
-5. The CMS forms in `/admin`, one collection at a time.
+5. The CMS forms in `/admin`, one surface at a time — **started.** `/admin/home` edits the index
+   page's six singletons through React islands in
+   [src/components/admin/](../src/components/admin/), writing via
+   `/admin/api/content/<key>` → `repo.setSingleton`. Each new page's surfaces land the same way
+   as that page is ported, rather than in one pass at the end.
 6. The member area, reusing the existing session infrastructure with `role: 'user'`.
 
 Port markup faithfully. The design is signed off; this is a migration, not a redesign.

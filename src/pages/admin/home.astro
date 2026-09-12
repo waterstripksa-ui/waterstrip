@@ -1,0 +1,33 @@
+---
+// The index page's editable surfaces. Each panel is a React island that PUTs to
+// /admin/api/content/<key>; reads go through the content cache, as they must.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getSingleton } from '../../lib/content/cache.ts';
+import HeroEditor from '../../components/admin/HeroEditor.tsx';
+import DiscoverEditor from '../../components/admin/DiscoverEditor.tsx';
+import ChallengesEditor from '../../components/admin/ChallengesEditor.tsx';
+import AwardsEditor from '../../components/admin/AwardsEditor.tsx';
+import PartnersEditor from '../../components/admin/PartnersEditor.tsx';
+import AboutBannerEditor from '../../components/admin/AboutBannerEditor.tsx';
+
+// The cache deep-freezes what it returns, and React needs to build new objects
+// from these, so each island gets a structural clone as its initial draft.
+const hero = structuredClone(getSingleton('home_hero'));
+const discover = structuredClone(getSingleton('home_discover'));
+const challenges = structuredClone(getSingleton('home_challenges'));
+const awards = structuredClone(getSingleton('home_awards'));
+const partners = structuredClone(getSingleton('home_partners'));
+const aboutBanner = structuredClone(getSingleton('home_about_banner'));
+---
+
+<AdminLayout
+  title="الصفحة الرئيسية"
+  lede="تحرير نصوص الصفحة الرئيسية. كل قسم يُحفظ على حدة، ويظهر التغيير في الموقع مباشرة بعد الحفظ."
+>
+  <HeroEditor initial={hero} client:load />
+  <DiscoverEditor initial={discover} client:load />
+  <ChallengesEditor initial={challenges} client:load />
+  <AwardsEditor initial={awards} client:load />
+  <PartnersEditor initial={partners} client:load />
+  <AboutBannerEditor initial={aboutBanner} client:load />
+</AdminLayout>

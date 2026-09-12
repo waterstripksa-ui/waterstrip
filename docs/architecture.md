@@ -17,6 +17,7 @@ government stakeholders, so treat data residency and dependency count as real co
 | Database | SQLite on local disk via `better-sqlite3` |
 | Query layer | Drizzle ORM + drizzle-kit migrations |
 | Auth | Better Auth 1.7.4 with the `admin` plugin |
+| Dashboard UI | React 19 islands via `@astrojs/react` — **`/admin` only** |
 | Hosting | Self-managed VPS |
 
 ### Why this and not something else
@@ -31,9 +32,20 @@ government stakeholders, so treat data residency and dependency count as real co
 - **Database-backed CMS over a git-based one** (Decap/Sveltia/Tina). A git CMS would add a
   second content system next to the user database that already has to exist, and would require
   non-technical Arabic-speaking admins to hold GitHub accounts and wait on a rebuild per edit.
-- **Server-side form POSTs over a client SDK.** Login and logout are plain HTML forms posting
-  to Astro endpoints. No framework island, no hydration, works without JS. No UI framework is
-  installed — do not add one unless a feature genuinely needs it.
+- **Server-side form POSTs on the public site; React islands in the dashboard.** Login and
+  logout stay plain HTML forms posting to Astro endpoints — no hydration, works without JS —
+  and every public page is zero-JS-framework, with the index page's carousel and sliders
+  written as vanilla inline scripts.
+
+  The dashboard is the exception, and deliberately so. A content editor is a long-lived form
+  over nested data: repeatable rows that reorder and delete, dirty tracking, a save per
+  section, and server validation issues mapped back onto individual fields. Doing that with
+  full-page POSTs means either losing unsaved work on every round trip or hand-rolling the
+  same state machine in imperative DOM code. So `@astrojs/react` is installed and the
+  `/admin` panels are islands (`src/components/admin/`). **The scope is a rule, not an
+  accident:** React must not spread to public pages, because the reason the public site is
+  framework-free — payload size and the CSP below — has not changed. This reverses the
+  original "no UI framework is installed" decision; it does not widen it.
 - **All DB access is server-side.** The mockup ships a strict CSP
   ([waterstrip/netlify.toml](../waterstrip/netlify.toml)) with `connect-src 'self'`. Keeping
   queries on the server means that policy survives the port. A browser-side data client would
@@ -98,9 +110,22 @@ point for the proxy config; they are not currently applied anywhere.
 
 ## Status
 
-Done: auth end to end — schema, migrations, seeded admin, login, logout, `/admin` guarded by
-role. Verified in both dev and a production build.
+Done, verified in both dev and a production build:
 
-Not started: everything else. The `/admin` and `/login` pages are deliberately unstyled
-scaffolding. No CMS tables, no content editing, no ported pages, no member area, no password
-reset (there is no email sender configured), no media uploads.
+- Auth end to end — schema, migrations, seeded admin, login, logout, `/admin` guarded by role.
+- The CSS foundation and the **index page**, ported from the mockup.
+- The content layer — `content_singleton` and `event` tables, the cache, the repository, the
+  payload migration ladder, and import/export ([content-storage.md](content-storage.md)).
+- The **index page's dashboard** at `/admin/home`: six singleton surfaces
+  (`home_hero`, `home_discover`, `home_challenges`, `home_awards`, `home_partners`,
+  `home_about_banner`) edited through React islands that `PUT` to
+  `/admin/api/content/<key>`, with the public page reading the same content through the cache.
+
+Not started: the remaining 17 mockup pages, the collection-backed surfaces (working groups,
+articles, events have a table but no dashboard), the member area, and password reset (there is
+no email sender configured).
+
+**Media uploads are not built**, which is why the dashboard edits text only: every image on the
+index page is still a build-time asset resolved through `src/lib/home-assets.ts`. The pipeline
+is designed in [content-storage.md](content-storage.md#media) and that module goes away when it
+lands.

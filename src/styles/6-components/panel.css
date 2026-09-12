@@ -22,6 +22,71 @@
   border-block-end: 1px solid var(--c-line);
 }
 
+/* --- Collapsible panels (the dashboard's section editors) ----------------- */
+
+/* Collapsed: the header is the whole panel, so it carries no separating rule. */
+.panel--collapsed .panel__title {
+  margin-block-end: 0;
+  padding-block-end: 0;
+  border-block-end: 0;
+}
+
+/* A disclosure header. Fills the panel so the whole row is the hit area. */
+.panel__toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.panel__toggle-icon {
+  flex: none;
+  display: inline-flex;
+  color: var(--c-text-soft);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+/* Points along the inline-start edge when shut, down when open. */
+.panel--collapsed .panel__toggle-icon {
+  transform: rotate(90deg);
+}
+
+.panel__toggle-label {
+  min-width: 0;
+}
+
+.panel__badge {
+  flex: none;
+  margin-inline-start: auto;
+  padding: 4px 10px;
+  border-radius: 100px;
+  background: var(--c-surface-sunken);
+  border: 1px solid var(--c-line);
+  color: var(--c-text-soft);
+  font-family: var(--f-body);
+  font-size: var(--fs-micro);
+  line-height: var(--lh-micro);
+  font-weight: var(--fw-semibold);
+}
+
+.panel__badge--error {
+  background: var(--c-danger-surface);
+  border-color: color-mix(in srgb, var(--c-danger) 30%, transparent);
+  color: var(--c-danger);
+}
+
+/* Two badges at once: only the first claims the free space. */
+.panel__badge + .panel__badge {
+  margin-inline-start: 8px;
+}
+
 /* Definition list of read-only facts — "Signed in as", "Role", and so on. */
 .panel__facts {
   display: grid;
@@ -51,6 +116,20 @@
 @media (--bp-phone) {
   .panel {
     padding: 22px 20px;
+  }
+
+  /* The title and its badges stack rather than squeezing onto one row. */
+  .panel__toggle {
+    flex-wrap: wrap;
+    gap: 8px 10px;
+  }
+
+  .panel__badge {
+    margin-inline-start: 0;
+  }
+
+  .panel__toggle-label {
+    flex: 1 1 auto;
   }
 
   .panel__facts {
