@@ -1,0 +1,22 @@
+---
+// Access is enforced in src/middleware.ts; a user is guaranteed here.
+const user = Astro.locals.user!;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Dashboard</title>
+  </head>
+  <body>
+    <h1>Dashboard</h1>
+
+    <p>Signed in as <strong>{user.email}</strong> ({user.name})</p>
+    <p>Role: <strong>{user.role}</strong></p>
+
+    <form method="POST" action="/api/logout">
+      <button type="submit">Sign out</button>
+    </form>
+  </body>
+</html>

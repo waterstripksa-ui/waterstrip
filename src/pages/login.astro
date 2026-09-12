@@ -1,0 +1,37 @@
+---
+// Intentionally unstyled scaffolding — the mockup's design is ported later.
+if (Astro.locals.user) {
+  return Astro.redirect('/admin');
+}
+
+const errors: Record<string, string> = {
+  invalid: 'Incorrect email or password.',
+  missing: 'Please enter both an email and a password.',
+};
+const error = errors[Astro.url.searchParams.get('error') ?? ''];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Sign in</title>
+  </head>
+  <body>
+    <h1>Sign in</h1>
+
+    {error && <p role="alert" style="color:#b00">{error}</p>}
+
+    <form method="POST" action="/api/login">
+      <p>
+        <label for="email">Email</label><br />
+        <input id="email" name="email" type="email" required autocomplete="username" />
+      </p>
+      <p>
+        <label for="password">Password</label><br />
+        <input id="password" name="password" type="password" required autocomplete="current-password" />
+      </p>
+      <button type="submit">Sign in</button>
+    </form>
+  </body>
+</html>

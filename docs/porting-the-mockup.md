@@ -1,0 +1,83 @@
+# Porting the mockup
+
+[waterstrip/](../waterstrip/) is a complete, approved static site. It is the **design reference
+and source of content** — read it freely, never edit it. Its own
+[README](../waterstrip/README.md) (in Arabic) documents the design system and a pre-launch
+checklist.
+
+## What is in there
+
+18 pages, ~2,750 lines of HTML, plus:
+
+| Asset | Notes |
+| --- | --- |
+| `assets/css/style.css` | ~3,500 lines. The whole design system: official brand colours, RTL layout, components. |
+| `assets/js/main.js` | ~1,150 lines. Sliders, tabs, form behaviour, scroll animations. |
+| `assets/js/wg-data.js` | 8 expert working groups |
+| `assets/js/article-data.js` | 4 news articles |
+| `assets/js/events-data.js` | 4 events |
+| `assets/img/` | Official logos + `ph/` and `hero/` placeholder SVGs |
+
+Pages: `index`, `about`, `technologies`, `working-group`, `members`, `member`, `media`,
+`article`, `contact`, `register-interest`, `login`, `forgot-password`, `terms`, `privacy`,
+`cookies`, `accessibility`, `sitemap`, `404`.
+
+Identity: brand colours `#154A91 · #1A77BC · #2B8CCC · #2FB2DC · #61CBF1`; fonts Tajawal
+(headings) and IBM Plex Sans Arabic (body).
+
+External dependencies: Google Fonts, GSAP + ScrollTrigger (cdnjs), Lenis (jsDelivr). All are
+guarded — the site works without animations if they fail to load.
+
+## The data files are already a content model
+
+`wg-data.js`, `article-data.js` and `events-data.js` are objects keyed by slug, with per-record
+fields and nested arrays (`blocks`, `stats`, `recs`). They are the natural starting shape for
+the first CMS tables — port them into Drizzle tables rather than inventing a model from scratch.
+Records carry both `x` and `x_ar` variants and a `src` provenance field; the site is
+Arabic-only, so confirm whether the non-`_ar` duplicates are worth keeping before copying them
+forward.
+
+Fields the reference could not fill are the literal string `«غير متوفر»` ("not available").
+Preserve that convention — it is meaningful, not placeholder noise.
+
+## Content model rules
+
+The requirement is that admins can change **content but never layout, components, or their
+order**. That is enforced by schema design, not by UI politeness:
+
+- Model each editable surface as a **fixed record with named, typed fields** — e.g. a
+  `home_hero` row with exactly `title_ar`, `lede_ar`, `cta_label_ar`, `cta_href`, `image_key`.
+  Components read named fields. There is no field an admin can set that restructures a page.
+- **No block/page builder**, no freeform HTML field, no "sections" array that maps to component
+  names.
+- Repeatable collections (articles, events, working groups) may be ordered by an `order`
+  integer or `published_at`. That is ordering *within* a list, which is safe — it is not layout.
+- Validate at the form boundary so the dashboard cannot write a shape the components do not
+  expect.
+
+## Suggested porting order
+
+1. Shared `Layout.astro` — the `<head>`, fonts, brand meta, header and footer, with `dir="rtl"`.
+2. `assets/css/style.css` moved in roughly as-is, then `index.html` as the first real page.
+3. The remaining static pages, which mostly reuse the same components.
+4. Data-driven pages (`working-group`, `article`, `media`, `members`) as dynamic routes reading
+   from the database.
+5. The CMS forms in `/admin`, one collection at a time.
+6. The member area, reusing the existing session infrastructure with `role: 'user'`.
+
+Port markup faithfully. The design is signed off; this is a migration, not a redesign.
+
+## Pre-launch checklist inherited from the mockup
+
+From [waterstrip/README.md](../waterstrip/README.md) — these still apply to the Astro site:
+
+1. Remove `<meta name="robots" content="noindex, nofollow">` from all 18 pages.
+2. Flip `robots.txt` from `Disallow: /` to `Allow: /`.
+3. Replace the `#` placeholder social links in the footer with real accounts.
+4. Replace placeholder imagery (`assets/img/ph/*.svg`, `assets/img/hero/*.svg`) with real photos.
+5. Wire the contact and register-interest forms to a real handler. In the Astro port these
+   become server endpoints, and unlike login they will need spam protection.
+
+Note that `waterstrip/netlify.toml` and `waterstrip/_redirects` target the mockup's Netlify
+deployment. This project deploys to a VPS instead, so the redirects are handled by Astro routing
+— but the security headers in that file are worth carrying over to the reverse proxy.
