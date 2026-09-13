@@ -1,113 +1,51 @@
 ---
-// Ported from waterstrip/login.html. Links whose routes have not been ported
-// yet point at "#" rather than 404ing; they are replaced page by page.
+// Verbatim markup from waterstrip/*.html. The mobile accordion and back-to-top
+// come from the vendored src/scripts/mockup/main.js (.foot-col, #toTop).
 const year = new Date().getFullYear();
-
-const quickLinks = [
-  { label: 'عن الشريط', href: '/about' },
-  { label: 'مجموعات العمل', href: '/technologies' },
-  { label: 'الأعضاء', href: '/members' },
-  { label: 'الأخبار والفعاليات', href: '/media' },
-  { label: 'سجّل اهتمامك', href: '/register-interest' },
-];
-
-const legalLinks = [
-  { label: 'الشروط والأحكام', href: '/terms' },
-  { label: 'سياسة الخصوصية', href: '/privacy' },
-  { label: 'إشعار ملفات الارتباط', href: '/cookies' },
-  { label: 'إمكانية الوصول', href: '/accessibility' },
-  { label: 'خريطة الموقع', href: '/sitemap' },
-];
-
-const contactLinks = [
-  { label: 'support@waterstrip.org', href: 'mailto:support@waterstrip.org', ltr: true },
-  { label: 'تواصل معنا', href: '/contact' },
-  { label: 'لينكدإن', href: '#' },
-  { label: 'إكس', href: '#' },
-];
 ---
 
-<footer class="site-footer">
+<footer class="site-foot">
   <div class="wrap">
-    <div class="site-footer__cols">
-      <div>
-        <h4 class="site-footer__heading">روابط سريعة</h4>
-        <ul class="site-footer__list">
-          {quickLinks.map((link) => (
-            <li><a class="site-footer__link" href={link.href}>{link.label}</a></li>
-          ))}
+    <div class="foot-cols">
+      <div class="foot-col">
+        <h4>روابط سريعة</h4>
+        <ul>
+          <li><a href="/about">عن الشريط</a></li>
+          <li><a href="/technologies">مجموعات العمل</a></li>
+          <li><a href="/members">الأعضاء</a></li>
+          <li><a href="/media">الأخبار والفعاليات</a></li>
+          <li><a href="/register-interest">سجّل اهتمامك</a></li>
         </ul>
       </div>
-
-      <div>
-        <h4 class="site-footer__heading">الشؤون النظامية</h4>
-        <ul class="site-footer__list">
-          {legalLinks.map((link) => (
-            <li><a class="site-footer__link" href={link.href}>{link.label}</a></li>
-          ))}
+      <div class="foot-col">
+        <h4>الشؤون النظامية</h4>
+        <ul>
+          <li><a href="/terms">الشروط والأحكام</a></li>
+          <li><a href="/privacy">سياسة الخصوصية</a></li>
+          <li><a href="/cookies">إشعار ملفات الارتباط</a></li>
+          <li><a href="/accessibility">إمكانية الوصول</a></li>
+          <li><a href="/sitemap">خريطة الموقع</a></li>
         </ul>
       </div>
-
-      <div>
-        <h4 class="site-footer__heading">تواصل معنا</h4>
-        <ul class="site-footer__list">
-          {contactLinks.map((link) => (
-            <li>
-              <a
-                class:list={['site-footer__link', link.ltr && 'u-ltr']}
-                href={link.href}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+      <div class="foot-col">
+        <h4>تواصل معنا</h4>
+        <ul>
+          <li><a href="mailto:support@waterstrip.org">support@waterstrip.org</a></li>
+          <li><a href="/contact">تواصل معنا</a></li>
+          <li><a href="#" rel="noopener" target="_blank">لينكدإن</a></li>
+          <li><a href="#" rel="noopener" target="_blank">إكس</a></li>
         </ul>
       </div>
-
-      <div class="site-footer__socials">
-        <a class="site-footer__social" href="#" aria-label="إكس" rel="noopener" target="_blank">
-          <svg fill="currentColor" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-7.3L5.9 22H2.8l7.5-8.6L2.4 2h6.6l4.5 6.6L18.9 2zm-1.1 18h1.7L7.3 3.8H5.5L17.8 20z"></path>
-          </svg>
-        </a>
-        <a class="site-footer__social" href="#" aria-label="لينكدإن" rel="noopener" target="_blank">
-          <svg fill="currentColor" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95C20.4 8.75 21 11 21 14v7h-4v-6.2c0-1.5-.03-3.4-2.1-3.4-2.1 0-2.4 1.6-2.4 3.3V21H9z"></path>
-          </svg>
-        </a>
-        <a class="site-footer__social" href="mailto:support@waterstrip.org" aria-label="البريد الإلكتروني">
-          <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
-            <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"></rect>
-            <path d="M3 6.5l9 6.5 9-6.5"></path>
-          </svg>
-        </a>
+      <div class="socials">
+        <a aria-label="إكس" href="#" rel="noopener" target="_blank"><svg fill="currentColor" height="16" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-7.3L5.9 22H2.8l7.5-8.6L2.4 2h6.6l4.5 6.6L18.9 2zm-1.1 18h1.7L7.3 3.8H5.5L17.8 20z"></path></svg></a>
+        <a aria-label="لينكدإن" href="#" rel="noopener" target="_blank"><svg fill="currentColor" height="16" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95C20.4 8.75 21 11 21 14v7h-4v-6.2c0-1.5-.03-3.4-2.1-3.4-2.1 0-2.4 1.6-2.4 3.3V21H9z"></path></svg></a>
+        <a aria-label="البريد الإلكتروني" href="mailto:support@waterstrip.org"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><rect height="15" rx="2.5" width="19" x="2.5" y="4.5"></rect><path d="M3 6.5l9 6.5 9-6.5"></path></svg></a>
       </div>
     </div>
-
-    <div class="site-footer__bottom">
-      <small class="site-footer__copyright">
-        © {year} شريط شراكات الابتكار المائي (Water STRIP).
-      </small>
-      <button class="site-footer__totop" id="toTop" aria-label="العودة إلى الأعلى" type="button">
-        <svg fill="none" stroke="currentColor" stroke-width="1.8" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M12 19V5M6 11l6-6 6 6"></path>
-        </svg>
-      </button>
-      <a href="/" aria-label="Water STRIP — شريط شراكات الابتكار المائي">
-        <img
-          class="site-footer__logo"
-          src="/img/logo-waterstrip-white.svg"
-          alt="Water STRIP — شريط شراكات الابتكار المائي"
-          width="145"
-          height="34"
-        />
-      </a>
+    <div class="foot-bottom">
+      <small>© {year} شريط شراكات الابتكار المائي (Water STRIP).</small>
+      <button aria-label="العودة إلى الأعلى" class="to-top" id="toTop" type="button"><svg fill="none" height="15" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="15" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></button>
+      <a aria-label="Water STRIP — شريط شراكات الابتكار المائي" class="brand" href="/"><img alt="Water STRIP — شريط شراكات الابتكار المائي" src="/img/logo-waterstrip.svg" /></a>
     </div>
   </div>
 </footer>
-
-<script>
-  document.getElementById('toTop')?.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-</script>

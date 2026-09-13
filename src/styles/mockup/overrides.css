@@ -1,0 +1,23 @@
+/* -----------------------------------------------------------------------------
+   Public-site additions on top of the vendored mockup stylesheet.
+   Only for UI the mockup never designed (states that exist because the port
+   does things for real). Use the mockup's own class vocabulary and values;
+   never restyle something style.css already covers.
+   -------------------------------------------------------------------------- */
+
+/* Skip link — the mockup has none. Hidden until focused. */
+.skip-link {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-start: 8px;
+  z-index: 1000;
+  padding: 10px 16px;
+  background: #fff;
+  color: #154a91;
+  font-weight: 600;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus {
+  transform: none;
+}

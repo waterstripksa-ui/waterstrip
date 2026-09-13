@@ -31,6 +31,8 @@
     "better-sqlite3": "^12.11.1",
     "dotenv": "^17.4.2",
     "drizzle-orm": "^0.45.2",
+    "gsap": "3.12.5",
+    "lenis": "1.1.14",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "sharp": "^0.35.4",
