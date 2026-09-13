@@ -22,9 +22,9 @@ Pages: `index`, `about`, `technologies`, `working-group`, `members`, `member`, `
 `article`, `contact`, `register-interest`, `login`, `forgot-password`, `terms`, `privacy`,
 `cookies`, `accessibility`, `sitemap`, `404`.
 
-Ported so far: `index`, `about`, `contact`, `register-interest`, `terms`, `privacy`, `cookies`,
-`accessibility`, `sitemap`, `404`, `login`, `forgot-password`, `technologies`, `working-group`,
-`media`, `article`. Remaining: the member area (see "Suggested porting order" below).
+Ported so far: all 18 pages — `index`, `about`, `contact`, `register-interest`, `terms`,
+`privacy`, `cookies`, `accessibility`, `sitemap`, `404`, `login`, `forgot-password`,
+`technologies`, `working-group`, `media`, `article`, `members`, `member`.
 
 Identity: brand colours `#154A91 · #1A77BC · #2B8CCC · #2FB2DC · #61CBF1`; fonts Tajawal
 (headings) and IBM Plex Sans Arabic (body).

@@ -13,16 +13,18 @@ import { existsSync } from 'node:fs';
 import { asc, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../../db/index.ts';
-import { article, contentSingleton, event, media, workingGroup } from '../../db/content-schema.ts';
+import { article, contentSingleton, event, media, member, workingGroup } from '../../db/content-schema.ts';
 import { singletons, singletonList, type SingletonKey } from './schemas/index.ts';
 import { upgrade } from './migrate.ts';
 import {
   articleInput,
   eventInput,
   mediaInput,
+  memberInput,
   workingGroupInput,
   replaceArticles,
   replaceEvents,
+  replaceMembers,
   replaceWorkingGroups,
   ContentValidationError,
 } from './repo.ts';
@@ -49,6 +51,8 @@ const envelopeSchema = z.object({
     workingGroups: z.array(z.unknown()).default([]),
     // Absent from envelopes written before articles existed; they still import.
     articles: z.array(z.unknown()).default([]),
+    // Absent from envelopes written before members existed; they still import.
+    members: z.array(z.unknown()).default([]),
   }),
 });
 
@@ -98,12 +102,19 @@ export function exportContent(): Envelope {
     .all()
     .map(({ updatedAt: _u, updatedBy: _b, ...rest }) => rest);
 
+  const members = db
+    .select()
+    .from(member)
+    .orderBy(asc(member.order), asc(member.slug))
+    .all()
+    .map(({ updatedAt: _u, updatedBy: _b, ...rest }) => rest);
+
   return {
     format: FORMAT,
     formatVersion: FORMAT_VERSION,
     exportedAt: new Date().toISOString(),
     singletons: out,
-    collections: { events, media: mediaRows, workingGroups, articles },
+    collections: { events, media: mediaRows, workingGroups, articles, members },
   };
 }
 
@@ -112,6 +123,7 @@ export interface ImportReport {
   events: number;
   workingGroups: number;
   articles: number;
+  members: number;
   media: number;
   skippedSingletons: string[];
   /**
@@ -231,10 +243,28 @@ export function importContent(
       id: ref.id,
     })),
   );
-  // Articles reference media by a plain column, not a schema `collectMediaIds`
-  // can walk — see the note on `article.imageId` in content-schema.ts.
+  const members = envelope.collections.members.map((m, i) => {
+    const result = memberInput.safeParse(m);
+    if (!result.success) {
+      throw new ContentValidationError(
+        `members[${i}] is not valid: ` +
+          result.error.issues
+            .map((issue) => `${issue.path.join('.') || '(root)'} ${issue.message}`)
+            .join('; '),
+        result.error.issues,
+      );
+    }
+    return result.data;
+  });
+
+  // Articles and members reference media by a plain column, not a schema
+  // `collectMediaIds` can walk — see the note on `article.imageId` in
+  // content-schema.ts.
   for (const [i, a] of articles.entries()) {
     if (a.imageId) refs.push({ key: 'article', path: `${i}.imageId`, id: a.imageId });
+  }
+  for (const [i, m] of members.entries()) {
+    if (m.logoId) refs.push({ key: 'member', path: `${i}.logoId`, id: m.logoId });
   }
   const knownIds = new Set(mediaRows.map((m) => m.id));
   const unresolved = [...new Set(refs.map((r) => r.id).filter((id) => !knownIds.has(id)))];
@@ -258,6 +288,7 @@ export function importContent(
     events: events.length,
     workingGroups: workingGroups.length,
     articles: articles.length,
+    members: members.length,
     media: mediaRows.length,
     skippedSingletons,
     missingBlobs: mediaRows.filter((m) => !existsSync(mediaFilePath(m.id, m.ext))).map((m) => m.id),
@@ -311,6 +342,7 @@ export function importContent(
   replaceEvents(events, options.updatedBy);
   replaceWorkingGroups(workingGroups, options.updatedBy);
   replaceArticles(articles, options.updatedBy);
+  replaceMembers(members, options.updatedBy);
   invalidateAll();
   return report;
 }
@@ -321,6 +353,7 @@ export function isContentEmpty(): boolean {
   const anyEvent = db.select({ slug: event.slug }).from(event).get();
   const anyWorkingGroup = db.select({ slug: workingGroup.slug }).from(workingGroup).get();
   const anyArticle = db.select({ slug: article.slug }).from(article).get();
+  const anyMember = db.select({ slug: member.slug }).from(member).get();
   const anyMedia = db.select({ id: media.id }).from(media).get();
-  return !singleton && !anyEvent && !anyWorkingGroup && !anyArticle && !anyMedia;
+  return !singleton && !anyEvent && !anyWorkingGroup && !anyArticle && !anyMember && !anyMedia;
 }

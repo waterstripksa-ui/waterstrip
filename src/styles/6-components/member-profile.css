@@ -1,0 +1,137 @@
+/* -----------------------------------------------------------------------------
+   Component / member-profile
+   The member detail page — ported from waterstrip/member.html's
+   .member-head/.facts/.mcontact rules, re-authored under this repo's own
+   component name (working-group's detail page took the same approach for its
+   own .wgp__* -> .wg-profile__*).
+   -------------------------------------------------------------------------- */
+.member-profile__head {
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: 34px;
+  align-items: center;
+  margin-block-end: 56px;
+}
+
+.member-profile__logo {
+  width: 132px;
+  height: 104px;
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-line);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.member-profile__logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.member-profile__name {
+  margin-block-start: 10px;
+}
+
+.member-profile__facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+  margin-block-end: 56px;
+}
+
+.member-profile__fact {
+  border-block-start: 2px solid var(--brand-blue-light);
+  padding-block-start: 18px;
+}
+
+.member-profile__fact b {
+  display: block;
+  font-size: var(--fs-micro);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--c-text-soft);
+  font-weight: var(--fw-medium);
+  margin-block-end: 8px;
+}
+
+.member-profile__fact span {
+  font-size: 17px;
+}
+
+.member-profile__contact {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 40px;
+  background: var(--c-surface-sunken);
+  border-radius: 18px;
+  padding: 34px 40px;
+  margin-block-start: 72px;
+}
+
+.member-profile__contact-txt p:last-child {
+  font-size: 14.5px;
+  line-height: 26px;
+  color: var(--c-text-soft);
+  max-width: 62ch;
+  margin: 0;
+}
+
+.member-profile__contact-txt .eyebrow {
+  margin-block-end: 10px;
+}
+
+.member-profile__contact-txt h2 {
+  margin-block-end: 12px;
+}
+
+.member-profile__contact-acts {
+  display: grid;
+  gap: 14px;
+  justify-items: start;
+}
+
+.member-profile__mail {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--c-text-soft);
+}
+
+.member-profile__mail:hover {
+  text-decoration: underline;
+}
+
+.member-profile__nav {
+  margin-block-start: 64px;
+}
+
+@media (--bp-tab) {
+  .member-profile__head {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .member-profile__logo {
+    width: 104px;
+    height: 82px;
+  }
+
+  .member-profile__facts {
+    grid-template-columns: 1fr;
+  }
+
+  .member-profile__contact {
+    grid-template-columns: 1fr;
+    padding: 24px 20px;
+    gap: 20px;
+  }
+
+  .member-profile__contact-acts {
+    justify-items: stretch;
+  }
+}

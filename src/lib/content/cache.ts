@@ -17,7 +17,7 @@
  */
 import { asc, eq } from 'drizzle-orm';
 import { db } from '../../db/index.ts';
-import { article, contentSingleton, event, media, workingGroup } from '../../db/content-schema.ts';
+import { article, contentSingleton, event, media, member, workingGroup } from '../../db/content-schema.ts';
 import { singletons, type SingletonData, type SingletonKey } from './schemas/index.ts';
 import { upgrade } from './migrate.ts';
 import { mediaUrl } from './media-paths.ts';
@@ -26,6 +26,7 @@ export type Event = typeof event.$inferSelect;
 export type Media = typeof media.$inferSelect;
 export type WorkingGroup = typeof workingGroup.$inferSelect;
 export type Article = typeof article.$inferSelect;
+export type Member = typeof member.$inferSelect;
 
 /** What a page — or a dashboard preview — needs to render an uploaded image. */
 export interface MediaView {
@@ -40,6 +41,7 @@ const singletonCache = new Map<SingletonKey, unknown>();
 let eventCache: readonly Event[] | null = null;
 let workingGroupCache: readonly WorkingGroup[] | null = null;
 let articleCache: readonly Article[] | null = null;
+let memberCache: readonly Member[] | null = null;
 /** `null` is cached too: a dangling id is looked up once, not on every render. */
 const mediaCache = new Map<string, MediaView | null>();
 
@@ -145,6 +147,31 @@ export function listAllArticles(): Article[] {
   return db.select().from(article).orderBy(asc(article.order), asc(article.slug)).all();
 }
 
+/** Published members, in list order. Ordering within a list is not layout. */
+export function listMembers(): readonly Member[] {
+  if (!memberCache) {
+    memberCache = deepFreeze(
+      db
+        .select()
+        .from(member)
+        .where(eq(member.published, true))
+        .orderBy(asc(member.order), asc(member.slug))
+        .all(),
+    );
+  }
+  return memberCache;
+}
+
+/** One published member by slug, or `null` if it does not exist or is unpublished. */
+export function getMember(slug: string): Member | null {
+  return listMembers().find((m) => m.slug === slug) ?? null;
+}
+
+/** Every member including unpublished ones — for the dashboard, not the public site. */
+export function listAllMembers(): Member[] {
+  return db.select().from(member).orderBy(asc(member.order), asc(member.slug)).all();
+}
+
 /**
  * One uploaded image's metadata, or `null` when no row has that id — a reference
  * imported ahead of its media rows. Callers fall back to placeholder artwork.
@@ -184,6 +211,10 @@ export function invalidateArticles(): void {
   articleCache = null;
 }
 
+export function invalidateMembers(): void {
+  memberCache = null;
+}
+
 export function invalidateMedia(id: string): void {
   mediaCache.delete(id);
 }
@@ -194,5 +225,6 @@ export function invalidateAll(): void {
   eventCache = null;
   workingGroupCache = null;
   articleCache = null;
+  memberCache = null;
   mediaCache.clear();
 }

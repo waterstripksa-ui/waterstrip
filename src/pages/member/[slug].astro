@@ -1,0 +1,113 @@
+---
+// Ported from waterstrip/member.html. The mockup reads its record from a
+// `?id=` query param; this port uses a proper dynamic route instead, same
+// reasoning as working-group/[slug].astro and article/[slug].astro. No CMS
+// surface for this page's own chrome: the "cooperation areas" list and the
+// contact-prompt section are static copy identical across every member in
+// the reference (see waterstrip/member.html) — only the per-member facts
+// come from the member row (editable at /admin/members), plus the
+// members_banner singleton for the closing banner.
+import Layout from '../../layouts/Layout.astro';
+import PageHero from '../../components/PageHero.astro';
+import MembershipBanner from '../../components/MembershipBanner.astro';
+import { getMember, getSingleton } from '../../lib/content/cache.ts';
+import { resolveImage, PLACEHOLDER_IMG } from '../../lib/media-assets.ts';
+
+const { slug } = Astro.params;
+const member = slug ? getMember(slug) : null;
+
+if (!member) {
+  return Astro.rewrite('/404');
+}
+
+const banner = getSingleton('members_banner');
+const logo = resolveImage(member.logoId, PLACEHOLDER_IMG);
+---
+
+<Layout title={member.nameAr} description={`ملف عضو في شريط شراكات الابتكار المائي: ${member.nameAr}.`}>
+  <PageHero
+    plain
+    title="ملف العضو"
+    crumbs={[
+      { label: 'الرئيسية', href: '/' },
+      { label: 'الأعضاء', href: '/members' },
+      { label: 'ملف العضو' },
+    ]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="member-profile__head u-reveal">
+        <span class="member-profile__logo">
+          <img src={logo.src} alt={member.nameAr} />
+        </span>
+        <div>
+          <p class="eyebrow">{member.categoryAr}</p>
+          <h2 class="member-profile__name">{member.nameAr}</h2>
+        </div>
+      </div>
+
+      <div class="member-profile__facts u-reveal">
+        <div class="member-profile__fact">
+          <b>الدور في الشريط</b>
+          <span>{member.roleAr}</span>
+        </div>
+        <div class="member-profile__fact">
+          <b>مجال التركيز</b>
+          <span>{member.sectorAr}</span>
+        </div>
+        <div class="member-profile__fact">
+          <b>عضو منذ</b>
+          <span>{member.sinceAr}</span>
+        </div>
+      </div>
+
+      <div class="prose u-reveal">
+        <h2>نبذة</h2>
+        <p>{member.bioAr}</p>
+        <h2>مجالات التعاون</h2>
+        <ul>
+          <li>التعاون في تطوير تقنيات المياه وتبنّيها ضمن مبادرات الشريط.</li>
+          <li>تبادل المعرفة والخبرات مع أعضاء الشريط من داخل المملكة وخارجها.</li>
+          <li>المشاركة في مجموعات العمل والفعاليات الدورية للشريط.</li>
+        </ul>
+      </div>
+
+      <div class="member-profile__contact u-reveal">
+        <div class="member-profile__contact-txt">
+          <p class="eyebrow">التواصل</p>
+          <h2>تواصل مع هذه الجهة عبر الشريط</h2>
+          <p>تُوجَّه الطلبات المتعلقة بهذه الجهة عبر أمانة الشريط، فنحيلها إلى جهة الاتصال المناسبة لديها.</p>
+        </div>
+        <div class="member-profile__contact-acts">
+          <a class="button button--solid" href="/contact">
+            <span>افتح نموذج التواصل</span>
+            <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" height="16" width="16" aria-hidden="true">
+              <path d="M5 12h13M13 6l6 6-6 6"></path>
+            </svg>
+          </a>
+          <a class="member-profile__mail" href="mailto:support@waterstrip.org">
+            <svg fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" height="16" width="16" aria-hidden="true">
+              <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"></rect>
+              <path d="M3 6.5l9 6.5 9-6.5"></path>
+            </svg>
+            <span>support@waterstrip.org</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="member-profile__nav u-reveal">
+        <a class="cta-circle" href="/members">
+          <span>العودة إلى كل الأعضاء</span>
+          <span class="circ" aria-hidden="true">
+            <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" height="16" width="16">
+              <path d="M5 12h13M13 6l6 6-6 6"></path>
+            </svg>
+          </span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <MembershipBanner banner={banner} />
+</Layout>

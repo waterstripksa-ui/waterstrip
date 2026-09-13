@@ -10,7 +10,7 @@
 import { eq, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../../db/index.ts';
-import { article, contentSingleton, event, media, workingGroup } from '../../db/content-schema.ts';
+import { article, contentSingleton, event, media, member, workingGroup } from '../../db/content-schema.ts';
 import {
   singletons,
   singletonList,
@@ -23,6 +23,7 @@ import { arText, collectMediaIds, mediaId, siteHref } from './schemas/fields.ts'
 import {
   invalidateArticles,
   invalidateEvents,
+  invalidateMembers,
   invalidateWorkingGroups,
   invalidateSingleton,
   invalidateAll,
@@ -322,6 +323,65 @@ export function replaceArticles(inputs: unknown[], updatedBy?: string | null): n
     }
   });
   invalidateArticles();
+  return valid.length;
+}
+
+/** The member fields an admin may set. `updatedAt`/`updatedBy` are server-owned. */
+export const memberInput = z.object({
+  slug: z
+    .string()
+    .trim()
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'must be a lowercase slug, e.g. nwc'),
+  categoryAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(40, 'الحد الأقصى 40 حرفًا.'),
+  nameAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  logoId: mediaId.nullable().default(null),
+  roleAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  sectorAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  sinceAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(40, 'الحد الأقصى 40 حرفًا.'),
+  bioAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(1200, 'الحد الأقصى 1200 حرف.'),
+  order: z.number().int().min(0).max(9999).default(0),
+  published: z.boolean().default(true),
+});
+
+export type MemberInput = z.input<typeof memberInput>;
+
+export function upsertMember(input: MemberInput, updatedBy?: string | null) {
+  const valid = parse(memberInput, input, 'member');
+  const row = db
+    .insert(member)
+    .values({ ...valid, updatedBy: updatedBy ?? null, updatedAt: new Date() })
+    .onConflictDoUpdate({
+      target: member.slug,
+      set: { ...valid, updatedBy: updatedBy ?? null, updatedAt: new Date() },
+    })
+    .returning()
+    .get();
+
+  invalidateMembers();
+  return row;
+}
+
+export function deleteMember(slug: string): boolean {
+  const removed = db.delete(member).where(eq(member.slug, slug)).returning().all();
+  if (removed.length) invalidateMembers();
+  return removed.length > 0;
+}
+
+/**
+ * Replaces the whole member list in one transaction. Used by import and by the
+ * dashboard's bulk editor, same reasoning as `replaceWorkingGroups`.
+ */
+export function replaceMembers(inputs: unknown[], updatedBy?: string | null): number {
+  const valid = inputs.map((input, i) => parse(memberInput, input, `member[${i}]`));
+  db.transaction((tx) => {
+    tx.delete(member).run();
+    for (const row of valid) {
+      tx.insert(member)
+        .values({ ...row, updatedBy: updatedBy ?? null, updatedAt: new Date() })
+        .run();
+    }
+  });
+  invalidateMembers();
   return valid.length;
 }
 

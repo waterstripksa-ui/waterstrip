@@ -1,0 +1,27 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getMedia, getSingleton, listAllMembers, type MediaView } from '../../lib/content/cache.ts';
+import { collectMediaIds } from '../../lib/content/schemas/fields.ts';
+import { singletons } from '../../lib/content/schemas/index.ts';
+import MembersEditor from '../../components/admin/members/MembersEditor.tsx';
+import MembersBannerEditor from '../../components/admin/members/MembersBannerEditor.tsx';
+
+const members = listAllMembers();
+const banner = structuredClone(getSingleton('members_banner'));
+
+const media: Record<string, MediaView> = {};
+for (const m of members) {
+  if (!m.logoId) continue;
+  const view = getMedia(m.logoId);
+  if (view) media[m.logoId] = { ...view };
+}
+for (const ref of collectMediaIds(singletons.members_banner.schema, banner)) {
+  const view = getMedia(ref.id);
+  if (view) media[ref.id] = { ...view };
+}
+---
+
+<AdminLayout title="الأعضاء" lede="تحرير أعضاء الشريط المعروضين في صفحة «الأعضاء» وصفحات ملفات الأعضاء.">
+  <MembersEditor initial={members} media={media} client:load />
+  <MembersBannerEditor initial={banner} media={media} client:load />
+</AdminLayout>

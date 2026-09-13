@@ -1,0 +1,55 @@
+---
+// Ported from waterstrip/members.html. The card grid is content-driven from
+// the member collection table (src/db/content-schema.ts), rather than the
+// mockup's hardcoded HTML cards. No CMS surface for this page's own fixed
+// copy: the heading/lede are static chrome, matching the mockup's own fixed
+// text; the members themselves are editable at /admin/members.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { listMembers, getSingleton } from '../lib/content/cache.ts';
+import { resolveImage, PLACEHOLDER_IMG } from '../lib/media-assets.ts';
+import { accentFor } from '../lib/member-visuals.ts';
+
+const members = listMembers();
+const banner = getSingleton('members_banner');
+---
+
+<Layout title="الأعضاء" description="أعضاء شريط شراكات الابتكار المائي من الجهات الحكومية والأكاديمية والقطاع الخاص والمنظمات الدولية.">
+  <PageHero
+    plain
+    title="الأعضاء"
+    lede="جهات حكومية وأكاديمية ومن القطاع الخاص ومنظمات دولية تعمل معًا في تقنيات المياه."
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'الأعضاء' }]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="section-head u-reveal">
+        <div class="section-head__text">
+          <p class="eyebrow">الشريط</p>
+          <h2>أعضاء الشريط</h2>
+          <p class="lede">
+            جهات حكومية ومؤسسات أكاديمية وشركات من القطاع الخاص ومنظمات دولية تعمل معًا للنهوض
+            بقطاع المياه في المملكة.
+          </p>
+        </div>
+      </div>
+
+      <div class="member-grid u-reveal">
+        {
+          members.map((m, i) => (
+            <a class={`member-grid__item member-grid__item--${accentFor(i)}`} href={`/member/${m.slug}`}>
+              <span class="member-grid__logo">
+                <img {...resolveImage(m.logoId, PLACEHOLDER_IMG)} alt={m.nameAr} loading="lazy" />
+              </span>
+              <h3 class="member-grid__name">{m.nameAr}</h3>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <MembershipBanner banner={banner} />
+</Layout>

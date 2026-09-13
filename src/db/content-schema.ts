@@ -157,3 +157,36 @@ export const article = sqliteTable(
   },
   (table) => [index('article_order_idx').on(table.order)],
 );
+
+/**
+ * Alliance members, ported from `waterstrip/member.html`'s inline
+ * `WSTRIP_MEMBERS` object (there is no separate `member-data.js`; the mockup
+ * embeds it directly in the detail page's markup).
+ *
+ * `categoryAr` is free text rather than a closed enum: the reference's
+ * category filter chips (`main.js`'s "MEMBER CATEGORY FILTER" block) have no
+ * matching markup left in the current `members.html`, so there is no feature
+ * left that depends on the set of categories being fixed. `logoId` is a plain
+ * media reference, same reasoning as `article.imageId` — every member in the
+ * reference currently uses the shared placeholder mark, so a dangling or
+ * absent id is the common case, not the exception.
+ */
+export const member = sqliteTable(
+  'member',
+  {
+    slug: text('slug').primaryKey(),
+    categoryAr: text('category_ar').notNull(),
+    nameAr: text('name_ar').notNull(),
+    logoId: text('logo_id'),
+    roleAr: text('role_ar').notNull(),
+    sectorAr: text('sector_ar').notNull(),
+    sinceAr: text('since_ar').notNull(),
+    bioAr: text('bio_ar').notNull(),
+    /** Ordering within the list only — not layout. Lower sorts first. */
+    order: integer('order').notNull().default(0),
+    published: integer('published', { mode: 'boolean' }).notNull().default(true),
+    updatedAt: updatedAt(),
+    updatedBy: text('updated_by').references(() => user.id, { onDelete: 'set null' }),
+  },
+  (table) => [index('member_order_idx').on(table.order)],
+);
