@@ -1,12 +1,8 @@
 ---
-// Ported from waterstrip/member.html. The mockup reads its record from a
-// `?id=` query param; this port uses a proper dynamic route instead, same
-// reasoning as working-group/[slug].astro and article/[slug].astro. No CMS
-// surface for this page's own chrome: the "cooperation areas" list and the
-// contact-prompt section are static copy identical across every member in
-// the reference (see waterstrip/member.html) — only the per-member facts
-// come from the member row (editable at /admin/members), plus the
-// members_banner singleton for the closing banner.
+// Markup is waterstrip/member.html verbatim, filled server-side exactly as
+// main.js §14 fills it from WSTRIP_MEMBERS (?id= becomes the [slug] route).
+// The cooperation list and contact prompt are the mockup's fixed copy; the
+// facts come from the member row (/admin/members), the banner from members_banner.
 import Layout from '../../layouts/Layout.astro';
 import PageHero from '../../components/PageHero.astro';
 import MembershipBanner from '../../components/MembershipBanner.astro';
@@ -21,7 +17,6 @@ if (!member) {
 }
 
 const banner = getSingleton('members_banner');
-const logo = resolveImage(member.logoId, PLACEHOLDER_IMG);
 ---
 
 <Layout title={member.nameAr} description={`ملف عضو في شريط شراكات الابتكار المائي: ${member.nameAr}.`}>
@@ -36,34 +31,22 @@ const logo = resolveImage(member.logoId, PLACEHOLDER_IMG);
 
   <section class="ribbon">
     <div class="wrap">
-      <div class="member-profile__head u-reveal">
-        <span class="member-profile__logo">
-          <img src={logo.src} alt={member.nameAr} />
-        </span>
+      <p class="demo-note"><svg fill="none" height="17" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="17" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg><span><b>المصدر:</b> سجل عضوية شريط شراكات الابتكار المائي. الحقول غير المتوفرة في السجل مكتوبة «غير متوفر».</span></p>
+      <div class="member-head reveal">
+        <span class="member-card__logo" id="mLogo"><img alt="" {...resolveImage(member.logoId, PLACEHOLDER_IMG)} /></span>
         <div>
-          <p class="eyebrow">{member.categoryAr}</p>
-          <h2 class="member-profile__name">{member.nameAr}</h2>
+          <p class="eyebrow" id="mCat">{member.categoryAr}</p>
+          <h2 class="h-section" id="mName" style="margin-top:10px">{member.nameAr}</h2>
         </div>
       </div>
-
-      <div class="member-profile__facts u-reveal">
-        <div class="member-profile__fact">
-          <b>الدور في الشريط</b>
-          <span>{member.roleAr}</span>
-        </div>
-        <div class="member-profile__fact">
-          <b>مجال التركيز</b>
-          <span>{member.sectorAr}</span>
-        </div>
-        <div class="member-profile__fact">
-          <b>عضو منذ</b>
-          <span>{member.sinceAr}</span>
-        </div>
+      <div class="facts reveal">
+        <div class="fact"><b>الدور في الشريط</b><span id="mRole">{member.roleAr}</span></div>
+        <div class="fact"><b>مجال التركيز</b><span id="mSector">{member.sectorAr}</span></div>
+        <div class="fact"><b>عضو منذ</b><span id="mSince">{member.sinceAr}</span></div>
       </div>
-
-      <div class="prose u-reveal">
+      <div class="prose reveal" style="margin-top:72px">
         <h2>نبذة</h2>
-        <p>{member.bioAr}</p>
+        <p id="mBio">{member.bioAr}</p>
         <h2>مجالات التعاون</h2>
         <ul>
           <li>التعاون في تطوير تقنيات المياه وتبنّيها ضمن مبادرات الشريط.</li>
@@ -71,42 +54,28 @@ const logo = resolveImage(member.logoId, PLACEHOLDER_IMG);
           <li>المشاركة في مجموعات العمل والفعاليات الدورية للشريط.</li>
         </ul>
       </div>
-
-      <div class="member-profile__contact u-reveal">
-        <div class="member-profile__contact-txt">
+      <div class="mcontact reveal">
+        <div class="mcontact__txt">
           <p class="eyebrow">التواصل</p>
           <h2>تواصل مع هذه الجهة عبر الشريط</h2>
           <p>تُوجَّه الطلبات المتعلقة بهذه الجهة عبر أمانة الشريط، فنحيلها إلى جهة الاتصال المناسبة لديها.</p>
         </div>
-        <div class="member-profile__contact-acts">
-          <a class="button button--solid" href="/contact">
+        <div class="mcontact__acts">
+          <a class="btn-solid" href="/contact">
             <span>افتح نموذج التواصل</span>
-            <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" height="16" width="16" aria-hidden="true">
-              <path d="M5 12h13M13 6l6 6-6 6"></path>
-            </svg>
+            <svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
           </a>
-          <a class="member-profile__mail" href="mailto:support@waterstrip.org">
-            <svg fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" height="16" width="16" aria-hidden="true">
-              <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"></rect>
-              <path d="M3 6.5l9 6.5 9-6.5"></path>
-            </svg>
+          <a class="mcontact__mail" href="mailto:support@waterstrip.org">
+            <svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><rect height="15" rx="2.5" width="19" x="2.5" y="4.5"></rect><path d="M3 6.5l9 6.5 9-6.5"></path></svg>
             <span>support@waterstrip.org</span>
           </a>
         </div>
       </div>
-
-      <div class="member-profile__nav u-reveal">
-        <a class="cta-circle" href="/members">
-          <span>العودة إلى كل الأعضاء</span>
-          <span class="circ" aria-hidden="true">
-            <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" height="16" width="16">
-              <path d="M5 12h13M13 6l6 6-6 6"></path>
-            </svg>
-          </span>
-        </a>
+      <div style="margin-top:64px">
+        <a class="cta-circle" href="/members"><span>العودة إلى كل الأعضاء</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
       </div>
     </div>
   </section>
 
-  <MembershipBanner banner={banner} />
+  <MembershipBanner slot="after-main" banner={banner} />
 </Layout>
