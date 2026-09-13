@@ -29,7 +29,7 @@ export const technologiesBanner = defineSingleton<TechnologiesBanner>({
     eyebrowAr: 'العضوية',
     headingAr: 'انضم إلى الشريط',
     ledeAr: 'شارك في تشكيل مستقبل قطاع المياه في المملكة.',
-    ctaLabelAr: 'سجّل اهتمامك بالمشاركة',
+    ctaLabelAr: 'سجّل اهتمامك',
     ctaHref: '/register-interest',
     imageId: null,
   },
