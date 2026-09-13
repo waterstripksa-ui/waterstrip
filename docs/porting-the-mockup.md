@@ -72,20 +72,32 @@ links) that `src/lib/prose.ts` renders into the small set of tags it recognises,
 
 ## Suggested porting order
 
-1. ~~Shared `Layout.astro`~~ and ~~the CSS foundation~~ — **done.**
-   [src/layouts/Layout.astro](../src/layouts/Layout.astro) has the `<head>`, fonts, brand meta,
-   header and footer with `dir="rtl"`; [src/styles/](../src/styles/) holds the layered
-   stylesheet. `style.css` is **not** moved in as a block — each page's rules are re-authored
-   into the layers as that page lands. See [css-architecture.md](css-architecture.md).
-2. ~~`index.html` as the first real page~~ — **done.**
-   [src/pages/index.astro](../src/pages/index.astro) replaced the placeholder, and brought the
-   mobile drawer, the nav links and the `about-banner` CTA with it. Its copy is **not**
-   hardcoded: it reads six singletons through the content cache, editable at `/admin/home`
-   (see step 5). Its imagery is uploadable too; a slot with no upload falls back to placeholder
-   artwork that [src/lib/home-assets.ts](../src/lib/home-assets.ts) keys by the item's stable `id`.
-3. The remaining static pages, which mostly reuse the same components.
-4. Data-driven pages (`working-group`, `article`, `media`, `members`) as dynamic routes reading
-   from the database.
+1. ~~Shared `Layout.astro`~~ and ~~the CSS foundation~~ — **done, twice.** The first pass
+   (superseded) built [src/layouts/Layout.astro](../src/layouts/Layout.astro) against a
+   hand-authored, re-layered stylesheet, re-authoring `style.css`'s rules into
+   [src/styles/](../src/styles/) page by page. That approach was abandoned 2026-09-13: `style.css`
+   is ~3,500 lines of stacked overrides where the winning rule for any given selector is
+   whichever appears **last** in the file, not whichever is most specific, so hand-porting kept
+   missing whichever override actually won (see [css-architecture.md](css-architecture.md) for
+   the blow-by-blow). The current approach instead vendors `style.css` **byte-for-byte** as
+   [public/mockup/style.css](../public/mockup/style.css) plus the mockup's own
+   [main.js](../src/scripts/mockup/main.js), and every public page now uses the mockup's own
+   markup and class names — parity holds by construction instead of by re-derivation. `/admin`
+   was carved out onto its own [admin.css](../src/styles/admin.css) so this switch could not
+   leak into the dashboard.
+2. ~~`index.html` as the first real page~~ — **done**, then re-done in mockup markup.
+   [src/pages/index.astro](../src/pages/index.astro) reads six singletons through the content
+   cache, editable at `/admin/home` (see step 5). Its imagery is uploadable too; a slot with no
+   upload falls back to placeholder artwork that
+   [src/lib/home-assets.ts](../src/lib/home-assets.ts) keys by the item's stable `id`.
+3. ~~The remaining static pages~~ — **done.** `about`, `technologies`, `members`, `contact`,
+   `register-interest`, `login`, `forgot-password`, `terms`, `privacy`, `cookies`,
+   `accessibility`, `sitemap`, `404` are all ported in mockup markup.
+4. ~~Data-driven pages~~ (`working-group`, `article`, `media`, `member`) ~~as dynamic routes
+   reading from the database~~ — **done.** Each renders server-side the exact HTML the mockup's
+   own `main.js` module would have built client-side from its `window.WSTRIP_*` data global (see
+   [css-architecture.md](css-architecture.md#public-pages-the-mockups-own-stylesheet) for the
+   convention); the data files themselves are never shipped.
 5. The CMS forms in `/admin`, one surface at a time — **started.** `/admin/home` edits the index
    page's six singletons through React islands in
    [src/components/admin/](../src/components/admin/), writing via
@@ -93,7 +105,10 @@ links) that `src/lib/prose.ts` renders into the small set of tags it recognises,
    as that page is ported, rather than in one pass at the end.
 6. The member area, reusing the existing session infrastructure with `role: 'user'`.
 
-Port markup faithfully. The design is signed off; this is a migration, not a redesign.
+Port markup faithfully. The design is signed off; this is a migration, not a redesign. With the
+mockup's own markup and stylesheet now in place, "faithfully" means literally — copy the
+`.html` file's structure, class names and inline styles, and substitute CMS content for its
+hardcoded text/images/links, rather than reinterpreting the design into new class names.
 
 ## Pre-launch checklist inherited from the mockup
 

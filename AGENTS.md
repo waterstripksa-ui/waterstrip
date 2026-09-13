@@ -69,11 +69,15 @@ Copy [.env.example](.env.example) to `.env` before anything else. `.env` and `da
   native binding fails to load.
 - **[tsconfig.json](tsconfig.json) excludes `waterstrip/` and `drizzle/`** so the mockup's
   vendored JS does not pollute `astro check`.
-- **CSS goes in the right layer, never at the bottom of an existing file.**
-  [src/styles/](src/styles/) is layered 1-settings -> 7-utilities and a layer may only depend on
-  the layers above it. Breakpoints are `@media (--bp-tab)`, never a literal pixel value, and
-  everything is authored with logical properties because the site is RTL. Read
-  [docs/css-architecture.md](docs/css-architecture.md) before writing any CSS.
+- **Public pages and `/admin` are styled completely separately.** Public pages use the mockup's
+  own stylesheet, vendored verbatim at [public/mockup/style.css](public/mockup/style.css) —
+  **never edit it**; a public style change is either a markup fix (match the mockup's class
+  names/structure exactly) or, for a state the mockup never designed, goes in
+  [src/styles/mockup/overrides.css](src/styles/mockup/overrides.css). `/admin` keeps its own
+  layered stylesheet, entered through [src/styles/admin.css](src/styles/admin.css): layered
+  1-settings -> 7-utilities, a layer may only depend on the layers above it, breakpoints are
+  `@media (--bp-tab)` never a literal pixel value, and everything is logical properties (RTL).
+  Read [docs/css-architecture.md](docs/css-architecture.md) before touching either side.
 - **React is for `/admin` only.** `@astrojs/react` is installed for the dashboard's editor
   panels ([src/components/admin/](src/components/admin/)). Public pages stay
   zero-JS-framework — their interactivity is vanilla inline `<script>`. Do not add a
