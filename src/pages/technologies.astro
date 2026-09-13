@@ -1,15 +1,12 @@
 ---
-// Ported from waterstrip/technologies.html. The card grid is content-driven
-// from the working_group collection table (src/db/content-schema.ts), rather
-// than the mockup's client-side WSTRIP_GROUPS injection — see
-// docs/porting-the-mockup.md's note on wg-data.js already being a content
-// model. No CMS surface for this page's own copy: the heading/lede are fixed
-// chrome, matching the mockup's own fixed text; the groups themselves are
-// editable at /admin/technologies.
+// Markup is waterstrip/technologies.html verbatim. The mockup fills #groupGrid
+// client-side (main.js §22 from wg-data.js); here the server renders that exact
+// card HTML from the working_group table, editable at /admin/technologies.
+// Groups have no uploaded photo, so every card takes §22's icon-art branch.
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import { listWorkingGroups } from '../lib/content/cache.ts';
-import { iconFor } from '../lib/wg-visuals.ts';
+import { WORKING_GROUP_THEME, iconFor } from '../lib/wg-visuals.ts';
 
 const groups = listWorkingGroups();
 ---
@@ -18,46 +15,20 @@ const groups = listWorkingGroups();
   <PageHero
     title="مجموعات العمل"
     lede="مجموعات عمل الخبراء في الشريط، مصنّفة حسب التحدي الذي تعالجه في قطاع المياه."
-    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'مجموعات العمل' }]}
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: ' مجموعات العمل' }]}
   />
 
   <section class="ribbon">
     <div class="wrap">
-      <div class="section-head u-reveal">
-        <div class="section-head__text">
+      <div class="sec-head reveal">
+        <div class="sec-head__txt">
           <p class="eyebrow">النطاق</p>
-          <h2>{groups.length} مجموعات عمل خبراء</h2>
-          <p class="lede">
-            مجموعات عمل خبراء تُعنى بتطوير الحلول والمبادرات التقنية التي تسرّع تبنّي تقنيات المياه في منظومة القطاع.
-          </p>
+          <h2 class="h-section">{groups.length} مجموعات عمل خبراء</h2>
+          <p class="lede">ثماني مجموعات عمل خبراء تُعنى بتطوير الحلول والمبادرات التقنية التي تسرّع تبنّي تقنيات المياه في منظومة القطاع.</p>
         </div>
       </div>
-
-      <div class="wg-grid u-reveal">
-        {
-          groups.map((g) => (
-            <a class="wg-grid__item" href={`/working-group/${g.slug}`}>
-              <figure class={`wg-grid__media wg-grid__media--${g.challenge}`}>
-                <span class="wg-grid__no">{g.no}</span>
-                <svg
-                  class="wg-grid__icon"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.4"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d={iconFor(g.slug, g.challenge)} />
-                </svg>
-              </figure>
-              <h3 class="wg-grid__name">{g.nameAr}</h3>
-              <p class="wg-grid__desc">{g.scopeAr}</p>
-            </a>
-          ))
-        }
-      </div>
+      <p class="demo-note"><svg fill="none" height="17" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="17" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg><span><b>المصدر:</b> الموجز التنفيذي لسنة التأسيس — شريط شراكات الابتكار المائي. تفاصيل كل مجموعة غير منشورة بعد.</span></p>
+      <div class="grid-4" id="groupGrid">{groups.map((g) => (<article class="wg-item"><figure class="wg-item__media wg-item__media--art" style={`background:${WORKING_GROUP_THEME[g.challenge] ?? WORKING_GROUP_THEME.supply}`}><span class="wg-item__no">{g.no}</span><svg class="wg-item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={iconFor(g.slug, g.challenge)}></path></svg></figure><h3 class="wg-item__name">{g.nameAr}</h3><p class="wg-item__desc">{g.scopeAr}</p></article>))}</div>
     </div>
   </section>
 </Layout>

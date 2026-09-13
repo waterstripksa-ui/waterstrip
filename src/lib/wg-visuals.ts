@@ -33,6 +33,14 @@ export function iconFor(slug: string, challenge: string): string {
   return WORKING_GROUP_ICONS[slug] ?? CHALLENGE_ICON[challenge] ?? WORKING_GROUP_ICONS['solutions-link'];
 }
 
+/** Card/hero art background per challenge — main.js §22's THEME, verbatim. */
+export const WORKING_GROUP_THEME: Record<string, string> = {
+  supply: 'linear-gradient(135deg,#0F3D78 0%,#1A77BC 100%)',
+  treat: 'linear-gradient(135deg,#123F80 0%,#2B8CCC 100%)',
+  reuse: 'linear-gradient(135deg,#154A91 0%,#2FB2DC 100%)',
+  smart: 'linear-gradient(135deg,#0E3568 0%,#2B8CCC 100%)',
+};
+
 export const CHALLENGE_LABELS_AR: Record<string, string> = {
   supply: 'الإمداد',
   treat: 'المعالجة',
