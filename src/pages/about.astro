@@ -1,8 +1,7 @@
 ---
-// Ported from waterstrip/about.html. All copy and imagery come from the content
-// cache and are editable at /admin/about; an image slot with no upload shows its
-// placeholder artwork (src/lib/about-assets.ts). Links to pages that have not
-// been ported yet hold "#", matching the convention in SiteHeader/SiteFooter.
+// Markup is waterstrip/about.html verbatim (inline styles included); copy and
+// imagery come from the content cache, editable at /admin/about. An image slot
+// with no upload shows its placeholder artwork (src/lib/about-assets.ts).
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import MembershipBanner from '../components/MembershipBanner.astro';
@@ -26,39 +25,34 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
   <PageHero
     title={hero.titleAr}
     lede={hero.ledeAr}
-    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: hero.titleAr }]}
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: ` ${hero.titleAr}` }]}
   />
 
   <section class="ribbon">
     <div class="wrap">
-      <div class="section-head u-reveal">
-        <div class="section-head__text">
+      <div class="sec-head reveal">
+        <div class="sec-head__txt">
           <p class="eyebrow">{mission.eyebrowAr}</p>
-          <h2>{mission.headingAr}</h2>
+          <h2 class="h-section">{mission.headingAr}</h2>
         </div>
       </div>
-      <div class="split u-reveal">
+      <div class="split reveal">
         <div>
-          <p class="lede">{mission.bodyAr1}</p>
-          <p class="lede">{mission.bodyAr2}</p>
+          <p style="font-size:17px;line-height:29px;margin-bottom:20px;">{mission.bodyAr1}</p>
+          <p style="font-size:17px;line-height:29px;">{mission.bodyAr2}</p>
         </div>
-        <figure class="split__figure">
-          <img {...resolveImage(mission.imageId, MISSION_IMG)} alt="" loading="lazy" />
-        </figure>
+        <figure><img alt="شريط شراكات الابتكار المائي" loading="lazy" {...resolveImage(mission.imageId, MISSION_IMG)} /></figure>
       </div>
     </div>
   </section>
 
   {!glance.hidden && (
-    <section class="ribbon ribbon--grey">
-      <div class="wrap u-reveal">
-        <h2 class="stats__heading">{glance.headingAr}</h2>
-        <div class="stats__grid">
+    <section class="ribbon ribbon--grey glance">
+      <div class="wrap reveal glance__panel">
+        <h2 class="h-section">{glance.headingAr}</h2>
+        <div class="stats" style="grid-template-columns:repeat(4,1fr)">
           {glance.stats.map((stat) => (
-            <div class="stats__item">
-              <b class="stats__value">{stat.value}</b>
-              <p class="stats__label">{stat.labelAr}</p>
-            </div>
+            <div class="stat"><b data-count={stat.value}>0</b><p>{stat.labelAr}</p></div>
           ))}
         </div>
       </div>
@@ -67,29 +61,19 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
 
   <section class="ribbon">
     <div class="wrap">
-      <div class="section-head u-reveal">
-        <div class="section-head__text">
+      <div class="sec-head reveal">
+        <div class="sec-head__txt">
           <p class="eyebrow">{challenges.eyebrowAr}</p>
-          <h2>{challenges.headingAr}</h2>
+          <h2 class="h-section">{challenges.headingAr}</h2>
           <p class="lede">{challenges.ledeAr}</p>
         </div>
-        <a class="cta-circle" href={challenges.ctaHref}>
-          <span>{challenges.ctaLabelAr}</span>
-          <span class="circ">
-            <svg fill="none" stroke="currentColor" stroke-width="1.6" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12h13M13 6l6 6-6 6"></path>
-            </svg>
-          </span>
-        </a>
+        <a class="cta-circle" href={challenges.ctaHref}><span>{challenges.ctaLabelAr}</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
       </div>
-      <div class="feature-grid u-reveal">
+      <div class="grid-3 reveal">
         {challenges.items.map((item) => (
-          <article class="feature-grid__item">
-            <figure class="feature-grid__figure">
-              <img {...resolveImage(item.imageId, imageFor(nationalChallengeImages, item.id))} alt={item.titleAr} />
-            </figure>
-            <h3 class="feature-grid__title">{item.titleAr}</h3>
-            <p class="feature-grid__body">{item.bodyAr}</p>
+          <article class="tri__card">
+            <figure><img alt={item.titleAr} {...resolveImage(item.imageId, imageFor(nationalChallengeImages, item.id))} /></figure>
+            <h3>{item.titleAr}</h3><p>{item.bodyAr}</p>
           </article>
         ))}
       </div>
@@ -98,19 +82,18 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
 
   <section class="ribbon ribbon--grey">
     <div class="wrap">
-      <div class="section-head u-reveal">
-        <div class="section-head__text">
+      <div class="sec-head reveal">
+        <div class="sec-head__txt">
           <p class="eyebrow">{goals.eyebrowAr}</p>
-          <h2>{goals.headingAr}</h2>
+          <h2 class="h-section">{goals.headingAr}</h2>
           <p class="lede">{goals.ledeAr}</p>
         </div>
       </div>
-      <div class="goal-grid u-reveal">
+      <div class="grid-4 reveal">
         {goals.items.map((goal, i) => (
-          <div class="goal-grid__item">
-            <b class="goal-grid__no">{ordinal(i)}</b>
-            <h3 class="goal-grid__title">{goal.titleAr}</h3>
-            <p class="goal-grid__body">{goal.bodyAr}</p>
+          <div class="fact" style="border-top-width:2px;padding-top:22px">
+            <b>{ordinal(i)}</b><h3 style="font-size:20px;font-weight:500;margin:6px 0 12px">{goal.titleAr}</h3>
+            <p style="font-size:15px;line-height:25px;color:var(--c-text-soft)">{goal.bodyAr}</p>
           </div>
         ))}
       </div>
@@ -119,26 +102,16 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
 
   <section class="ribbon">
     <div class="wrap">
-      <div class="split u-reveal">
-        <figure class="split__figure">
-          <img {...resolveImage(founding.imageId, FOUNDING_STATEMENT_IMG)} alt="" loading="lazy" />
-        </figure>
+      <div class="split reveal">
+        <figure><img alt="" {...resolveImage(founding.imageId, FOUNDING_STATEMENT_IMG)} /></figure>
         <div>
           <p class="eyebrow">{founding.eyebrowAr}</p>
-          <h3 class="split__quote">«{founding.quoteAr}»</h3>
-          <p class="eyebrow split__attribution">{founding.attributionAr}</p>
-          <a class="cta-circle" href={founding.ctaHref}>
-            <span>{founding.ctaLabelAr}</span>
-            <span class="circ">
-              <svg fill="none" stroke="currentColor" stroke-width="1.6" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M5 12h13M13 6l6 6-6 6"></path>
-              </svg>
-            </span>
-          </a>
+          <h3 style="font-family:var(--f-head);font-size:27px;line-height:38px;font-weight:500;margin:16px 0 24px">«{founding.quoteAr}»</h3><p class="eyebrow" style="margin:-8px 0 24px">{founding.attributionAr}</p>
+          <a class="cta-circle" href={founding.ctaHref}><span>{founding.ctaLabelAr}</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
         </div>
       </div>
     </div>
   </section>
 
-  <MembershipBanner banner={banner} />
+  <MembershipBanner slot="after-main" banner={banner} />
 </Layout>

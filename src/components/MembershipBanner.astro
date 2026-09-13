@@ -1,8 +1,6 @@
 ---
-// The closing "join the alliance" banner, byte-identical across every page
-// that ends with it (about, contact, and now the legal/utility batch).
-// Promoted here once a fourth+ page needed it, per this repo's convention of
-// sharing a piece once a second consumer arrives.
+// The closing "join the alliance" banner, verbatim mockup markup. The mockup
+// always places it after </main>, so pages render it with slot="after-main".
 import { MEMBERSHIP_BANNER_IMG, resolveImage } from '../lib/media-assets.ts';
 
 interface Banner {
@@ -22,16 +20,14 @@ const { banner } = Astro.props;
 ---
 
 <section class="about-banner">
-  <img {...resolveImage(banner.imageId, MEMBERSHIP_BANNER_IMG)} alt="" loading="lazy" />
+  <img alt="" loading="lazy" {...resolveImage(banner.imageId, MEMBERSHIP_BANNER_IMG)} />
   <div class="about-banner__in">
     <p class="eyebrow eyebrow--light">{banner.eyebrowAr}</p>
     <h2>{banner.headingAr}</h2>
     <p class="about-banner__lede">{banner.ledeAr}</p>
-    <a class="button button--brand" href={banner.ctaHref}>
+    <a class="btn-brand" href={banner.ctaHref}>
       <span>{banner.ctaLabelAr}</span>
-      <svg class="button__icon" fill="none" stroke="currentColor" stroke-width="1.9" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M5 12h13M13 6l6 6-6 6"></path>
-      </svg>
+      <svg fill="none" height="15" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24" width="15" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
     </a>
   </div>
 </section>

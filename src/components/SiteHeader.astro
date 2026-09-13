@@ -35,8 +35,11 @@ const navLinks = [
     {navLinks.slice(0, 4).map((link) => (
       <a class:list={[link.href === path && 'is-current']} href={link.href}>{link.label}</a>
     ))}
-    {!awards.hidden && (
-      <a aria-disabled="true" class="" href="/#awards" tabindex="-1"><span>الجوائز والتكريم</span></a>
+    {/* The mockup marks this link "coming soon" on every page except the home
+        page, where it is a plain (still disabled) anchor to #awards. */}
+    {!awards.hidden && (path === '/'
+      ? <a aria-disabled="true" class="" href="/#awards" tabindex="-1"><span>الجوائز والتكريم</span></a>
+      : <a aria-disabled="true" class="is-soon" href="#" tabindex="-1"><span>الجوائز والتكريم</span><em class="soon-tag">قريبًا</em></a>
     )}
     {navLinks.slice(4).map((link) => (
       <a class:list={[link.href === path && 'is-current']} href={link.href}>{link.label}</a>
