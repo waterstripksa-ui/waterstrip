@@ -1,11 +1,10 @@
 ---
-// Ported from waterstrip/media.html. The news tab is content-driven from the
-// article collection table, and the events tab from the event collection
-// table (both in src/db/content-schema.ts) — see docs/porting-the-mockup.md's
-// note on the mockup's data files already being a content model. No CMS
-// surface for this page's own fixed copy: the heading/lede are static chrome,
-// matching the mockup's own fixed text; the articles/events themselves are
-// editable at /admin/media.
+// Markup is waterstrip/media.html verbatim. News cards come from the article
+// table; #eventsList is rendered server-side exactly as main.js §24 builds it
+// from events-data.js, from the event table (both editable at /admin/media).
+// Tab switching is main.js §25. One deliberate deviation: §24 prints the link
+// label as English "Details" (Arabic only in data-ar, and no i18n runs), so
+// the Arabic label is rendered instead.
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import MembershipBanner from '../components/MembershipBanner.astro';
@@ -16,110 +15,59 @@ import { articleImages } from '../lib/article-assets.ts';
 const articles = listArticles();
 const events = listEvents();
 const banner = getSingleton('media_banner');
+
+/** main.js §24's safeHref: blank or script-scheme links fall back to register-interest. */
+const safeHref = (u: string | null | undefined) => {
+  const v = String(u ?? '').trim();
+  return !v || /^\s*(javascript|data|vbscript):/i.test(v) ? '/register-interest' : v;
+};
+const isExternal = (u: string) => /^https?:\/\//i.test(u);
 ---
 
 <Layout title="الأخبار والفعاليات" description="أخبار شريط شراكات الابتكار المائي وفعالياته ومشاركاته.">
   <PageHero
     title="الأخبار والفعاليات"
     lede="آخر أخبار الشريط وفعالياته ومشاركاته."
-    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'الأخبار والفعاليات' }]}
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: ' الأخبار والفعاليات' }]}
   />
 
   <section class="ribbon">
     <div class="wrap">
-      <div class="mtabs" role="tablist" aria-label="الأخبار والفعاليات">
-        <button class="mtab is-active" type="button" role="tab" aria-selected="true" data-mtab="news">
-          الأخبار
-        </button>
-        <button class="mtab" type="button" role="tab" aria-selected="false" data-mtab="events">
-          الفعاليات والمعارض
-        </button>
+      <p class="demo-note"><svg fill="none" height="17" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="17" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg><span><b>المصدر:</b> الموجز التنفيذي لسنة التأسيس — شريط شراكات الابتكار المائي.</span></p>
+      <div aria-label="الأخبار والفعاليات" class="mtabs" role="tablist">
+        <button aria-selected="true" class="mtab is-active" data-mtab="news" role="tab" type="button">الأخبار</button>
+        <button aria-selected="false" class="mtab" data-mtab="events" role="tab" type="button">الفعاليات والمعارض</button>
       </div>
-
       <div class="mtab-panel is-active" id="news" role="tabpanel">
-        {
-          articles.length > 0 ? (
-            <div class="card-row u-reveal">
-              {articles.map((a) => (
-                <a class="news-card" href={`/article/${a.slug}`}>
-                  <div class="news-card__media">
-                    <img
-                      {...resolveImage(a.imageId, imageFor(articleImages, a.slug))}
-                      alt={a.titleAr}
-                      loading="lazy"
-                    />
-                  </div>
-                  <div class="news-card__body">
-                    <p class="news-card__meta">{a.kindAr} · {a.dateAr}</p>
-                    <h3>{a.titleAr}</h3>
-                  </div>
-                  <div class="news-card__foot">
-                    <span class="circ-sm" aria-hidden="true">
-                      <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" height="13" width="13">
-                        <path d="M5 12h13M13 6l6 6-6 6"></path>
-                      </svg>
-                    </span>
-                  </div>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <p class="lede">لا توجد أخبار منشورة حاليًا.</p>
-          )
-        }
+        <div class="card-row bleed reveal">{articles.map((a) => (
+          <a class="news-card" href={`/article/${a.slug}`}>
+            <div class="news-card__media"><img alt={a.titleAr} {...resolveImage(a.imageId, imageFor(articleImages, a.slug))} /></div>
+            <div class="news-card__body"><p class="news-card__meta">{a.kindAr} · {a.dateAr}</p><h3>{a.titleAr}</h3></div>
+            <div class="news-card__foot"><span class="circ-sm"><svg fill="none" height="13" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="13" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></div>
+          </a>
+        ))}</div>
       </div>
-
       <div class="mtab-panel" hidden id="events" role="tabpanel">
-        {
-          events.length > 0 ? (
-            <div class="u-reveal">
-              {events.map((e) => (
-                <div class="event">
-                  <div class="event__date">
-                    <b>{e.day}</b>
-                    <span>{e.monthAr}</span>
-                  </div>
-                  <div>
-                    <h3>{e.titleAr}</h3>
-                    <p>{e.descAr}</p>
-                  </div>
-                  <a class="cta-circle" href={e.href}>
-                    <span>التفاصيل</span>
-                    <span class="circ" aria-hidden="true">
-                      <svg fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" height="16" width="16">
-                        <path d="M5 12h13M13 6l6 6-6 6"></path>
-                      </svg>
-                    </span>
-                  </a>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p class="lede">لا توجد فعاليات منشورة حاليًا.</p>
-          )
-        }
+        <div class="reveal" id="eventsList">{events.map((e) => {
+          const href = safeHref(e.href);
+          return (
+            <div class="event"><div class="event__date"><b>{e.day}</b><span>{e.monthAr}</span></div><div><h3>{e.titleAr}</h3><p>{e.descAr}</p></div>{isExternal(href)
+              ? <a class="cta-circle" href={href} target="_blank" rel="noopener"><span>التفاصيل</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
+              : <a class="cta-circle" href={href}><span>التفاصيل</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>}</div>
+          );
+        })}</div>
       </div>
     </div>
   </section>
 
-  <MembershipBanner banner={banner} />
+  <MembershipBanner slot="after-main" banner={banner} />
+
+  <Fragment slot="end">
+    <div aria-hidden="true" aria-modal="true" class="lightbox" id="lightbox" role="dialog">
+      <button aria-label="إغلاق" class="lightbox__close" id="lbClose" type="button">×</button>
+      <button aria-label="السابق" class="lightbox__nav lightbox__nav--prev" id="lbPrev" type="button">‹</button>
+      <button aria-label="التالي" class="lightbox__nav lightbox__nav--next" id="lbNext" type="button">›</button>
+      <figure class="lightbox__fig"><img alt="" id="lbImg" src="" /><figcaption id="lbCap"></figcaption></figure>
+    </div>
+  </Fragment>
 </Layout>
-
-<script>
-  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.mtab[data-mtab]'));
-  const panels = Array.from(document.querySelectorAll<HTMLElement>('.mtab-panel'));
-
-  function show(key: string | null) {
-    tabs.forEach((t) => {
-      const on = t.getAttribute('data-mtab') === key;
-      t.classList.toggle('is-active', on);
-      t.setAttribute('aria-selected', String(on));
-    });
-    panels.forEach((p) => {
-      p.classList.toggle('is-active', p.id === key);
-      p.hidden = p.id !== key;
-    });
-  }
-
-  tabs.forEach((t) => t.addEventListener('click', () => show(t.getAttribute('data-mtab'))));
-</script>

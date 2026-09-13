@@ -6,6 +6,10 @@ import { getSingleton } from '../lib/content/cache.ts';
 
 const awards = getSingleton('home_awards');
 const path = Astro.url.pathname;
+// The mockup only highlights the current link on these pages (media and the
+// inner/legal pages show no current link), so is-current is limited to them.
+const HIGHLIGHTED = new Set(['/', '/about', '/technologies', '/members', '/contact']);
+const current = HIGHLIGHTED.has(path) ? path : null;
 
 const navLinks = [
   { label: 'الرئيسية', href: '/' },
@@ -33,7 +37,7 @@ const navLinks = [
   <button aria-label="إغلاق" class="drawer__close" id="drawerClose" type="button">×</button>
   <nav class="drawer__nav">
     {navLinks.slice(0, 4).map((link) => (
-      <a class:list={[link.href === path && 'is-current']} href={link.href}>{link.label}</a>
+      <a class:list={[link.href === current && 'is-current']} href={link.href}>{link.label}</a>
     ))}
     {/* The mockup marks this link "coming soon" on every page except the home
         page, where it is a plain (still disabled) anchor to #awards. */}
@@ -42,7 +46,7 @@ const navLinks = [
       : <a aria-disabled="true" class="is-soon" href="#" tabindex="-1"><span>الجوائز والتكريم</span><em class="soon-tag">قريبًا</em></a>
     )}
     {navLinks.slice(4).map((link) => (
-      <a class:list={[link.href === path && 'is-current']} href={link.href}>{link.label}</a>
+      <a class:list={[link.href === current && 'is-current']} href={link.href}>{link.label}</a>
     ))}
   </nav>
   <div class="drawer-cta"><a class="is-solid" href="/register-interest">سجّل اهتمامك</a></div>

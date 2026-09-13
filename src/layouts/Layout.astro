@@ -61,6 +61,8 @@ const fullTitle = `${title} | شريط شراكات الابتكار المائ�
         banner) and style.css paints `main > section` white, so placement matters. */}
     <slot name="after-main" />
     <SiteFooter />
+    {/* Page-specific overlays the mockup places after the footer (media's #lightbox). */}
+    <slot name="end" />
   </body>
 </html>
 
