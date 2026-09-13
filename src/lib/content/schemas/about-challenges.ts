@@ -28,18 +28,23 @@ const v1 = z.object({
 export type AboutChallenge = z.infer<typeof challenge>;
 export type AboutChallenges = z.infer<typeof v1>;
 
+/** `technologies` (the working groups listing) was ported after this CTA shipped as `'#'`. */
+function v1_to_v2(data: unknown): unknown {
+  return { ...(data as z.infer<typeof v1>), ctaHref: '/technologies' };
+}
+
 export const aboutChallenges = defineSingleton<AboutChallenges>({
   key: 'about_challenges',
-  version: 1,
+  version: 2,
   schema: v1,
-  migrations: [],
+  migrations: [v1_to_v2],
   initial: {
     eyebrowAr: 'السياق الوطني',
     headingAr: 'تحديات تجعل الابتكار ضرورة',
     ledeAr:
       'يواجه قطاع المياه في المملكة تحديات كبيرة تخلق مجتمعةً دافعًا واضحًا لتبنّي التقنيات المتقدمة — بما يوازن بين تأمين الاحتياج المائي واستدامة الموارد.',
     ctaLabelAr: 'استعرض مجموعات العمل',
-    ctaHref: '#',
+    ctaHref: '/technologies',
     items: [
       {
         id: 'nc-scarcity',

@@ -19,18 +19,23 @@ const v1 = z.object({
 
 export type AboutFoundingStatement = z.infer<typeof v1>;
 
+/** `members` was ported after this CTA shipped pointing at `'#'`. */
+function v1_to_v2(data: unknown): unknown {
+  return { ...(data as z.infer<typeof v1>), ctaHref: '/members' };
+}
+
 export const aboutFoundingStatement = defineSingleton<AboutFoundingStatement>({
   key: 'about_founding_statement',
-  version: 1,
+  version: 2,
   schema: v1,
-  migrations: [],
+  migrations: [v1_to_v2],
   initial: {
     eyebrowAr: 'البيان التأسيسي',
     quoteAr:
       'تمثّل المبادرة فرصة تحوّلية لتشكيل مستقبل قطاع المياه في المملكة العربية السعودية، ونتطلّع إلى انضمام أصحاب المصلحة الرئيسيين في دفع هذه الرؤية للأمام.',
     attributionAr: 'وكالة البحث والابتكار — وزارة البيئة والمياه والزراعة',
     ctaLabelAr: 'تعرّف على الأعضاء',
-    ctaHref: '#',
+    ctaHref: '/members',
     imageId: null,
   },
 });

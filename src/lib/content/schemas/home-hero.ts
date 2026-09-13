@@ -82,11 +82,29 @@ function v2_to_v3(data: unknown): unknown {
   return { ...prev, panels: prev.panels.map((panel) => ({ ...panel, imageId: null })) };
 }
 
+/** The pages these `ctaHref`s point at were ported after the panels shipped as `'#'`. */
+const v3_TO_V4_HREFS: Record<string, string> = {
+  'hero-1': '/media#news',
+  'hero-2': '/members',
+  'hero-3': '/about',
+};
+
+function v3_to_v4(data: unknown): unknown {
+  const prev = data as z.infer<typeof v3>;
+  return {
+    ...prev,
+    panels: prev.panels.map((panel) => ({
+      ...panel,
+      ctaHref: v3_TO_V4_HREFS[panel.id] ?? panel.ctaHref,
+    })),
+  };
+}
+
 export const homeHero = defineSingleton<HomeHero>({
   key: 'home_hero',
-  version: 3,
+  version: 4,
   schema: v3,
-  migrations: [v1_to_v2, v2_to_v3],
+  migrations: [v1_to_v2, v2_to_v3, v3_to_v4],
   initial: {
     panels: [
       {
@@ -94,7 +112,7 @@ export const homeHero = defineSingleton<HomeHero>({
         eyebrowAr: 'رؤى الشريط',
         headingAr: 'معرفة تطبيقية تسرّع تبنّي تقنيات المياه في المملكة.',
         ctaLabelAr: 'استعرض الرؤى',
-        ctaHref: '#',
+        ctaHref: '/media#news',
         imageId: null,
       },
       {
@@ -102,7 +120,7 @@ export const homeHero = defineSingleton<HomeHero>({
         eyebrowAr: 'الشراكات',
         headingAr: 'جهات حكومية ومؤسسات بحثية وقطاع خاص — شريط واحد للابتكار المائي.',
         ctaLabelAr: 'تعرّف على الأعضاء',
-        ctaHref: '#',
+        ctaHref: '/members',
         imageId: null,
       },
       {
@@ -110,7 +128,7 @@ export const homeHero = defineSingleton<HomeHero>({
         eyebrowAr: 'الإعلانات',
         headingAr: 'وزارة البيئة والمياه والزراعة تُطلق شريط شراكات الابتكار المائي من جدة.',
         ctaLabelAr: 'اعرف المزيد',
-        ctaHref: '#',
+        ctaHref: '/about',
         imageId: null,
       },
     ],

@@ -21,17 +21,22 @@ const v1 = z.object({
 
 export type AboutBanner = z.infer<typeof v1>;
 
+/** `register-interest` was ported after this CTA shipped pointing at `'#'`. */
+function v1_to_v2(data: unknown): unknown {
+  return { ...(data as z.infer<typeof v1>), ctaHref: '/register-interest' };
+}
+
 export const aboutBanner = defineSingleton<AboutBanner>({
   key: 'about_banner',
-  version: 1,
+  version: 2,
   schema: v1,
-  migrations: [],
+  migrations: [v1_to_v2],
   initial: {
     eyebrowAr: 'العضوية',
     headingAr: 'انضم إلى الشريط',
     ledeAr: 'شارك في تشكيل مستقبل قطاع المياه في المملكة.',
     ctaLabelAr: 'سجّل اهتمامك',
-    ctaHref: '#',
+    ctaHref: '/register-interest',
     imageId: null,
   },
 });

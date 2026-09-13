@@ -32,18 +32,23 @@ const v2 = v1.extend({
 export type HomeAward = z.infer<typeof award>;
 export type HomeAwards = z.infer<typeof v2>;
 
+/** `register-interest` was ported after this CTA shipped pointing at `'#'`. */
+function v2_to_v3(data: unknown): unknown {
+  return { ...(data as z.infer<typeof v2>), ctaHref: '/register-interest' };
+}
+
 export const homeAwards = defineSingleton<HomeAwards>({
   key: 'home_awards',
-  version: 2,
+  version: 3,
   schema: v2,
-  migrations: [(data) => ({ ...(data as object), hidden: false })],
+  migrations: [(data) => ({ ...(data as object), hidden: false }), v2_to_v3],
   initial: {
     eyebrowAr: 'التميّز',
     headingAr: 'الجوائز والتكريم',
     ledeAr:
       'تكريمات نالها الشريط وترشيحات دخلها خلال سنته الأولى، تعكس أثر العمل المشترك بين أعضائه في قطاع المياه.',
     ctaLabelAr: 'انضم إلى الشريط',
-    ctaHref: '#',
+    ctaHref: '/register-interest',
     hidden: false,
     items: [
       { id: 'aw-global-esg', titleAr: 'جائزة Global ESG', bodyAr: 'تكريم حصل عليه الشريط في 2025.' },

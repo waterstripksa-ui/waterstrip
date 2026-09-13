@@ -39,11 +39,25 @@ function v1_to_v2(data: unknown): unknown {
   return { ...prev, tiles: prev.tiles.map((t) => ({ ...t, imageId: null })) };
 }
 
+/** The pages these tiles link to were ported after the tiles shipped as `'#'`. */
+const V2_TO_V3_HREFS: Record<string, string> = {
+  'tile-groups': '/technologies',
+  'tile-whatwedo': '/about',
+};
+
+function v2_to_v3(data: unknown): unknown {
+  const prev = data as z.infer<typeof v2>;
+  return {
+    ...prev,
+    tiles: prev.tiles.map((t) => ({ ...t, href: V2_TO_V3_HREFS[t.id] ?? t.href })),
+  };
+}
+
 export const homeDiscover = defineSingleton<HomeDiscover>({
   key: 'home_discover',
-  version: 2,
+  version: 3,
   schema: v2,
-  migrations: [v1_to_v2],
+  migrations: [v1_to_v2, v2_to_v3],
   initial: {
     eyebrowAr: 'تعرّف على الشريط',
     headingAr:
@@ -53,14 +67,14 @@ export const homeDiscover = defineSingleton<HomeDiscover>({
         id: 'tile-groups',
         eyebrowAr: 'مجموعات العمل',
         headingAr: '٨ مجموعات عمل تعالج تحديات قطاع المياه في المملكة',
-        href: '#',
+        href: '/technologies',
         imageId: null,
       },
       {
         id: 'tile-whatwedo',
         eyebrowAr: 'ما نقوم به',
         headingAr: 'من التحلية وإعادة الاستخدام إلى الإدارة الذكية للمياه — الابتكار هو المفتاح',
-        href: '#',
+        href: '/about',
         imageId: null,
       },
     ],

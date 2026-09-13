@@ -40,22 +40,33 @@ function v1_to_v2(data: unknown): unknown {
   return { ...prev, items: prev.items.map((item) => ({ ...item, logoId: null })) };
 }
 
+/** Every partner logo links to the members page; ported after they shipped as `'#'`. */
+function v2_to_v3(data: unknown): unknown {
+  const prev = data as z.infer<typeof v2>;
+  return { ...prev, items: prev.items.map((item) => ({ ...item, href: '/members' })) };
+}
+
 export const homePartners = defineSingleton<HomePartners>({
   key: 'home_partners',
-  version: 2,
+  version: 3,
   schema: v2,
-  migrations: [v1_to_v2],
+  migrations: [v1_to_v2, v2_to_v3],
   initial: {
     labelAr: 'الجهات الاستراتيجية',
     noteAr: 'جهات استراتيجية ضمن شريط شراكات الابتكار المائي.',
     items: [
-      { id: 'pa-swa', nameAr: 'الهيئة السعودية للمياه', href: '#', logoId: null },
-      { id: 'pa-nwc', nameAr: 'الشركة الوطنية للمياه', href: '#', logoId: null },
-      { id: 'pa-kaust', nameAr: 'جامعة الملك عبدالله للعلوم والتقنية', href: '#', logoId: null },
-      { id: 'pa-acwa', nameAr: 'أكوا باور', href: '#', logoId: null },
-      { id: 'pa-veolia', nameAr: 'فيوليا', href: '#', logoId: null },
-      { id: 'pa-enowa', nameAr: 'نيوم ENOWA', href: '#', logoId: null },
-      { id: 'pa-kaec', nameAr: 'مدينة الملك عبدالله الاقتصادية', href: '#', logoId: null },
+      { id: 'pa-swa', nameAr: 'الهيئة السعودية للمياه', href: '/members', logoId: null },
+      { id: 'pa-nwc', nameAr: 'الشركة الوطنية للمياه', href: '/members', logoId: null },
+      {
+        id: 'pa-kaust',
+        nameAr: 'جامعة الملك عبدالله للعلوم والتقنية',
+        href: '/members',
+        logoId: null,
+      },
+      { id: 'pa-acwa', nameAr: 'أكوا باور', href: '/members', logoId: null },
+      { id: 'pa-veolia', nameAr: 'فيوليا', href: '/members', logoId: null },
+      { id: 'pa-enowa', nameAr: 'نيوم ENOWA', href: '/members', logoId: null },
+      { id: 'pa-kaec', nameAr: 'مدينة الملك عبدالله الاقتصادية', href: '/members', logoId: null },
     ],
   },
 });

@@ -28,17 +28,22 @@ function v1_to_v2(data: unknown): unknown {
   return { ...(data as z.infer<typeof v1>), imageId: null };
 }
 
+/** `register-interest` was ported after this CTA shipped pointing at `'#'`. */
+function v2_to_v3(data: unknown): unknown {
+  return { ...(data as z.infer<typeof v2>), ctaHref: '/register-interest' };
+}
+
 export const homeAboutBanner = defineSingleton<HomeAboutBanner>({
   key: 'home_about_banner',
-  version: 2,
+  version: 3,
   schema: v2,
-  migrations: [v1_to_v2],
+  migrations: [v1_to_v2, v2_to_v3],
   initial: {
     eyebrowAr: 'العضوية',
     headingAr: 'انضم إلى الشريط',
     ledeAr: 'شارك في تشكيل مستقبل قطاع المياه في المملكة.',
     ctaLabelAr: 'سجّل اهتمامك',
-    ctaHref: '#',
+    ctaHref: '/register-interest',
     imageId: null,
   },
 });

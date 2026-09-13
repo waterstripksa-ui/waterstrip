@@ -4,7 +4,7 @@
   "exportedAt": "2026-09-12T16:47:30.718Z",
   "singletons": {
     "home_hero": {
-      "schemaVersion": 2,
+      "schemaVersion": 4,
       "data": {
         "panels": [
           {
@@ -12,27 +12,30 @@
             "eyebrowAr": "رؤى الشريط",
             "headingAr": "معرفة تطبيقية تسرّع تبنّي تقنيات المياه في المملكة.",
             "ctaLabelAr": "استعرض الرؤى",
-            "ctaHref": "#"
+            "ctaHref": "/media#news",
+            "imageId": null
           },
           {
             "id": "hero-2",
             "eyebrowAr": "الشراكات",
             "headingAr": "جهات حكومية ومؤسسات بحثية وقطاع خاص — شريط واحد للابتكار المائي.",
             "ctaLabelAr": "تعرّف على الأعضاء",
-            "ctaHref": "#"
+            "ctaHref": "/members",
+            "imageId": null
           },
           {
             "id": "hero-3",
             "eyebrowAr": "الإعلانات",
             "headingAr": "وزارة البيئة والمياه والزراعة تُطلق شريط شراكات الابتكار المائي من جدة.",
             "ctaLabelAr": "اعرف المزيد",
-            "ctaHref": "#"
+            "ctaHref": "/about",
+            "imageId": null
           }
         ]
       }
     },
     "home_discover": {
-      "schemaVersion": 1,
+      "schemaVersion": 3,
       "data": {
         "eyebrowAr": "تعرّف على الشريط",
         "headingAr": "شريط شراكات الابتكار المائي مبادرة وطنية تمتدّ على ساحل البحر الأحمر، تجمع الجهات الحكومية والمؤسسات البحثية والقطاع الخاص لتسريع تطوير تقنيات المياه وتبنّيها في المملكة.",
@@ -41,13 +44,15 @@
             "id": "tile-groups",
             "eyebrowAr": "مجموعات العمل",
             "headingAr": "٨ مجموعات عمل تعالج تحديات قطاع المياه في المملكة",
-            "href": "#"
+            "href": "/technologies",
+            "imageId": null
           },
           {
             "id": "tile-whatwedo",
             "eyebrowAr": "ما نقوم به",
             "headingAr": "من التحلية وإعادة الاستخدام إلى الإدارة الذكية للمياه — الابتكار هو المفتاح",
-            "href": "#"
+            "href": "/about",
+            "imageId": null
           }
         ]
       }
@@ -90,13 +95,14 @@
       }
     },
     "home_awards": {
-      "schemaVersion": 1,
+      "schemaVersion": 3,
       "data": {
         "eyebrowAr": "التميّز",
         "headingAr": "الجوائز والتكريم",
         "ledeAr": "تكريمات نالها الشريط وترشيحات دخلها خلال سنته الأولى، تعكس أثر العمل المشترك بين أعضائه في قطاع المياه.",
         "ctaLabelAr": "انضم إلى الشريط",
-        "ctaHref": "#",
+        "ctaHref": "/register-interest",
+        "hidden": false,
         "items": [
           {
             "id": "aw-global-esg",
@@ -122,7 +128,7 @@
       }
     },
     "home_partners": {
-      "schemaVersion": 1,
+      "schemaVersion": 3,
       "data": {
         "labelAr": "الجهات الاستراتيجية",
         "noteAr": "جهات استراتيجية ضمن شريط شراكات الابتكار المائي.",
@@ -130,49 +136,57 @@
           {
             "id": "pa-swa",
             "nameAr": "الهيئة السعودية للمياه",
-            "href": "#"
+            "href": "/members",
+            "logoId": null
           },
           {
             "id": "pa-nwc",
             "nameAr": "الشركة الوطنية للمياه",
-            "href": "#"
+            "href": "/members",
+            "logoId": null
           },
           {
             "id": "pa-kaust",
             "nameAr": "جامعة الملك عبدالله للعلوم والتقنية",
-            "href": "#"
+            "href": "/members",
+            "logoId": null
           },
           {
             "id": "pa-acwa",
             "nameAr": "أكوا باور",
-            "href": "#"
+            "href": "/members",
+            "logoId": null
           },
           {
             "id": "pa-veolia",
             "nameAr": "فيوليا",
-            "href": "#"
+            "href": "/members",
+            "logoId": null
           },
           {
             "id": "pa-enowa",
             "nameAr": "نيوم ENOWA",
-            "href": "#"
+            "href": "/members",
+            "logoId": null
           },
           {
             "id": "pa-kaec",
             "nameAr": "مدينة الملك عبدالله الاقتصادية",
-            "href": "#"
+            "href": "/members",
+            "logoId": null
           }
         ]
       }
     },
     "home_about_banner": {
-      "schemaVersion": 1,
+      "schemaVersion": 3,
       "data": {
         "eyebrowAr": "العضوية",
         "headingAr": "انضم إلى الشريط",
         "ledeAr": "شارك في تشكيل مستقبل قطاع المياه في المملكة.",
         "ctaLabelAr": "سجّل اهتمامك",
-        "ctaHref": "#"
+        "ctaHref": "/register-interest",
+        "imageId": null
       }
     }
   },
