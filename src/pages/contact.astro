@@ -1,10 +1,9 @@
 ---
-// Ported from waterstrip/contact.html. Hero and aside copy come from the
-// content cache and are editable at /admin/contact. The form itself is fixed
-// structure like login.astro's — it has no real backend yet (that is
-// deliberately deferred, see docs/porting-the-mockup.md's pre-launch
-// checklist item 5), so its submit handling ports the mockup's client-side
-// validation faithfully rather than posting anywhere.
+// Markup is waterstrip/contact.html verbatim. Hero and aside copy come from the
+// content cache (/admin/contact). The form has no backend yet (pre-launch
+// checklist item 5 in docs/porting-the-mockup.md), so the inline script below
+// is the mockup's own main.js §15 behaviour for #contactForm, which the
+// vendored main.js drops because login posts for real.
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import MembershipBanner from '../components/MembershipBanner.astro';
@@ -34,133 +33,73 @@ const sectors = [
   <PageHero
     title={hero.titleAr}
     lede={hero.ledeAr}
-    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: hero.titleAr }]}
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: ` ${hero.titleAr}` }]}
   />
 
-  <section class="ribbon">
+  <section class="ribbon" id="contactMain">
     <div class="wrap">
-      <div class="form-layout">
-        <form class="form form--panel" id="contact-form" novalidate>
-          <div class="form__field">
-            <label class="form__label" for="c-name">الاسم الكامل</label>
-            <input id="c-name" name="fullName" autocomplete="name" placeholder="مثال: سارة الأحمد" required />
+      <div class="form-shell contact-page">
+        <form class="form reveal" id="contactForm" novalidate>
+          <div class="field">
+            <label for="c-name">الاسم الكامل</label>
+            <input autocomplete="name" id="c-name" name="fullName" placeholder="مثال: سارة الأحمد" required />
           </div>
-
-          <div class="form__row">
-            <div class="form__field">
-              <label class="form__label" for="c-email">البريد الإلكتروني</label>
-              <input id="c-email" name="email" type="email" autocomplete="email" placeholder="name@company.com" required />
+          <div class="row-2">
+            <div class="field">
+              <label for="c-email">البريد الإلكتروني</label>
+              <input autocomplete="email" id="c-email" name="email" placeholder="name@company.com" required type="email" />
             </div>
-            <div class="form__field">
-              <label class="form__label" for="c-phone">رقم الجوال</label>
-              <input id="c-phone" name="mobile" type="tel" inputmode="tel" autocomplete="tel" value="+966" />
-              <p class="form__hint">أضف رمز الدولة. مثال: ‎+96659xxxxxxx</p>
-            </div>
-          </div>
-
-          <div class="form__row">
-            <div class="form__field">
-              <label class="form__label" for="c-company">اسم الجهة أو الشركة</label>
-              <input id="c-company" name="company" autocomplete="organization" placeholder="مثال: شركة تقنيات المياه" required />
-            </div>
-            <div class="form__field">
-              <label class="form__label" for="c-sector">القطاع</label>
-              <select id="c-sector" name="sector" required>
-                <option value="" selected>الرجاء الاختيار</option>
-                {sectors.map((sector) => <option value={sector}>{sector}</option>)}
-              </select>
+            <div class="field">
+              <label for="c-phone">رقم الجوال</label>
+              <p class="hint hint--top">أضف رمز الدولة. مثال: ‎+96659xxxxxxx</p>
+              <input autocomplete="tel" id="c-phone" inputmode="tel" name="mobile" placeholder="‎+966" type="tel" value="+966" />
             </div>
           </div>
-
-          <div class="form__field">
-            <label class="form__label" for="c-country">الدولة</label>
-            <select id="c-country" name="country">
-              <option value="" selected>الرجاء الاختيار</option>
-              {sectors.map((sector) => <option value={sector}>{sector}</option>)}
-            </select>
+          <div class="row-2">
+            <div class="field">
+              <label for="c-company">اسم الجهة أو الشركة</label>
+              <input autocomplete="organization" id="c-company" name="company" placeholder="مثال: شركة تقنيات المياه" required />
+            </div>
+            <div class="field">
+              <label for="c-sector">القطاع</label>
+              <select id="c-sector" name="sector" required><option selected value="">الرجاء الاختيار</option>{sectors.map((s) => <option value={s}>{s}</option>)}</select>
+            </div>
           </div>
-
-          <div class="form__actions">
-            <button class="button button--solid" type="submit">
-              <span>إرسال</span>
-              <svg class="button__icon" fill="none" stroke="currentColor" stroke-width="1.6" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M5 12h13M13 6l6 6-6 6"></path>
-              </svg>
-            </button>
-            <span class="form__status" id="contact-form-status" hidden>
-              <svg fill="none" stroke="currentColor" stroke-width="2" height="18" width="18" viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M20 6L9 17l-5-5"></path>
-              </svg>
-              <span>تم استلام طلبك. سنتواصل معك قريبًا.</span>
-            </span>
+          <div class="field">
+            <label for="c-country">الدولة</label>
+            <select id="c-country" name="country"><option selected value="">الرجاء الاختيار</option>{sectors.map((s) => <option value={s}>{s}</option>)}</select>
+          </div>
+          <div class="form-actions">
+            <button class="btn-solid" type="submit"><span>إرسال</span><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></button>
+            <span class="form-msg" id="cMsg"><svg fill="none" height="18" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>تم استلام طلبك. سنتواصل معك قريبًا.</span></span>
           </div>
         </form>
-
-        <aside class="info-card">
+        <aside class="aside-card reveal">
           <h3>{info.headingAr}</h3>
-          <p class="info-card__lede">{info.ledeAr}</p>
-          <ul class="info-card__list">
-            <li class="info-card__item">
-              <span class="info-card__icon">
-                <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
-                  <rect x="2.5" y="4.5" width="19" height="15" rx="2.5"></rect>
-                  <path d="M3 6.5l9 6.5 9-6.5"></path>
-                </svg>
-              </span>
-              <span>
-                <b class="info-card__label">{info.supportLabelAr}</b>
-                <a class="info-card__value" href={`mailto:${info.supportEmail}`}>{info.supportEmail}</a>
-              </span>
+          <p class="aside-card__lede">{info.ledeAr}</p>
+          <ul class="aside-list">
+            <li>
+              <span class="aside-list__ico"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><rect height="15" rx="2.5" width="19" x="2.5" y="4.5"></rect><path d="M3 6.5l9 6.5 9-6.5"></path></svg></span>
+              <span><b>{info.supportLabelAr}</b><a href={`mailto:${info.supportEmail}`}>{info.supportEmail}</a></span>
             </li>
-            <li class="info-card__item">
-              <span class="info-card__icon">
-                <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 5v14M5 12h14"></path>
-                </svg>
-              </span>
-              <span>
-                <b class="info-card__label">العضوية</b>
-                <a class="info-card__value" href="/register-interest">{info.membershipLabelAr}</a>
-              </span>
+            <li>
+              <span class="aside-list__ico"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>
+              <span><b>العضوية</b><a href="/register-interest">{info.membershipLabelAr}</a></span>
             </li>
-            <li class="info-card__item">
-              <span class="info-card__icon">
-                <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4 5h16v14H4z"></path>
-                  <path d="M8 9h8M8 13h5"></path>
-                </svg>
-              </span>
-              <span>
-                <b class="info-card__label">الاستفسارات الإعلامية</b>
-                <a class="info-card__value" href="/media">{info.mediaLabelAr}</a>
-              </span>
+            <li>
+              <span class="aside-list__ico"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M4 5h16v14H4z"></path><path d="M8 9h8M8 13h5"></path></svg></span>
+              <span><b>الاستفسارات الإعلامية</b><a href="/media">{info.mediaLabelAr}</a></span>
             </li>
-            <li class="info-card__item">
-              <span class="info-card__icon">
-                <svg fill="none" stroke="currentColor" stroke-width="1.7" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 7v5l3 2"></path>
-                </svg>
-              </span>
-              <span>
-                <b class="info-card__label">{info.responseLabelAr}</b>
-                <span class="info-card__value">{info.responseTextAr}</span>
-              </span>
+            <li>
+              <span class="aside-list__ico"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>
+              <span><b>{info.responseLabelAr}</b><span class="aside-list__txt">{info.responseTextAr}</span></span>
             </li>
           </ul>
-          <div class="info-card__footer">
+          <div class="aside-card__social">
             <p>تابعنا</p>
-            <div class="info-card__footer-links">
-              <a href="#" rel="noopener" target="_blank" aria-label="LinkedIn">
-                <svg fill="currentColor" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95C20.4 8.75 21 11 21 14v7h-4v-6.2c0-1.5-.03-3.4-2.1-3.4-2.1 0-2.4 1.6-2.4 3.3V21H9z"></path>
-                </svg>
-              </a>
-              <a href="#" rel="noopener" target="_blank" aria-label="X">
-                <svg fill="currentColor" height="15" width="15" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-7.3L5.9 22H2.8l7.5-8.6L2.4 2h6.6l4.5 6.6L18.9 2z"></path>
-                </svg>
-              </a>
+            <div>
+              <a aria-label="LinkedIn" href="#" rel="noopener" target="_blank"><svg fill="currentColor" height="15" viewBox="0 0 24 24" width="15" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95C20.4 8.75 21 11 21 14v7h-4v-6.2c0-1.5-.03-3.4-2.1-3.4-2.1 0-2.4 1.6-2.4 3.3V21H9z"></path></svg></a>
+              <a aria-label="X" href="#" rel="noopener" target="_blank"><svg fill="currentColor" height="15" viewBox="0 0 24 24" width="15" aria-hidden="true"><path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-7.3L5.9 22H2.8l7.5-8.6L2.4 2h6.6l4.5 6.6L18.9 2z"></path></svg></a>
             </div>
           </div>
         </aside>
@@ -168,31 +107,26 @@ const sectors = [
     </div>
   </section>
 
-  <MembershipBanner banner={banner} />
+  <MembershipBanner slot="after-main" banner={banner} />
 </Layout>
 
 <script>
-  // Client-side validation + confirmation only — no backend yet, matching the
-  // mockup's own behaviour (see docs/porting-the-mockup.md's pre-launch
-  // checklist item 5, which defers a real handler to a follow-up).
-  const form = document.getElementById('contact-form') as HTMLFormElement | null;
-  const status = document.getElementById('contact-form-status');
-
+  // main.js §15 for #contactForm, verbatim in behaviour: flag empty required
+  // fields red, otherwise show #cMsg and disable the submit button.
+  const form = document.getElementById('contactForm') as HTMLFormElement | null;
   form?.addEventListener('submit', (e) => {
     e.preventDefault();
     let ok = true;
-    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[required]').forEach((field) => {
-      const bad = !field.value.trim();
-      field.style.borderColor = bad ? '#C0392B' : '';
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[required]').forEach((f) => {
+      const bad = f instanceof HTMLInputElement && f.type === 'checkbox' ? !f.checked : !f.value.trim();
+      f.style.borderColor = bad ? '#C0392B' : '';
       if (bad) ok = false;
     });
     if (!ok) return;
-    status?.removeAttribute('hidden');
-    form.querySelector('button[type="submit"]')?.setAttribute('disabled', '');
+    document.getElementById('cMsg')?.classList.add('is-on');
+    form.querySelector('.btn-solid')?.setAttribute('disabled', '');
   });
-
   form?.addEventListener('input', (e) => {
-    const target = e.target as HTMLElement;
-    target.style.borderColor = '';
+    (e.target as HTMLElement).style.borderColor = '';
   });
 </script>
