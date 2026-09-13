@@ -5,6 +5,12 @@
    never restyle something style.css already covers.
    -------------------------------------------------------------------------- */
 
+/* Failed sign-in message in login's #lMsg. The mockup only ever shows a
+   success message there; the red is the mockup's own invalid-field colour. */
+.form-msg--error {
+  color: #c0392b;
+}
+
 /* Skip link — the mockup has none. Hidden until focused. */
 .skip-link {
   position: absolute;

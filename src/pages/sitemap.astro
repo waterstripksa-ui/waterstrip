@@ -1,11 +1,13 @@
 ---
-// Ported from waterstrip/sitemap.html. This page is pure site navigation —
-// the same links SiteHeader/SiteFooter already carry — so unlike the other
-// legal/utility pages it has no CMS surface at all; there is no "content"
-// here for an admin to edit, only routes. Update this list alongside
-// SiteHeader/SiteFooter as pages are ported, not through /admin.
+// Markup is waterstrip/sitemap.html verbatim. Pure site navigation — the same
+// routes SiteHeader/SiteFooter carry — so no CMS surface beyond the shared
+// legal_banner. Update this list alongside those components, not via /admin.
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+
+const banner = getSingleton('legal_banner');
 
 const groups = [
   {
@@ -24,7 +26,7 @@ const groups = [
     links: [
       { label: 'سجّل اهتمامك', href: '/register-interest' },
       { label: 'دليل الأعضاء', href: '/members' },
-      { label: 'ملف العضو', href: '#' },
+      { label: 'ملف العضو', href: '/members' },
     ],
   },
   {
@@ -51,27 +53,10 @@ const groups = [
   <PageHero
     title="خريطة الموقع"
     lede="كل صفحات الموقع في مكان واحد."
-    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'خريطة الموقع' }]}
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: ' خريطة الموقع' }]}
   />
 
-  <section class="ribbon">
-    <div class="wrap">
-      <div class="sitemap-grid u-reveal">
-        {
-          groups.map((group) => (
-            <div>
-              <h3>{group.headingAr}</h3>
-              <ul>
-                {group.links.map((link) => (
-                  <li>
-                    <a href={link.href}>{link.label}</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  <section class="ribbon"><div class="wrap"><div class="sitemap reveal">{groups.map((g) => (<div><h3>{g.headingAr}</h3><ul>{g.links.map((l) => (<li><a href={l.href}>{l.label}</a></li>))}</ul></div>))}</div></div></section>
+
+  <MembershipBanner slot="after-main" banner={banner} />
 </Layout>

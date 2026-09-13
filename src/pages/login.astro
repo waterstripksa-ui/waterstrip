@@ -1,6 +1,12 @@
 ---
+// Markup is waterstrip/login.html verbatim, but the form posts for real to
+// /api/login (Better Auth). Deviations, all invisible until used: the first
+// field is labelled and typed as email because accounts sign in by email, and
+// a failed sign-in shows its message in the mockup's own #lMsg slot.
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton } from '../lib/content/cache.ts';
 
 if (Astro.locals.user) {
   return Astro.redirect('/admin');
@@ -12,6 +18,7 @@ const errors: Record<string, string> = {
   missing: 'يرجى إدخال البريد الإلكتروني وكلمة المرور.',
 };
 const error = errors[Astro.url.searchParams.get('error') ?? ''];
+const banner = getSingleton('legal_banner');
 ---
 
 <Layout title="تسجيل الدخول" description="تسجيل الدخول لأعضاء شريط شراكات الابتكار المائي.">
@@ -22,83 +29,25 @@ const error = errors[Astro.url.searchParams.get('error') ?? ''];
 
   <section class="ribbon">
     <div class="wrap">
-      <div class="login-card">
-        <p class="login-card__eyebrow">منطقة الأعضاء</p>
-        <h2 class="login-card__title">تسجيل الدخول</h2>
-        <p class="login-card__lede">دخول أعضاء الشريط إلى مركز تحكّم المحتوى.</p>
-
-        <form class="form login-card__form" method="POST" action="/api/login">
-          {
-            error && (
-              <p class="form__error" role="alert">
-                <svg
-                  class="form__error-icon"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  height="16"
-                  width="16"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <circle cx="12" cy="12" r="9" />
-                  <path d="M12 7.5v5.5M12 16.2v.4" />
-                </svg>
-                <span>{error}</span>
-              </p>
-            )
-          }
-
-          <div class="form__field">
-            <label class="form__label" for="email">البريد الإلكتروني</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              required
-              autocomplete="username"
-              autocapitalize="off"
-              spellcheck="false"
-            />
-          </div>
-
-          <div class="form__field">
-            <label class="form__label" for="password">كلمة المرور</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              required
-              autocomplete="current-password"
-            />
-          </div>
-
-          <div class="form__actions">
-            <button class="button button--solid button--block" type="submit">
-              <span>تسجيل الدخول</span>
-              <svg
-                class="button__icon button__icon--directional"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.6"
-                height="16"
-                width="16"
-                viewBox="0 0 24 24"
-                aria-hidden="true"
-              >
-                <path d="M5 12h13M13 6l6 6-6 6" />
-              </svg>
-            </button>
+      <div class="login-shell reveal">
+        <p class="eyebrow" style="text-align:center">منطقة الأعضاء</p>
+        <h2 class="h-section" style="text-align:center;margin-top:12px">تسجيل الدخول</h2>
+        <p class="lede" style="text-align:center;margin-top:14px">دخول أعضاء الشريط إلى مركز تحكّم المحتوى.</p>
+        <form action="/api/login" class="form" id="loginForm" method="POST" novalidate style="margin-top:38px">
+          <div class="field"><label for="l-user">البريد الإلكتروني</label><input autocapitalize="off" autocomplete="username" dir="ltr" id="l-user" name="email" required spellcheck="false" type="email" /></div>
+          <div class="field"><label for="l-pass">كلمة المرور</label><input autocomplete="current-password" dir="ltr" id="l-pass" name="password" required type="password" /></div>
+          <label class="check"><input name="rememberMe" type="checkbox" /><span>أبقني مسجّلاً على هذا الجهاز</span></label>
+          <div class="form-actions" style="flex-direction:column;align-items:stretch">
+            <button class="btn-solid" style="justify-content:center" type="submit"><span>تسجيل الدخول</span><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></button>
+            {error
+              ? <span class="form-msg form-msg--error is-on" id="lMsg" role="alert" style="justify-content:center">{error}</span>
+              : <span class="form-msg" hidden id="lMsg" style="justify-content:center"></span>}
           </div>
         </form>
-
-        <p class="login-card__note">
-          الحسابات يُنشئها مدير النظام. للاستفسار
-          <a class="u-ltr" href="mailto:support@waterstrip.org">support@waterstrip.org</a>
-          <span> · </span>
-          <a href="/forgot-password">نسيت كلمة المرور</a>
-        </p>
+        <p class="login-note">لست عضوًا بعد? <a href="/register-interest" style="color:var(--c-link)">سجّل اهتمامك</a>  ·  <a href="/forgot-password" style="color:var(--c-link)">نسيت كلمة المرور</a></p>
       </div>
     </div>
   </section>
+
+  <MembershipBanner slot="after-main" banner={banner} />
 </Layout>

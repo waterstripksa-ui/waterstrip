@@ -20,7 +20,7 @@ const BOLD = /\*\*([^*]+)\*\*/g;
 
 function renderInline(text: string): string {
   return escapeHtml(text)
-    .replace(LINK, (_m, label: string, url: string) => `<a href="${url}">${label}</a>`)
+    .replace(LINK, (_m, label: string, url: string) => `<a href="${url}" style="color:var(--c-link)">${label}</a>`)
     .replace(BOLD, (_m, bold: string) => `<b>${bold}</b>`);
 }
 

@@ -14,10 +14,10 @@ const banner = getSingleton('legal_banner');
 <Layout title={page.titleAr}>
   <PageHero
     title={page.titleAr}
-    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: page.titleAr }]}
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: ` ${page.titleAr}` }]}
   />
 
   <LegalProse page={page} />
 
-  <MembershipBanner banner={banner} />
+  <MembershipBanner slot="after-main" banner={banner} />
 </Layout>

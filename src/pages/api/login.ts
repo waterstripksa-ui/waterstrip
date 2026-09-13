@@ -5,6 +5,8 @@ export const POST: APIRoute = async ({ request }) => {
   const form = await request.formData();
   const email = String(form.get('email') ?? '');
   const password = String(form.get('password') ?? '');
+  // The login page's "keep me signed in" checkbox; unticked means a session cookie.
+  const rememberMe = form.get('rememberMe') === 'on';
 
   if (!email || !password) {
     return redirectWithCookies('/login?error=missing', []);
@@ -12,7 +14,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   try {
     const result = await auth.api.signInEmail({
-      body: { email, password },
+      body: { email, password, rememberMe },
       asResponse: true,
     });
 

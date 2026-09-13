@@ -1,8 +1,12 @@
 ---
-// Ported from waterstrip/404.html. Pure navigation, like sitemap.astro — no
-// CMS surface, see that page's note.
+// Markup is waterstrip/404.html verbatim. Pure navigation, like sitemap.astro:
+// no CMS surface beyond the shared legal_banner closing banner.
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+
+const banner = getSingleton('legal_banner');
 
 const quickLinks = [
   { label: 'عن الشريط', href: '/about' },
@@ -18,36 +22,26 @@ const quickLinks = [
   <PageHero
     title="عذرًا، الصفحة غير موجودة"
     lede="ربما نُقل الرابط أو تغيّر عنوانه. جرّب أحد الروابط أدناه."
-    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'غير موجودة' }]}
+    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'غير موجودة', span: true }]}
   />
 
   <section class="ribbon">
     <div class="wrap">
-      <div class="section-head u-reveal">
-        <div class="section-head__text">
+      <div class="sec-head reveal">
+        <div class="sec-head__txt">
           <p class="eyebrow">خطأ 404</p>
-          <h2>أين تريد أن تذهب؟</h2>
+          <h2 class="h-section">أين تريد أن تذهب؟</h2>
         </div>
-        <a class="cta-circle" href="/">
-          <span>العودة للرئيسية</span>
-          <span class="circ">
-            <svg fill="none" stroke="currentColor" stroke-width="1.6" height="16" width="16" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M5 12h13M13 6l6 6-6 6"></path>
-            </svg>
-          </span>
-        </a>
+        <a class="cta-circle" href="/"><span>العودة للرئيسية</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
       </div>
-
-      <div class="quick-links u-reveal">
+      <div class="docs reveal">
         <h3>روابط سريعة</h3>
-        {
-          quickLinks.map((link) => (
-            <div class="quick-links__row">
-              <a href={link.href}>{link.label}</a>
-            </div>
-          ))
-        }
+        {quickLinks.map((link) => (
+          <div class="doc"><div class="doc__row"><a href={link.href}>{link.label}</a></div></div>
+        ))}
       </div>
     </div>
   </section>
+
+  <MembershipBanner slot="after-main" banner={banner} />
 </Layout>

@@ -1,6 +1,7 @@
 /**
  * The closing membership banner shared by every legal/utility page (terms,
- * privacy, cookies, accessibility, and the login/forgot-password auth pages). Unlike about_banner and contact_banner —
+ * privacy, cookies, accessibility, sitemap, 404, and the login/forgot-password
+ * auth pages). Unlike about_banner and contact_banner —
  * each a primary page's own conversion moment, worth tuning independently —
  * these are secondary chrome pages that all show the identical mockup copy,
  * so they share one editable surface instead of four near-duplicate ones.
