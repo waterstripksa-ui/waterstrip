@@ -1,9 +1,10 @@
 ---
-// Ported from waterstrip/article.html. The mockup reads its record from a
-// `?id=` query param; this port uses a proper dynamic route instead, same
-// reasoning as working-group/[slug].astro. No CMS surface for this page's own
-// chrome: everything shown comes from the article row (editable at
-// /admin/media) or the media_banner singleton.
+// Markup is waterstrip/article.html verbatim, filled server-side as main.js §21
+// fills it from article-data.js (?id= becomes the [slug] route). Content: the
+// article row (/admin/media) and the media_banner singleton.
+// Deliberate deviation: §21 reads `a.body` but article-data.js stores sections
+// under `blocks`, so the mockup never shows an article body. The sections are
+// rendered here into #aSections with the exact markup §21 would have produced.
 import Layout from '../../layouts/Layout.astro';
 import MembershipBanner from '../../components/MembershipBanner.astro';
 import { getArticle, getSingleton } from '../../lib/content/cache.ts';
@@ -18,68 +19,34 @@ if (!article) {
 }
 
 const banner = getSingleton('media_banner');
-const hero = resolveImage(article.imageId, imageFor(articleImages, article.slug));
 ---
 
 <Layout title={article.titleAr} description={article.ledeAr}>
-  <article class="article">
-    <header class="article__hero">
-      <img src={hero.src} alt="" />
-      <div class="article__scrim"></div>
+  <article class="art">
+    <header class="art__hero">
+      <img alt="" id="aImg" {...resolveImage(article.imageId, imageFor(articleImages, article.slug))} />
+      <div class="art__scrim"></div>
       <div class="wrap">
-        <nav class="breadcrumbs" aria-label="مسار التنقل">
-          <a class="breadcrumbs__link" href="/">الرئيسية</a>
-          <span class="breadcrumbs__sep" aria-hidden="true">/</span>
-          <a class="breadcrumbs__link" href="/media">الأخبار والفعاليات</a>
-          <span class="breadcrumbs__sep" aria-hidden="true">/</span>
-          <span class="breadcrumbs__current" aria-current="page">{article.kindAr}</span>
-        </nav>
-        <h1>{article.titleAr}</h1>
-        <p class="article__meta">
-          <span>{article.dateAr}</span>
-          <i></i>
-          <span>{article.readAr}</span>
-        </p>
+        <p class="crumbs"><a href="/">الرئيسية</a><span>/</span><a href="/media">المركز الإعلامي</a><span>/</span><span id="aKind">{article.kindAr || '—'}</span></p>
+        <h1 id="aTitle">{article.titleAr || '—'}</h1>
+        <p class="art__meta"><span id="aDate">{article.dateAr || '—'}</span><i></i><span id="aRead">{article.readAr || '—'}</span></p>
       </div>
     </header>
-
     <div class="wrap">
-      <div class="article__body u-reveal">
-        <p class="article__lede">{article.ledeAr}</p>
-
-        {article.blocks.length > 0 && (
-          <div class="article__sections">
-            {article.blocks.map((b) => (
-              <>
-                <h2>{b.headingAr}</h2>
-                <p>{b.bodyAr}</p>
-              </>
-            ))}
-          </div>
-        )}
-
-        {article.quoteAr && (
-          <figure class="article__quote">
-            <blockquote>{article.quoteAr}</blockquote>
-            {article.quoteByAr && <figcaption>{article.quoteByAr}</figcaption>}
-          </figure>
-        )}
-
-        {article.tagsAr.length > 0 && (
-          <div class="article__tags">
-            {article.tagsAr.map((tag) => (
-              <span class="article__tag">{tag}</span>
-            ))}
-          </div>
-        )}
+      <div class="art__body reveal">
+        <p class="art__lede" id="aLede">{article.ledeAr || '—'}</p>
+        <div id="aSections">{article.blocks.map((b) => (<><h2>{b.headingAr}</h2><p>{b.bodyAr}</p></>))}</div>
+        {article.quoteAr
+          ? <figure class="art__quote" id="aQuote"><blockquote id="aQuoteTxt">{article.quoteAr}</blockquote><figcaption id="aQuoteBy">{article.quoteByAr || '—'}</figcaption></figure>
+          : <figure class="art__quote" hidden id="aQuote"><blockquote id="aQuoteTxt"></blockquote><figcaption id="aQuoteBy"></figcaption></figure>}
+        <div class="art__tags" id="aTags">{article.tagsAr.map((t) => (<span class="art__tag">{t}</span>))}</div>
       </div>
-
-      <div class="article__nav u-reveal">
-        <a class="button button--ghost" href="/media">عودة إلى الأخبار والفعاليات</a>
-        <a class="button button--solid" href="/register-interest">سجّل اهتمامك</a>
+      <div class="art__nav reveal">
+        <a class="btn-pill" href="/media">عودة إلى المركز الإعلامي</a>
+        <a class="btn-pill btn-pill--alt" href="/register-interest">سجّل اهتمامك</a>
       </div>
     </div>
   </article>
 
-  <MembershipBanner banner={banner} />
+  <MembershipBanner slot="after-main" banner={banner} />
 </Layout>
