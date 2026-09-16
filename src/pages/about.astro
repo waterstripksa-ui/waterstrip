@@ -30,6 +30,19 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
 
   <section class="ribbon">
     <div class="wrap">
+      <div class="split reveal">
+        <figure><img alt="" {...resolveImage(founding.imageId, FOUNDING_STATEMENT_IMG)} /></figure>
+        <div>
+          <p class="eyebrow">{founding.eyebrowAr}</p>
+          <h3 style="font-family:var(--f-head);font-size:27px;line-height:38px;font-weight:500;margin:16px 0 24px">«{founding.quoteAr}»</h3><p class="eyebrow" style="margin:-8px 0 24px">{founding.attributionAr}</p>
+          <a class="cta-circle" href={founding.ctaHref}><span>{founding.ctaLabelAr}</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ribbon ribbon--grey">
+    <div class="wrap">
       <div class="sec-head reveal">
         <div class="sec-head__txt">
           <p class="eyebrow">{mission.eyebrowAr}</p>
@@ -42,6 +55,26 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
           <p style="font-size:17px;line-height:29px;">{mission.bodyAr2}</p>
         </div>
         <figure><img alt="شريط شراكات الابتكار المائي" loading="lazy" {...resolveImage(mission.imageId, MISSION_IMG)} /></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-head__txt">
+          <p class="eyebrow">{goals.eyebrowAr}</p>
+          <h2 class="h-section">{goals.headingAr}</h2>
+          <p class="lede">{goals.ledeAr}</p>
+        </div>
+      </div>
+      <div class="grid-4 reveal">
+        {goals.items.map((goal, i) => (
+          <div class="fact" style="border-top-width:2px;padding-top:22px">
+            <b>{ordinal(i)}</b><h3 style="font-size:20px;font-weight:500;margin:6px 0 12px">{goal.titleAr}</h3>
+            <p style="font-size:15px;line-height:25px;color:var(--c-text-soft)">{goal.bodyAr}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -76,39 +109,6 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
             <h3>{item.titleAr}</h3><p>{item.bodyAr}</p>
           </article>
         ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="ribbon ribbon--grey">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <div class="sec-head__txt">
-          <p class="eyebrow">{goals.eyebrowAr}</p>
-          <h2 class="h-section">{goals.headingAr}</h2>
-          <p class="lede">{goals.ledeAr}</p>
-        </div>
-      </div>
-      <div class="grid-4 reveal">
-        {goals.items.map((goal, i) => (
-          <div class="fact" style="border-top-width:2px;padding-top:22px">
-            <b>{ordinal(i)}</b><h3 style="font-size:20px;font-weight:500;margin:6px 0 12px">{goal.titleAr}</h3>
-            <p style="font-size:15px;line-height:25px;color:var(--c-text-soft)">{goal.bodyAr}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="ribbon">
-    <div class="wrap">
-      <div class="split reveal">
-        <figure><img alt="" {...resolveImage(founding.imageId, FOUNDING_STATEMENT_IMG)} /></figure>
-        <div>
-          <p class="eyebrow">{founding.eyebrowAr}</p>
-          <h3 style="font-family:var(--f-head);font-size:27px;line-height:38px;font-weight:500;margin:16px 0 24px">«{founding.quoteAr}»</h3><p class="eyebrow" style="margin:-8px 0 24px">{founding.attributionAr}</p>
-          <a class="cta-circle" href={founding.ctaHref}><span>{founding.ctaLabelAr}</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
-        </div>
       </div>
     </div>
   </section>

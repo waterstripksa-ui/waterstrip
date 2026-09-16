@@ -46,10 +46,10 @@ for (const [key, data] of surfaces) {
   lede="تحرير نصوص صفحة عن الشريط وصورها. كل قسم يُحفظ على حدة، ويظهر التغيير في الموقع مباشرة بعد الحفظ."
 >
   <AboutHeroEditor initial={hero} client:load />
+  <AboutFoundingStatementEditor initial={founding} media={media} client:load />
   <AboutMissionEditor initial={mission} media={media} client:load />
+  <AboutGoalsEditor initial={goals} client:load />
   <AboutGlanceEditor initial={glance} client:load />
   <AboutChallengesEditor initial={challenges} media={media} client:load />
-  <AboutGoalsEditor initial={goals} client:load />
-  <AboutFoundingStatementEditor initial={founding} media={media} client:load />
   <AboutBannerEditor initial={banner} media={media} client:load />
 </AdminLayout>
