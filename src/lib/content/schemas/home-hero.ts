@@ -100,11 +100,27 @@ function v3_to_v4(data: unknown): unknown {
   };
 }
 
+/** v4 sent the "الإعلانات" panel's "المزيد" button to `/about` instead of the news hub. */
+const v4_TO_V5_HREFS: Record<string, string> = {
+  'hero-3': '/media#news',
+};
+
+function v4_to_v5(data: unknown): unknown {
+  const prev = data as z.infer<typeof v3>;
+  return {
+    ...prev,
+    panels: prev.panels.map((panel) => ({
+      ...panel,
+      ctaHref: v4_TO_V5_HREFS[panel.id] ?? panel.ctaHref,
+    })),
+  };
+}
+
 export const homeHero = defineSingleton<HomeHero>({
   key: 'home_hero',
-  version: 4,
+  version: 5,
   schema: v3,
-  migrations: [v1_to_v2, v2_to_v3, v3_to_v4],
+  migrations: [v1_to_v2, v2_to_v3, v3_to_v4, v4_to_v5],
   initial: {
     panels: [
       {
@@ -128,7 +144,7 @@ export const homeHero = defineSingleton<HomeHero>({
         eyebrowAr: 'الإعلانات',
         headingAr: 'وزارة البيئة والمياه والزراعة تُطلق شريط شراكات الابتكار المائي من جدة.',
         ctaLabelAr: 'اعرف المزيد',
-        ctaHref: '/about',
+        ctaHref: '/media#news',
         imageId: null,
       },
     ],
