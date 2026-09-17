@@ -10,6 +10,7 @@ import HeroEditor from '../../components/admin/HeroEditor.tsx';
 import DiscoverEditor from '../../components/admin/DiscoverEditor.tsx';
 import ChallengesEditor from '../../components/admin/ChallengesEditor.tsx';
 import AwardsEditor from '../../components/admin/AwardsEditor.tsx';
+import MapEditor from '../../components/admin/MapEditor.tsx';
 import PartnersEditor from '../../components/admin/PartnersEditor.tsx';
 import AboutBannerEditor from '../../components/admin/AboutBannerEditor.tsx';
 
@@ -19,6 +20,7 @@ const hero = structuredClone(getSingleton('home_hero'));
 const discover = structuredClone(getSingleton('home_discover'));
 const challenges = structuredClone(getSingleton('home_challenges'));
 const awards = structuredClone(getSingleton('home_awards'));
+const map = structuredClone(getSingleton('home_map'));
 const partners = structuredClone(getSingleton('home_partners'));
 const aboutBanner = structuredClone(getSingleton('home_about_banner'));
 
@@ -48,6 +50,7 @@ for (const [key, data] of surfaces) {
   <DiscoverEditor initial={discover} media={media} client:load />
   <ChallengesEditor initial={challenges} media={media} client:load />
   <AwardsEditor initial={awards} client:load />
+  <MapEditor initial={map} client:load />
   <PartnersEditor initial={partners} media={media} client:load />
   <AboutBannerEditor initial={aboutBanner} media={media} client:load />
 </AdminLayout>

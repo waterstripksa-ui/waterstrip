@@ -27,3 +27,181 @@
 .skip-link:focus {
   transform: none;
 }
+
+/* Corridor map ("أصول الشريط") — the mockup never designed this section; it is
+   ported from an older, retired design pass (water-strip-website.html) that
+   predates the mockup-verbatim switch, adapted to the mockup's own dark-panel
+   idiom (.awards__panel) and the five official brand blues instead of that
+   pass's own ad hoc palette. */
+.map {
+  padding-block: 0;
+}
+
+.map__panel {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  padding: 74px 68px 78px;
+  background: var(--c-text, #0b2c25);
+  background-image: var(--g-brand);
+  background-size: 100% 4px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+}
+
+.map__head {
+  position: relative;
+  z-index: 1;
+  max-width: 760px;
+  margin-bottom: 44px;
+}
+
+.map__head .eyebrow {
+  margin-bottom: 16px;
+}
+
+.map__head .h-section {
+  color: #fff;
+  font-weight: 700;
+  margin: 0 0 18px;
+}
+
+.map__head .lede {
+  color: rgba(255, 255, 255, 0.76);
+  margin: 0;
+  max-width: 62ch;
+}
+
+.map__grid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 56px;
+  align-items: center;
+}
+
+.map__viz {
+  position: relative;
+}
+
+.map__viz svg {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Under RTL, `start` anchors a label's right edge at x and the Arabic runs
+   leftward over the corridor. `end` puts its left edge at x instead, so it runs
+   right, away from the coastline, as in the design. */
+.map__svg-name,
+.map__svg-tag {
+  direction: rtl;
+  text-anchor: end;
+}
+
+.map__svg-sea {
+  fill: rgba(255, 255, 255, 0.55);
+  font-family: var(--f-head);
+  font-size: 13px;
+  text-anchor: middle;
+}
+
+.map__svg-name {
+  fill: #fff;
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.map__svg-tag {
+  fill: rgba(255, 255, 255, 0.62);
+  font-family: var(--f-body);
+  font-size: 10.5px;
+}
+
+.map__svg-dot circle {
+  fill: #dff5fc;
+}
+
+.map__svg-dot--kaec circle {
+  fill: #9ed8ee;
+}
+
+.map__svg-dot text {
+  fill: #0b2540;
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: 10px;
+}
+
+.map__legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.map__hub {
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  column-gap: 14px;
+  align-items: start;
+  border-top: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 18px 0;
+}
+
+.map__hub:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.map__hub-no {
+  font-family: var(--f-head);
+  font-weight: 700;
+  font-size: 15px;
+  color: #2fb2dc;
+  padding-top: 2px;
+}
+
+.map__hub h3 {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 4px;
+}
+
+.map__hub p {
+  font-size: 13px;
+  line-height: 20px;
+  color: rgba(255, 255, 255, 0.62);
+  margin: 0;
+}
+
+.map__hub-loc {
+  font-size: 12px;
+  color: #61cbf1;
+  white-space: nowrap;
+  align-self: start;
+  padding-top: 3px;
+}
+
+@media (max-width: 900px) {
+  .map__panel {
+    padding: 32px 18px;
+  }
+
+  .map__grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .map__hub h3 {
+    font-size: 14px;
+    line-height: 21px;
+  }
+
+  .map__hub p {
+    font-size: 11.5px;
+    line-height: 18px;
+  }
+}

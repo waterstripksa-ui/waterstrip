@@ -12,11 +12,42 @@ const hero = getSingleton('home_hero');
 const discover = getSingleton('home_discover');
 const challenges = getSingleton('home_challenges');
 const awards = getSingleton('home_awards');
+const map = getSingleton('home_map');
 const partners = getSingleton('home_partners');
 const aboutBanner = getSingleton('home_about_banner');
 
 /** The panel's 01, 02, … ordinal — derived from position, never stored. */
 const ordinal = (i: number) => String(i + 1).padStart(2, '0');
+
+/**
+ * Where the map draws a hub's numbered dot. Real-world geometry, not content —
+ * a hub's *position in the list* (not anything stored on it) picks its slot, the
+ * same way its ordinal is derived. Only the first eight hubs get a dot; the
+ * schema caps the list at eight for exactly this reason.
+ */
+const MAP_HUB_SLOTS: ReadonlyArray<{ clusterId: 'rabigh' | 'kaec' | 'thuwal'; cx: number; cy: number }> = [
+  { clusterId: 'thuwal', cx: 120, cy: 264 },
+  { clusterId: 'thuwal', cx: 98, cy: 278 },
+  { clusterId: 'kaec', cx: 120, cy: 168 },
+  { clusterId: 'rabigh', cx: 120, cy: 72 },
+  { clusterId: 'rabigh', cx: 120, cy: 100 },
+  { clusterId: 'kaec', cx: 120, cy: 194 },
+  { clusterId: 'thuwal', cx: 120, cy: 292 },
+  { clusterId: 'rabigh', cx: 98, cy: 86 },
+];
+
+/** The four fixed points the corridor runs through, north to south. */
+const MAP_CLUSTERS: ReadonlyArray<{
+  id: 'rabigh' | 'kaec' | 'thuwal' | 'jeddah';
+  cy: number;
+  color: string;
+  pulseDelay: number | null;
+}> = [
+  { id: 'rabigh', cy: 86, color: '#2FB2DC', pulseDelay: 0 },
+  { id: 'kaec', cy: 180, color: '#2B8CCC', pulseDelay: 0.7 },
+  { id: 'thuwal', cy: 278, color: '#1A77BC', pulseDelay: 1.4 },
+  { id: 'jeddah', cy: 392, color: '#154A91', pulseDelay: null },
+];
 ---
 
 <Layout title="الرئيسية">
@@ -94,6 +125,89 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
         </div>
       </div>
       <div class="scrollbar" id="believeBar"><i></i></div>
+    </div>
+  </section>
+
+  <section class="ribbon map" id="map">
+    <div class="wrap">
+      <div class="map__panel">
+        <div class="map__head reveal">
+          <p class="eyebrow eyebrow--light">{map.eyebrowAr}</p>
+          <h2 class="h-section">{map.headingAr}</h2>
+          <p class="lede">{map.ledeAr}</p>
+        </div>
+        <div class="map__grid">
+          <div class="map__viz reveal">
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 420 470">
+              <defs>
+                <linearGradient id="mapSea" x1="0" x2="1" y1="0" y2="0">
+                  <stop offset="0" stop-color="#154A91" stop-opacity=".45" />
+                  <stop offset="1" stop-color="#61CBF1" stop-opacity=".08" />
+                </linearGradient>
+              </defs>
+              <rect fill="url(#mapSea)" height="470" width="150" x="0" y="0" />
+              <text class="map__svg-sea" transform="rotate(-90 34 240)" x="34" y="240">البحر الأحمر</text>
+              <path
+                d="M150 0 Q135 60 152 120 Q168 180 150 240 Q134 300 154 360 Q170 420 150 470"
+                fill="none"
+                stroke="rgba(43,140,204,.5)"
+                stroke-width="1.5"
+              />
+              <rect
+                fill="rgba(47,178,220,.10)"
+                height="384"
+                rx="18"
+                stroke="rgba(47,178,220,.35)"
+                stroke-width="1"
+                width="36"
+                x="138"
+                y="46"
+              />
+              <line stroke="rgba(47,178,220,.5)" stroke-dasharray="2 5" stroke-width="1.5" x1="156" x2="156" y1="70" y2="406" />
+
+              {MAP_CLUSTERS.map((c) => (
+                <g>
+                  <circle cx="156" cy={c.cy} fill={c.color} r="7" />
+                  {c.pulseDelay !== null && (
+                    <circle cx="156" cy={c.cy} fill="none" r="7" stroke={c.color} stroke-width="1.5">
+                      <animate attributeName="r" begin={`${c.pulseDelay}s`} dur="3s" repeatCount="indefinite" values="7;24;7" />
+                      <animate attributeName="opacity" begin={`${c.pulseDelay}s`} dur="3s" repeatCount="indefinite" values=".9;0;.9" />
+                    </circle>
+                  )}
+                  <text class="map__svg-name" x="176" y={c.cy - 4}>{map.clusters[c.id].nameAr}</text>
+                  <text class="map__svg-tag" x="176" y={c.cy + 12}>{map.clusters[c.id].taglineAr}</text>
+                </g>
+              ))}
+
+              {map.hubs.map((_, i) => {
+                const slot = MAP_HUB_SLOTS[i];
+                if (!slot) return null;
+                return (
+                  <g class:list={['map__svg-dot', `map__svg-dot--${slot.clusterId}`]}>
+                    <circle cx={slot.cx} cy={slot.cy} r="9" />
+                    <text text-anchor="middle" x={slot.cx} y={slot.cy + 3.5}>{i + 1}</text>
+                  </g>
+                );
+              })}
+            </svg>
+          </div>
+          <ol class="map__legend reveal">
+            {map.hubs.map((hub, i) => {
+              const slot = MAP_HUB_SLOTS[i];
+              return (
+                <li class="map__hub">
+                  <span aria-hidden="true" class="map__hub-no">{ordinal(i)}</span>
+                  <div>
+                    <h3>{hub.nameAr}</h3>
+                    <p>{hub.descriptionAr}</p>
+                  </div>
+                  {slot && <span class="map__hub-loc">{map.clusters[slot.clusterId].nameAr}</span>}
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </div>
     </div>
   </section>
 

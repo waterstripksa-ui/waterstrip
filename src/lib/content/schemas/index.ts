@@ -7,6 +7,7 @@ import { homeHero } from './home-hero.ts';
 import { homeDiscover } from './home-discover.ts';
 import { homeChallenges } from './home-challenges.ts';
 import { homeAwards } from './home-awards.ts';
+import { homeMap } from './home-map.ts';
 import { homePartners } from './home-partners.ts';
 import { homeAboutBanner } from './home-about-banner.ts';
 import { aboutHero } from './about-hero.ts';
@@ -40,6 +41,7 @@ export const singletons = {
   home_discover: homeDiscover,
   home_challenges: homeChallenges,
   home_awards: homeAwards,
+  home_map: homeMap,
   home_partners: homePartners,
   home_about_banner: homeAboutBanner,
   about_hero: aboutHero,
@@ -79,6 +81,7 @@ export {
   homeDiscover,
   homeChallenges,
   homeAwards,
+  homeMap,
   homePartners,
   homeAboutBanner,
   aboutHero,
