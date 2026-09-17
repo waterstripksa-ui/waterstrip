@@ -46,6 +46,20 @@ export const siteHref = z
   );
 
 /**
+ * An external social-profile link. Unlike `siteHref`, an absolute URL is the
+ * point — this is for footer social buttons, not on-site navigation. Empty
+ * means "not set": the public footer hides that button.
+ */
+export const socialUrl = z
+  .string()
+  .trim()
+  .max(300, 'الحد الأقصى 300 حرف.')
+  .refine(
+    (v) => v === '' || /^https:\/\//i.test(v),
+    'يجب أن يكون رابطًا كاملاً يبدأ بـ https://‎، أو تركه فارغًا لإخفاء الزر.',
+  );
+
+/**
  * A list item's stable identity. Generated when an admin adds an item and never
  * re-keyed afterwards, so reordering and removal cannot shuffle the placeholder
  * artwork map in src/lib/home-assets.ts.

@@ -9,7 +9,7 @@
  * Export is **content only**. `user`, `session` and `account` rows never enter the
  * envelope: password hashes must not leave in a file an admin can download.
  */
-import { existsSync } from 'node:fs';
+import { existsSync, unlinkSync } from 'node:fs';
 import { asc, inArray } from 'drizzle-orm';
 import { z } from 'zod';
 import { db } from '../../db/index.ts';
@@ -346,6 +346,62 @@ export function importContent(
   replaceMembers(members, options.updatedBy);
   invalidateAll();
   return report;
+}
+
+export interface ResetReport {
+  singletons: number;
+  events: number;
+  workingGroups: number;
+  articles: number;
+  members: number;
+  media: number;
+  /** Uploaded files removed from UPLOAD_PATH. Can be lower than `media` if a file was already missing. */
+  mediaFilesDeleted: number;
+}
+
+/**
+ * Wipes every content surface back to nothing: singletons, events, working
+ * groups, articles, members, media rows, and their uploaded files. Unlike
+ * `importContent`, which upserts singletons and media so a restore can never
+ * orphan files, this is the one path that actually deletes them — it exists
+ * for staff who want a blank slate to re-seed onto, not for routine imports.
+ */
+export function resetContent(): ResetReport {
+  const singletonRows = db.select({ key: contentSingleton.key }).from(contentSingleton).all();
+  const eventRows = db.select({ slug: event.slug }).from(event).all();
+  const workingGroupRows = db.select({ slug: workingGroup.slug }).from(workingGroup).all();
+  const articleRows = db.select({ slug: article.slug }).from(article).all();
+  const memberRows = db.select({ slug: member.slug }).from(member).all();
+  const mediaRows = db.select({ id: media.id, ext: media.ext }).from(media).all();
+
+  let mediaFilesDeleted = 0;
+  for (const row of mediaRows) {
+    const filePath = mediaFilePath(row.id, row.ext);
+    if (existsSync(filePath)) {
+      unlinkSync(filePath);
+      mediaFilesDeleted += 1;
+    }
+  }
+
+  db.transaction((tx) => {
+    tx.delete(contentSingleton).run();
+    tx.delete(media).run();
+  });
+  replaceEvents([]);
+  replaceWorkingGroups([]);
+  replaceArticles([]);
+  replaceMembers([]);
+  invalidateAll();
+
+  return {
+    singletons: singletonRows.length,
+    events: eventRows.length,
+    workingGroups: workingGroupRows.length,
+    articles: articleRows.length,
+    members: memberRows.length,
+    media: mediaRows.length,
+    mediaFilesDeleted,
+  };
 }
 
 /** True when no content has been imported or edited yet. */

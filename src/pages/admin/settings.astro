@@ -1,0 +1,12 @@
+---
+// General site settings that don't belong to a specific public page.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getSingleton } from '../../lib/content/cache.ts';
+import FooterSocialEditor from '../../components/admin/settings/FooterSocialEditor.tsx';
+
+const footerSocial = structuredClone(getSingleton('footer_social'));
+---
+
+<AdminLayout title="الإعدادات" lede="إعدادات عامة للموقع، مثل روابط التواصل الاجتماعي في التذييل.">
+  <FooterSocialEditor initial={footerSocial} client:load />
+</AdminLayout>

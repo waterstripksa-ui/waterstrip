@@ -358,7 +358,12 @@ npm run content:import -- backup.json
 npm run content:import -- backup.json --dry-run
 npm run content:migrate                 # ladder + insert missing surfaces
 npm run content:seed                    # import content/seed.json, if content is empty
+npm run content:reset -- --yes          # wipe all singletons/collections/media, including files
 ```
+
+`content:reset` is the one path that actually deletes rows and files rather than upserting —
+useful for staff who want a blank slate before re-running `content:seed` or importing a backup.
+It refuses to run without `--yes`.
 
 `npm run setup` — and therefore `npm run dev` and `npm start` — runs
 `db:migrate → content:seed → content:migrate → db:seed`. That order matters: seeding before

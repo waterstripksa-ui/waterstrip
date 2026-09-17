@@ -38,6 +38,7 @@ npm run content:migrate  # bring singleton payloads to the current schema versio
 npm run content:seed     # import content/seed.json when content tables are empty
 npm run content:export   # write the content envelope to stdout, or to a file argument
 npm run content:import   # node scripts/content.ts import <file> [--dry-run]
+npm run content:reset -- --yes  # wipe all content and uploaded media back to empty
 npx astro check          # typecheck — must stay clean
 ```
 

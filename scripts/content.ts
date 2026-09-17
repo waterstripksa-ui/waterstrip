@@ -5,15 +5,17 @@
  *   node scripts/content.ts import <file>       # transactional; validates first
  *   node scripts/content.ts import <file> --dry-run
  *   node scripts/content.ts seed                # import content/seed.json if empty
+ *   node scripts/content.ts reset --yes          # wipe all content and uploaded media
  *
  * `seed` is what `npm run db:seed` calls, so the import path is exercised on every
  * fresh install rather than only when someone needs a restore.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
-import { exportContent, importContent, isContentEmpty } from '../src/lib/content/io.ts';
+import { exportContent, importContent, isContentEmpty, resetContent } from '../src/lib/content/io.ts';
 
 const [command, ...rest] = process.argv.slice(2);
 const dryRun = rest.includes('--dry-run');
+const confirmed = rest.includes('--yes');
 const fileArg = rest.find((a) => !a.startsWith('--'));
 
 function readEnvelope(path: string): unknown {
@@ -79,6 +81,24 @@ switch (command) {
     }
     const path = fileArg ?? 'content/seed.json';
     describe(path, importContent(readEnvelope(path), { dryRun }));
+    break;
+  }
+
+  case 'reset': {
+    if (!confirmed) {
+      throw new Error(
+        'This deletes every singleton, event, working group, article, member, and ' +
+          'uploaded media file. Re-run with --yes to confirm: node scripts/content.ts reset --yes',
+      );
+    }
+    const report = resetContent();
+    console.log('[content] Reset:');
+    console.log(`  singletons: ${report.singletons}`);
+    console.log(`  events: ${report.events}`);
+    console.log(`  working groups: ${report.workingGroups}`);
+    console.log(`  articles: ${report.articles}`);
+    console.log(`  members: ${report.members}`);
+    console.log(`  media rows: ${report.media} (${report.mediaFilesDeleted} file(s) deleted)`);
     break;
   }
 

@@ -18,7 +18,8 @@
     "content:migrate": "node scripts/migrate-content.ts",
     "content:seed": "node scripts/content.ts seed",
     "content:export": "node scripts/content.ts export",
-    "content:import": "node scripts/content.ts import"
+    "content:import": "node scripts/content.ts import",
+    "content:reset": "node scripts/content.ts reset"
   },
   "dependencies": {
     "@astrojs/node": "^11.1.5",
