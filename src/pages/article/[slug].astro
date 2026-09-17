@@ -1,52 +1,14 @@
 ---
-// Markup is waterstrip/article.html verbatim, filled server-side as main.js §21
-// fills it from article-data.js (?id= becomes the [slug] route). Content: the
-// article row (/admin/media) and the media_banner singleton.
-// Deliberate deviation: §21 reads `a.body` but article-data.js stores sections
-// under `blocks`, so the mockup never shows an article body. The sections are
-// rendered here into #aSections with the exact markup §21 would have produced.
-import Layout from '../../layouts/Layout.astro';
-import MembershipBanner from '../../components/MembershipBanner.astro';
-import { getArticle, getSingleton } from '../../lib/content/cache.ts';
-import { imageFor, resolveImage } from '../../lib/media-assets.ts';
-import { articleImages } from '../../lib/article-assets.ts';
+// waterstrip/article.html (?id= becomes [slug]). The body is src/views/Article.astro, shared
+// with the /en twin (docs/i18n.md).
+import Article from '../../views/Article.astro';
+import { getArticle } from '../../lib/content/cache.ts';
 
-const { slug } = Astro.params;
-const article = slug ? getArticle(slug) : null;
+const article = getArticle(Astro.params.slug ?? '');
 
 if (!article) {
   return Astro.rewrite('/404');
 }
-
-const banner = getSingleton('media_banner');
 ---
 
-<Layout title={article.titleAr} description={article.ledeAr}>
-  <article class="art">
-    <header class="art__hero">
-      <img alt="" id="aImg" {...resolveImage(article.imageId, imageFor(articleImages, article.slug))} />
-      <div class="art__scrim"></div>
-      <div class="wrap">
-        <p class="crumbs"><a href="/">الرئيسية</a><span>/</span><a href="/media">المركز الإعلامي</a><span>/</span><span id="aKind">{article.kindAr || '—'}</span></p>
-        <h1 id="aTitle">{article.titleAr || '—'}</h1>
-        <p class="art__meta"><span id="aDate">{article.dateAr || '—'}</span><i></i><span id="aRead">{article.readAr || '—'}</span></p>
-      </div>
-    </header>
-    <div class="wrap">
-      <div class="art__body reveal">
-        <p class="art__lede" id="aLede">{article.ledeAr || '—'}</p>
-        <div id="aSections">{article.blocks.map((b) => (<><h2>{b.headingAr}</h2><p>{b.bodyAr}</p></>))}</div>
-        {article.quoteAr
-          ? <figure class="art__quote" id="aQuote"><blockquote id="aQuoteTxt">{article.quoteAr}</blockquote><figcaption id="aQuoteBy">{article.quoteByAr || '—'}</figcaption></figure>
-          : <figure class="art__quote" hidden id="aQuote"><blockquote id="aQuoteTxt"></blockquote><figcaption id="aQuoteBy"></figcaption></figure>}
-        <div class="art__tags" id="aTags">{article.tagsAr.map((t) => (<span class="art__tag">{t}</span>))}</div>
-      </div>
-      <div class="art__nav reveal">
-        <a class="btn-pill" href="/media">عودة إلى المركز الإعلامي</a>
-        <a class="btn-pill btn-pill--alt" href="/register-interest">سجّل اهتمامك</a>
-      </div>
-    </div>
-  </article>
-
-  <MembershipBanner slot="after-main" banner={banner} />
-</Layout>
+<Article article={article} />

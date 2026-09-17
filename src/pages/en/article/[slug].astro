@@ -1,0 +1,14 @@
+---
+// waterstrip/article.html (?id= becomes [slug]). The body is src/views/Article.astro, shared
+// with the Arabic route (docs/i18n.md).
+import Article from '../../../views/Article.astro';
+import { getArticle } from '../../../lib/content/cache.ts';
+
+const article = getArticle(Astro.params.slug ?? '');
+
+if (!article) {
+  return Astro.rewrite('/en/404');
+}
+---
+
+<Article article={article} />

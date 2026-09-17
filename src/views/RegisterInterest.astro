@@ -1,0 +1,115 @@
+---
+// Markup is waterstrip/register-interest.html verbatim. Hero and aside copy
+// come from the content cache (/admin/register-interest). No backend yet
+// (pre-launch checklist item 5), so the inline script is the mockup's own
+// main.js §15 behaviour for #interestForm; the file picker label is main.js §20.
+// Like the mockup, this page has no closing membership banner.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+
+const hero = getSingleton('register_hero');
+const info = getSingleton('register_info');
+
+// Submitted values stay the Arabic labels whatever the page language, so a
+// future backend receives one vocabulary; only the visible label is translated.
+const arabic = ui('ar').register;
+const entityTypes = t.register.entityTypes.map((label, i) => ({ label, value: arabic.entityTypes[i] }));
+const interestAreas = t.register.areas.map((label, i) => ({ label, value: arabic.areas[i] }));
+---
+
+<Layout title={L.text(hero, 'title')} description={L.text(hero, 'lede')}>
+  <PageHero
+    title={L.text(hero, 'title')}
+    titleAttrs={L.attrs(hero, 'title')}
+    lede={L.text(hero, 'lede')}
+    ledeAttrs={L.attrs(hero, 'lede')}
+    crumbs={[{ label: t.nav.home, href: L.href('/') }, { label: ` ${L.text(hero, 'title')}` }]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="form-shell">
+        <form class="form reveal" id="interestForm" novalidate>
+          <div class="row-2">
+            <div class="field"><label for="ri-name">{t.register.fullName}</label><input id="ri-name" name="name" required /></div>
+            <div class="field"><label for="ri-entity">{t.register.entity}</label><input id="ri-entity" name="entity" required /></div>
+          </div>
+          <div class="row-2">
+            <div class="field"><label for="ri-type">{t.register.entityType}</label>
+              <select id="ri-type" name="type" required><option value="">{t.register.choose}</option>{entityTypes.map((o) => <option value={o.value}>{o.label}</option>)}</select></div>
+            <div class="field"><label for="ri-email">{t.register.email}</label><input id="ri-email" name="email" required type="email" /></div>
+          </div>
+          <div class="row-2">
+            <div class="field"><label for="ri-phone">{t.register.phone}</label><input id="ri-phone" name="phone" /></div>
+            <div class="field"><label for="ri-site">{t.register.website}</label><input id="ri-site" name="website" placeholder="https://" /></div>
+          </div>
+          <div class="field"><label for="ri-area">{t.register.area}</label>
+            <select id="ri-area" name="area" required><option selected value="">{t.register.choose}</option>{interestAreas.map((o) => <option value={o.value}>{o.label}</option>)}</select>
+            <p class="hint">{t.register.areaHint}</p></div>
+          <div class="field"><label for="ri-msg">{t.register.message}</label><textarea id="ri-msg" name="message"></textarea></div>
+          <div class="field">
+            <label for="ri-file">{t.register.file}</label>
+            <p class="hint hint--top">{t.register.fileHint}</p>
+            <div class="filepick">
+              <input accept=".pdf,.ppt,.pptx,.doc,.docx" id="ri-file" name="portfolio" type="file" />
+              <label class="filepick__btn" for="ri-file">{t.register.fileButton}</label>
+              <span class="filepick__name">{t.register.fileNone}</span>
+            </div>
+          </div>
+          <label class="check"><input required type="checkbox" /><span>{t.register.consentBefore}<a href={L.href('/terms')} style="color:var(--c-link)">{t.footer.terms}</a>{t.register.consentAnd}<a href={L.href('/privacy')} style="color:var(--c-link)">{t.footer.privacy}</a>{t.register.consentAfter}</span></label>
+          <div class="form-actions">
+            <button class="btn-solid" type="submit"><span>{t.register.submit}</span><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></button>
+            <span class="form-msg" id="riMsg"><svg fill="none" height="15" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>{t.register.success}</span></span>
+          </div>
+        </form>
+        <aside class="aside-card reveal">
+          <h3 {...L.attrs(info, 'heading')}>{L.text(info, 'heading')}</h3>
+          <p class="aside-card__lede" {...L.attrs(info, 'lede')}>{L.text(info, 'lede')}</p>
+          <ol class="aside-steps">
+            {info.steps.map((step, i) => (
+              <li>
+                <span class="aside-steps__no">{i + 1}</span>
+                <span><b {...L.attrs(step, 'title')}>{L.text(step, 'title')}</b><span class="aside-steps__txt" {...L.attrs(step, 'body')}>{L.text(step, 'body')}</span></span>
+              </li>
+            ))}
+          </ol>
+          <div class="aside-card__social">
+            <p {...L.attrs(info, 'questionLabel')}>{L.text(info, 'questionLabel')}</p>
+            <a class="aside-card__mail" href={`mailto:${info.supportEmail}`}>
+              <svg fill="none" height="15" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="15" aria-hidden="true"><rect height="15" rx="2.5" width="19" x="2.5" y="4.5"></rect><path d="M3 6.5l9 6.5 9-6.5"></path></svg>
+              <span>{info.supportEmail}</span>
+            </a>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  // main.js §15 for #interestForm, verbatim in behaviour.
+  const form = document.getElementById('interestForm') as HTMLFormElement | null;
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let ok = true;
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[required]').forEach((f) => {
+      const bad = f instanceof HTMLInputElement && f.type === 'checkbox' ? !f.checked : !f.value.trim();
+      f.style.borderColor = bad ? '#C0392B' : '';
+      if (bad) ok = false;
+    });
+    if (!ok) return;
+    document.getElementById('riMsg')?.classList.add('is-on');
+    form.querySelector('.btn-solid')?.setAttribute('disabled', '');
+  });
+  form?.addEventListener('input', (e) => {
+    (e.target as HTMLElement).style.borderColor = '';
+  });
+</script>

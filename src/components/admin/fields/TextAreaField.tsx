@@ -8,10 +8,24 @@ interface Props {
   name: string;
   error?: string;
   hint?: string;
+  /** No required marker. Only English (`xEn`) fields are optional. */
+  optional?: boolean;
+  /** Set on English inputs, which also switch the control to LTR. */
+  lang?: 'en';
   rows?: number;
 }
 
-export function TextAreaField({ label, value, onChange, name, error, hint, rows = 3 }: Props) {
+export function TextAreaField({
+  label,
+  value,
+  onChange,
+  name,
+  error,
+  hint,
+  rows = 3,
+  optional,
+  lang,
+}: Props) {
   const id = useId();
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
@@ -21,9 +35,11 @@ export function TextAreaField({ label, value, onChange, name, error, hint, rows 
     <div className="form__field">
       <label className="form__label" htmlFor={id}>
         {label}
-        <span className="form__required" aria-hidden="true">
-          *
-        </span>
+        {!optional && (
+          <span className="form__required" aria-hidden="true">
+            *
+          </span>
+        )}
       </label>
       <textarea
         id={id}
@@ -33,6 +49,8 @@ export function TextAreaField({ label, value, onChange, name, error, hint, rows 
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy || undefined}
+        dir={lang === 'en' ? 'ltr' : undefined}
+        lang={lang}
       />
       {hint && (
         <p className="form__hint" id={hintId}>

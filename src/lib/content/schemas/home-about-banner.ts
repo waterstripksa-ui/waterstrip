@@ -6,7 +6,8 @@
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText, mediaId, siteHref } from './fields.ts';
+import { addEnFields } from './add-en-fields.ts';
+import { arText, enText, mediaId, siteHref } from './fields.ts';
 
 const v1 = z.object({
   eyebrowAr: arText(1, 40),
@@ -21,7 +22,15 @@ const v2 = v1.extend({
   imageId: mediaId.nullable(),
 });
 
-export type HomeAboutBanner = z.infer<typeof v2>;
+/** English siblings of the copy fields, added in v4. */
+const v4 = v2.extend({
+  eyebrowEn: enText(40),
+  headingEn: enText(120),
+  ledeEn: enText(300),
+  ctaLabelEn: enText(40),
+});
+
+export type HomeAboutBanner = z.infer<typeof v4>;
 
 /** v2 made the background uploadable. An existing banner starts with none. */
 function v1_to_v2(data: unknown): unknown {
@@ -35,14 +44,18 @@ function v2_to_v3(data: unknown): unknown {
 
 export const homeAboutBanner = defineSingleton<HomeAboutBanner>({
   key: 'home_about_banner',
-  version: 3,
-  schema: v2,
-  migrations: [v1_to_v2, v2_to_v3],
+  version: 4,
+  schema: v4,
+  migrations: [v1_to_v2, v2_to_v3, addEnFields],
   initial: {
     eyebrowAr: 'العضوية',
+    eyebrowEn: '',
     headingAr: 'انضم إلى الشريط',
+    headingEn: '',
     ledeAr: 'شارك في تشكيل مستقبل قطاع المياه في المملكة.',
+    ledeEn: '',
     ctaLabelAr: 'سجّل اهتمامك',
+    ctaLabelEn: '',
     ctaHref: '/register-interest',
     imageId: null,
   },

@@ -37,9 +37,9 @@ guarded — the site works without animations if they fail to load.
 `wg-data.js`, `article-data.js` and `events-data.js` are objects keyed by slug, with per-record
 fields and nested arrays (`blocks`, `stats`, `recs`). They are the natural starting shape for
 the first CMS tables — port them into Drizzle tables rather than inventing a model from scratch.
-Records carry both `x` and `x_ar` variants and a `src` provenance field; the site is
-Arabic-only, so confirm whether the non-`_ar` duplicates are worth keeping before copying them
-forward.
+Records carry both `x` and `x_ar` variants and a `src` provenance field. The `x` values are
+copies of the Arabic, not translations, so only `_ar` came forward; the English site uses
+separate `_en` fields, which start empty (see [i18n.md](i18n.md)).
 
 Fields the reference could not fill are the literal string `«غير متوفر»` ("not available").
 Preserve that convention — it is meaningful, not placeholder noise.
@@ -86,7 +86,7 @@ links) that `src/lib/prose.ts` renders into the small set of tags it recognises,
    was carved out onto its own [admin.css](../src/styles/admin.css) so this switch could not
    leak into the dashboard.
 2. ~~`index.html` as the first real page~~ — **done**, then re-done in mockup markup.
-   [src/pages/index.astro](../src/pages/index.astro) reads six singletons through the content
+   [src/views/Home.astro](../src/views/Home.astro) reads six singletons through the content
    cache, editable at `/admin/home` (see step 5). Its imagery is uploadable too; a slot with no
    upload falls back to placeholder artwork that
    [src/lib/home-assets.ts](../src/lib/home-assets.ts) keys by the item's stable `id`.

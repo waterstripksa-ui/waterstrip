@@ -18,13 +18,17 @@ function escapeHtml(text: string): string {
 const LINK = /\[([^\]]+)\]\((\/[^\s")]*|https:\/\/[^\s")]+|mailto:[^\s")]+)\)/g;
 const BOLD = /\*\*([^*]+)\*\*/g;
 
-function renderInline(text: string): string {
+function renderInline(text: string, mapHref: (href: string) => string): string {
   return escapeHtml(text)
-    .replace(LINK, (_m, label: string, url: string) => `<a href="${url}" style="color:var(--c-link)">${label}</a>`)
+    .replace(LINK, (_m, label: string, url: string) => `<a href="${mapHref(url)}" style="color:var(--c-link)">${label}</a>`)
     .replace(BOLD, (_m, bold: string) => `<b>${bold}</b>`);
 }
 
-export function renderProse(text: string): string {
+/**
+ * `mapHref` rewrites each link target — the English site passes `localizePath`
+ * so a relative link such as `/cookies` stays on the English pages.
+ */
+export function renderProse(text: string, mapHref: (href: string) => string = (href) => href): string {
   return text
     .trim()
     .split(/\n{2,}/)
@@ -35,9 +39,9 @@ export function renderProse(text: string): string {
         .filter(Boolean);
       const isList = lines.length > 0 && lines.every((line) => line.startsWith('- '));
       if (isList) {
-        return `<ul>${lines.map((line) => `<li>${renderInline(line.slice(2))}</li>`).join('')}</ul>`;
+        return `<ul>${lines.map((line) => `<li>${renderInline(line.slice(2), mapHref)}</li>`).join('')}</ul>`;
       }
-      return `<p>${renderInline(lines.join(' '))}</p>`;
+      return `<p>${renderInline(lines.join(' '), mapHref)}</p>`;
     })
     .join('');
 }

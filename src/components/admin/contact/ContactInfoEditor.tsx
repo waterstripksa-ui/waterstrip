@@ -2,8 +2,8 @@
 import type { ContactInfo } from '../../../lib/content/schemas/contact-info.ts';
 import { useSingletonEditor } from '../useSingletonEditor.ts';
 import { SectionForm } from '../SectionForm.tsx';
+import { BilingualTextField, BilingualTextAreaField } from '../fields/BilingualFields.tsx';
 import { TextField } from '../fields/TextField.tsx';
-import { TextAreaField } from '../fields/TextAreaField.tsx';
 
 export default function ContactInfoEditor({ initial }: { initial: ContactInfo }) {
   const title = 'التواصل المباشر';
@@ -23,27 +23,36 @@ export default function ContactInfoEditor({ initial }: { initial: ContactInfo })
       onSave={save}
       onReset={reset}
     >
-      <TextField
+      <BilingualTextField
         label="العنوان"
         value={draft.headingAr}
         onChange={(v) => update({ ...draft, headingAr: v })}
         name="headingAr"
         error={errors.headingAr}
+        valueEn={draft.headingEn}
+        onChangeEn={(v) => update({ ...draft, headingEn: v })}
+        errorEn={errors.headingEn}
       />
-      <TextAreaField
+      <BilingualTextAreaField
         label="النص التعريفي"
         value={draft.ledeAr}
         onChange={(v) => update({ ...draft, ledeAr: v })}
         name="ledeAr"
         error={errors.ledeAr}
         rows={2}
+        valueEn={draft.ledeEn}
+        onChangeEn={(v) => update({ ...draft, ledeEn: v })}
+        errorEn={errors.ledeEn}
       />
-      <TextField
+      <BilingualTextField
         label="عنوان الاستفسارات العامة"
         value={draft.supportLabelAr}
         onChange={(v) => update({ ...draft, supportLabelAr: v })}
         name="supportLabelAr"
         error={errors.supportLabelAr}
+        valueEn={draft.supportLabelEn}
+        onChangeEn={(v) => update({ ...draft, supportLabelEn: v })}
+        errorEn={errors.supportLabelEn}
       />
       <TextField
         label="البريد الإلكتروني للدعم"
@@ -53,33 +62,45 @@ export default function ContactInfoEditor({ initial }: { initial: ContactInfo })
         error={errors.supportEmail}
         ltr
       />
-      <TextField
+      <BilingualTextField
         label="نص رابط العضوية"
         value={draft.membershipLabelAr}
         onChange={(v) => update({ ...draft, membershipLabelAr: v })}
         name="membershipLabelAr"
         error={errors.membershipLabelAr}
+        valueEn={draft.membershipLabelEn}
+        onChangeEn={(v) => update({ ...draft, membershipLabelEn: v })}
+        errorEn={errors.membershipLabelEn}
       />
-      <TextField
+      <BilingualTextField
         label="نص رابط المركز الإعلامي"
         value={draft.mediaLabelAr}
         onChange={(v) => update({ ...draft, mediaLabelAr: v })}
         name="mediaLabelAr"
         error={errors.mediaLabelAr}
+        valueEn={draft.mediaLabelEn}
+        onChangeEn={(v) => update({ ...draft, mediaLabelEn: v })}
+        errorEn={errors.mediaLabelEn}
       />
-      <TextField
+      <BilingualTextField
         label="عنوان مدة الرد"
         value={draft.responseLabelAr}
         onChange={(v) => update({ ...draft, responseLabelAr: v })}
         name="responseLabelAr"
         error={errors.responseLabelAr}
+        valueEn={draft.responseLabelEn}
+        onChangeEn={(v) => update({ ...draft, responseLabelEn: v })}
+        errorEn={errors.responseLabelEn}
       />
-      <TextField
+      <BilingualTextField
         label="نص مدة الرد"
         value={draft.responseTextAr}
         onChange={(v) => update({ ...draft, responseTextAr: v })}
         name="responseTextAr"
         error={errors.responseTextAr}
+        valueEn={draft.responseTextEn}
+        onChangeEn={(v) => update({ ...draft, responseTextEn: v })}
+        errorEn={errors.responseTextEn}
       />
     </SectionForm>
   );

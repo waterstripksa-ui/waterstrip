@@ -19,7 +19,7 @@ import {
   type SingletonKey,
 } from './schemas/index.ts';
 import type { MediaRef } from './schemas/fields.ts';
-import { arText, collectMediaIds, mediaId, siteHref } from './schemas/fields.ts';
+import { arText, collectMediaIds, enText, mediaId, siteHref } from './schemas/fields.ts';
 import {
   invalidateArticles,
   invalidateEvents,
@@ -53,8 +53,11 @@ export const eventInput = z.object({
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'must be a lowercase slug, e.g. ev-kaust'),
   day: z.string().trim().min(1).max(8),
   monthAr: z.string().trim().min(1).max(40),
+  monthEn: enText(40).default(''),
   titleAr: z.string().trim().min(1).max(200),
+  titleEn: enText(200).default(''),
   descAr: z.string().trim().min(1).max(600),
+  descEn: enText(600).default(''),
   /** Relative path or on-site anchor. No absolute URLs: this is not a link manager. */
   href: siteHref,
   order: z.number().int().min(0).max(9999).default(0),
@@ -186,11 +189,14 @@ export function replaceEvents(inputs: unknown[], updatedBy?: string | null): num
 const workingGroupStat = z.object({
   n: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(20, 'الحد الأقصى 20 حرفًا.'),
   labelAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(80, 'الحد الأقصى 80 حرفًا.'),
+  labelEn: enText(80).default(''),
 });
 
 const workingGroupRec = z.object({
   titleAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  titleEn: enText(200).default(''),
   bodyAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(600, 'الحد الأقصى 600 حرف.'),
+  bodyEn: enText(600).default(''),
 });
 
 /** The working-group fields an admin may set. `updatedAt`/`updatedBy` are server-owned. */
@@ -202,14 +208,21 @@ export const workingGroupInput = z.object({
   no: z.string().trim().min(1).max(8),
   challenge: z.enum(['supply', 'treat', 'reuse', 'smart']),
   nameAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  nameEn: enText(200).default(''),
   statusAr: z.string().trim().max(60, 'الحد الأقصى 60 حرفًا.').default(''),
+  statusEn: enText(60).default(''),
   leadAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  leadEn: enText(200).default(''),
   headAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  headEn: enText(200).default(''),
   orgsAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(300, 'الحد الأقصى 300 حرف.'),
+  orgsEn: enText(300).default(''),
   scopeAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(600, 'الحد الأقصى 600 حرف.'),
+  scopeEn: enText(600).default(''),
   stats: z.array(workingGroupStat).max(6).default([]),
   recs: z.array(workingGroupRec).max(12).default([]),
   noteAr: z.string().trim().max(600, 'الحد الأقصى 600 حرف.').default(''),
+  noteEn: enText(600).default(''),
   src: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(300, 'الحد الأقصى 300 حرف.'),
   order: z.number().int().min(0).max(9999).default(0),
   published: z.boolean().default(true),
@@ -261,7 +274,9 @@ export function replaceWorkingGroups(inputs: unknown[], updatedBy?: string | nul
 
 const articleBlock = z.object({
   headingAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(120, 'الحد الأقصى 120 حرفًا.'),
+  headingEn: enText(120).default(''),
   bodyAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(2000, 'الحد الأقصى 2000 حرف.'),
+  bodyEn: enText(2000).default(''),
 });
 
 /** The article fields an admin may set. `updatedAt`/`updatedBy` are server-owned. */
@@ -271,15 +286,27 @@ export const articleInput = z.object({
     .trim()
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'must be a lowercase slug, e.g. esg-award'),
   kindAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(40, 'الحد الأقصى 40 حرفًا.'),
+  kindEn: enText(40).default(''),
   dateAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(40, 'الحد الأقصى 40 حرفًا.'),
+  dateEn: enText(40).default(''),
   readAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(40, 'الحد الأقصى 40 حرفًا.'),
+  readEn: enText(40).default(''),
   imageId: mediaId.nullable().default(null),
   titleAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  titleEn: enText(200).default(''),
   ledeAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(400, 'الحد الأقصى 400 حرف.'),
+  ledeEn: enText(400).default(''),
   blocks: z.array(articleBlock).max(8).default([]),
   quoteAr: z.string().trim().max(400, 'الحد الأقصى 400 حرف.').default(''),
+  quoteEn: enText(400).default(''),
   quoteByAr: z.string().trim().max(120, 'الحد الأقصى 120 حرفًا.').default(''),
+  quoteByEn: enText(120).default(''),
   tagsAr: z.array(z.string().trim().min(1).max(40)).max(8).default([]),
+  /** All or nothing: empty, or one English tag per Arabic tag. */
+  tagsEn: z
+    .array(z.string().trim().min(1, 'ترجم كل الوسوم أو اترك الوسوم الإنجليزية كلها فارغة.').max(40))
+    .max(8)
+    .default([]),
   order: z.number().int().min(0).max(9999).default(0),
   published: z.boolean().default(true),
 });
@@ -333,12 +360,18 @@ export const memberInput = z.object({
     .trim()
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'must be a lowercase slug, e.g. nwc'),
   categoryAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(40, 'الحد الأقصى 40 حرفًا.'),
+  categoryEn: enText(40).default(''),
   nameAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  nameEn: enText(200).default(''),
   logoId: mediaId.nullable().default(null),
   roleAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  roleEn: enText(200).default(''),
   sectorAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(200, 'الحد الأقصى 200 حرف.'),
+  sectorEn: enText(200).default(''),
   sinceAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(40, 'الحد الأقصى 40 حرفًا.'),
+  sinceEn: enText(40).default(''),
   bioAr: z.string().trim().min(1, 'هذا الحقل مطلوب.').max(1200, 'الحد الأقصى 1200 حرف.'),
+  bioEn: enText(1200).default(''),
   order: z.number().int().min(0).max(9999).default(0),
   published: z.boolean().default(true),
 });
@@ -391,6 +424,9 @@ export function replaceMembers(inputs: unknown[], updatedBy?: string | null): nu
  */
 export const mediaAlt = arText(1, 200);
 
+/** English alt text is optional; the English site falls back to `altAr`. */
+export const mediaAltEn = enText(200);
+
 /**
  * A media row as the pipeline produces it and as an import envelope carries it.
  * `updatedAt`/`updatedBy` are server-owned, as on every other content table.
@@ -403,6 +439,7 @@ export const mediaInput = z.object({
   width: z.number().int().positive(),
   height: z.number().int().positive(),
   altAr: mediaAlt,
+  altEn: mediaAltEn.default(''),
   originalName: z.string().max(200).nullable().default(null),
 });
 

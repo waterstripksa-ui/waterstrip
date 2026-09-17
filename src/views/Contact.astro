@@ -1,0 +1,131 @@
+---
+// Markup is waterstrip/contact.html verbatim. Hero and aside copy come from the
+// content cache (/admin/contact). The form has no backend yet (pre-launch
+// checklist item 5 in docs/porting-the-mockup.md), so the inline script below
+// is the mockup's own main.js §15 behaviour for #contactForm, which the
+// vendored main.js drops because login posts for real.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+
+const hero = getSingleton('contact_hero');
+const info = getSingleton('contact_info');
+const banner = getSingleton('contact_banner');
+
+// Submitted values stay the Arabic labels whatever the page language, so a
+// future backend receives one vocabulary; only the visible label is translated.
+const sectorValues = ui('ar').contact.sectors;
+const sectors = t.contact.sectors.map((label, i) => ({ label, value: sectorValues[i] }));
+---
+
+<Layout title={L.text(hero, 'title')} description={L.text(hero, 'lede')}>
+  <PageHero
+    title={L.text(hero, 'title')}
+    titleAttrs={L.attrs(hero, 'title')}
+    lede={L.text(hero, 'lede')}
+    ledeAttrs={L.attrs(hero, 'lede')}
+    crumbs={[{ label: t.nav.home, href: L.href('/') }, { label: ` ${L.text(hero, 'title')}` }]}
+  />
+
+  <section class="ribbon" id="contactMain">
+    <div class="wrap">
+      <div class="form-shell contact-page">
+        <form class="form reveal" id="contactForm" novalidate>
+          <div class="field">
+            <label for="c-name">{t.contact.fullName}</label>
+            <input autocomplete="name" id="c-name" name="fullName" placeholder={t.contact.fullNamePlaceholder} required />
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label for="c-email">{t.contact.email}</label>
+              <input autocomplete="email" id="c-email" name="email" placeholder="name@company.com" required type="email" />
+            </div>
+            <div class="field">
+              <label for="c-phone">{t.contact.phone}</label>
+              <p class="hint hint--top">{t.contact.phoneHint}</p>
+              <input autocomplete="tel" id="c-phone" inputmode="tel" name="mobile" placeholder="‎+966" type="tel" value="+966" />
+            </div>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label for="c-company">{t.contact.company}</label>
+              <input autocomplete="organization" id="c-company" name="company" placeholder={t.contact.companyPlaceholder} required />
+            </div>
+            <div class="field">
+              <label for="c-sector">{t.contact.sector}</label>
+              <select id="c-sector" name="sector" required><option selected value="">{t.contact.choose}</option>{sectors.map((s) => <option value={s.value}>{s.label}</option>)}</select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="c-country">{t.contact.country}</label>
+            <select id="c-country" name="country"><option selected value="">{t.contact.choose}</option>{sectors.map((s) => <option value={s.value}>{s.label}</option>)}</select>
+          </div>
+          <div class="form-actions">
+            <button class="btn-solid" type="submit"><span>{t.contact.submit}</span><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></button>
+            <span class="form-msg" id="cMsg"><svg fill="none" height="18" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="18" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>{t.contact.success}</span></span>
+          </div>
+        </form>
+        <aside class="aside-card reveal">
+          <h3 {...L.attrs(info, 'heading')}>{L.text(info, 'heading')}</h3>
+          <p class="aside-card__lede" {...L.attrs(info, 'lede')}>{L.text(info, 'lede')}</p>
+          <ul class="aside-list">
+            <li>
+              <span class="aside-list__ico"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><rect height="15" rx="2.5" width="19" x="2.5" y="4.5"></rect><path d="M3 6.5l9 6.5 9-6.5"></path></svg></span>
+              <span><b {...L.attrs(info, 'supportLabel')}>{L.text(info, 'supportLabel')}</b><a href={`mailto:${info.supportEmail}`}>{info.supportEmail}</a></span>
+            </li>
+            <li>
+              <span class="aside-list__ico"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></span>
+              <span><b>{t.contact.membership}</b><a href={L.href('/register-interest')} {...L.attrs(info, 'membershipLabel')}>{L.text(info, 'membershipLabel')}</a></span>
+            </li>
+            <li>
+              <span class="aside-list__ico"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M4 5h16v14H4z"></path><path d="M8 9h8M8 13h5"></path></svg></span>
+              <span><b>{t.contact.mediaInquiries}</b><a href={L.href('/media')} {...L.attrs(info, 'mediaLabel')}>{L.text(info, 'mediaLabel')}</a></span>
+            </li>
+            <li>
+              <span class="aside-list__ico"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>
+              <span><b {...L.attrs(info, 'responseLabel')}>{L.text(info, 'responseLabel')}</b><span class="aside-list__txt" {...L.attrs(info, 'responseText')}>{L.text(info, 'responseText')}</span></span>
+            </li>
+          </ul>
+          <div class="aside-card__social">
+            <p>{t.contact.follow}</p>
+            <div>
+              <a aria-label="LinkedIn" href="#" rel="noopener" target="_blank"><svg fill="currentColor" height="15" viewBox="0 0 24 24" width="15" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95C20.4 8.75 21 11 21 14v7h-4v-6.2c0-1.5-.03-3.4-2.1-3.4-2.1 0-2.4 1.6-2.4 3.3V21H9z"></path></svg></a>
+              <a aria-label="X" href="#" rel="noopener" target="_blank"><svg fill="currentColor" height="15" viewBox="0 0 24 24" width="15" aria-hidden="true"><path d="M18.9 2H22l-7 8 8.2 12h-6.4l-5-7.3L5.9 22H2.8l7.5-8.6L2.4 2h6.6l4.5 6.6L18.9 2z"></path></svg></a>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <MembershipBanner slot="after-main" banner={banner} />
+</Layout>
+
+<script>
+  // main.js §15 for #contactForm, verbatim in behaviour: flag empty required
+  // fields red, otherwise show #cMsg and disable the submit button.
+  const form = document.getElementById('contactForm') as HTMLFormElement | null;
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    let ok = true;
+    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[required]').forEach((f) => {
+      const bad = f instanceof HTMLInputElement && f.type === 'checkbox' ? !f.checked : !f.value.trim();
+      f.style.borderColor = bad ? '#C0392B' : '';
+      if (bad) ok = false;
+    });
+    if (!ok) return;
+    document.getElementById('cMsg')?.classList.add('is-on');
+    form.querySelector('.btn-solid')?.setAttribute('disabled', '');
+  });
+  form?.addEventListener('input', (e) => {
+    (e.target as HTMLElement).style.borderColor = '';
+  });
+</script>

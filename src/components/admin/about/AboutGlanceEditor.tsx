@@ -6,6 +6,7 @@
 import type { AboutGlance } from '../../../lib/content/schemas/about-glance.ts';
 import { useSingletonEditor } from '../useSingletonEditor.ts';
 import { SectionForm } from '../SectionForm.tsx';
+import { BilingualTextField } from '../fields/BilingualFields.tsx';
 import { TextField } from '../fields/TextField.tsx';
 import { CheckboxField } from '../fields/CheckboxField.tsx';
 
@@ -41,12 +42,15 @@ export default function AboutGlanceEditor({ initial }: { initial: AboutGlance })
         name="hidden"
         error={errors.hidden}
       />
-      <TextField
+      <BilingualTextField
         label="العنوان"
         value={draft.headingAr}
         onChange={(v) => update({ ...draft, headingAr: v })}
         name="headingAr"
         error={errors.headingAr}
+        valueEn={draft.headingEn}
+        onChangeEn={(v) => update({ ...draft, headingEn: v })}
+        errorEn={errors.headingEn}
       />
 
       {draft.stats.map((stat, i) => (
@@ -60,12 +64,15 @@ export default function AboutGlanceEditor({ initial }: { initial: AboutGlance })
             error={errors[`stats.${i}.value`]}
             ltr
           />
-          <TextField
+          <BilingualTextField
             label="الوصف"
             value={stat.labelAr}
             onChange={(v) => patchStat(i, { labelAr: v })}
             name={`stats.${i}.labelAr`}
             error={errors[`stats.${i}.labelAr`]}
+            valueEn={stat.labelEn}
+            onChangeEn={(v) => patchStat(i, { labelEn: v })}
+            errorEn={errors[`stats.${i}.labelEn`]}
           />
         </fieldset>
       ))}

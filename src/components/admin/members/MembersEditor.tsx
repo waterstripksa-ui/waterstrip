@@ -12,8 +12,8 @@
 import { useState } from 'react';
 import { useCollectionEditor } from '../useCollectionEditor.ts';
 import { ItemList } from '../ItemList.tsx';
+import { BilingualTextField, BilingualTextAreaField } from '../fields/BilingualFields.tsx';
 import { TextField } from '../fields/TextField.tsx';
-import { TextAreaField } from '../fields/TextAreaField.tsx';
 import { CheckboxField } from '../fields/CheckboxField.tsx';
 import { ImageField } from '../fields/ImageField.tsx';
 import type { Member, MediaView } from '../../../lib/content/cache.ts';
@@ -22,12 +22,18 @@ interface MemberRow {
   id: string;
   slug: string;
   categoryAr: string;
+  categoryEn: string;
   nameAr: string;
+  nameEn: string;
   logoId: string | null;
   roleAr: string;
+  roleEn: string;
   sectorAr: string;
+  sectorEn: string;
   sinceAr: string;
+  sinceEn: string;
   bioAr: string;
+  bioEn: string;
   order: number;
   published: boolean;
 }
@@ -37,12 +43,18 @@ function fromRow(row: Member, i: number): MemberRow {
     id: row.slug,
     slug: row.slug,
     categoryAr: row.categoryAr,
+    categoryEn: row.categoryEn,
     nameAr: row.nameAr,
+    nameEn: row.nameEn,
     logoId: row.logoId,
     roleAr: row.roleAr,
+    roleEn: row.roleEn,
     sectorAr: row.sectorAr,
+    sectorEn: row.sectorEn,
     sinceAr: row.sinceAr,
+    sinceEn: row.sinceEn,
     bioAr: row.bioAr,
+    bioEn: row.bioEn,
     order: row.order ?? i * 10,
     published: row.published,
   };
@@ -126,12 +138,18 @@ export default function MembersEditor({ initial, media }: Props) {
               id,
               slug: id,
               categoryAr: 'حكومي',
+              categoryEn: '',
               nameAr: 'جهة جديدة',
+              nameEn: '',
               logoId: null,
               roleAr: 'عضو',
+              roleEn: '',
               sectorAr: 'غير متوفر',
+              sectorEn: '',
               sinceAr: 'غير متوفر',
+              sinceEn: '',
               bioAr: 'غير متوفر',
+              bioEn: '',
               order: draft.length * 10,
               published: true,
             })}
@@ -152,20 +170,26 @@ export default function MembersEditor({ initial, media }: Props) {
                   hint="حروف لاتينية صغيرة وأرقام وشرطات فقط، مثل nwc."
                   ltr
                 />
-                <TextField
+                <BilingualTextField
                   label="التصنيف"
                   value={item.categoryAr}
                   onChange={(v) => patch({ categoryAr: v })}
                   name={`${i}.categoryAr`}
                   error={errors[`${i}.categoryAr`]}
                   hint="مثل حكومي، قطاع عام، أكاديمي، قطاع خاص، دولي."
+                  valueEn={item.categoryEn}
+                  onChangeEn={(v) => patch({ categoryEn: v })}
+                  errorEn={errors[`${i}.categoryEn`]}
                 />
-                <TextField
+                <BilingualTextField
                   label="اسم الجهة"
                   value={item.nameAr}
                   onChange={(v) => patch({ nameAr: v })}
                   name={`${i}.nameAr`}
                   error={errors[`${i}.nameAr`]}
+                  valueEn={item.nameEn}
+                  onChangeEn={(v) => patch({ nameEn: v })}
+                  errorEn={errors[`${i}.nameEn`]}
                 />
 
                 <ImageField
@@ -179,34 +203,46 @@ export default function MembersEditor({ initial, media }: Props) {
                   variant="logo"
                 />
 
-                <TextField
+                <BilingualTextField
                   label="الدور في الشريط"
                   value={item.roleAr}
                   onChange={(v) => patch({ roleAr: v })}
                   name={`${i}.roleAr`}
                   error={errors[`${i}.roleAr`]}
+                  valueEn={item.roleEn}
+                  onChangeEn={(v) => patch({ roleEn: v })}
+                  errorEn={errors[`${i}.roleEn`]}
                 />
-                <TextField
+                <BilingualTextField
                   label="مجال التركيز"
                   value={item.sectorAr}
                   onChange={(v) => patch({ sectorAr: v })}
                   name={`${i}.sectorAr`}
                   error={errors[`${i}.sectorAr`]}
+                  valueEn={item.sectorEn}
+                  onChangeEn={(v) => patch({ sectorEn: v })}
+                  errorEn={errors[`${i}.sectorEn`]}
                 />
-                <TextField
+                <BilingualTextField
                   label="عضو منذ"
                   value={item.sinceAr}
                   onChange={(v) => patch({ sinceAr: v })}
                   name={`${i}.sinceAr`}
                   error={errors[`${i}.sinceAr`]}
+                  valueEn={item.sinceEn}
+                  onChangeEn={(v) => patch({ sinceEn: v })}
+                  errorEn={errors[`${i}.sinceEn`]}
                 />
-                <TextAreaField
+                <BilingualTextAreaField
                   label="نبذة"
                   value={item.bioAr}
                   onChange={(v) => patch({ bioAr: v })}
                   name={`${i}.bioAr`}
                   error={errors[`${i}.bioAr`]}
                   rows={3}
+                  valueEn={item.bioEn}
+                  onChangeEn={(v) => patch({ bioEn: v })}
+                  errorEn={errors[`${i}.bioEn`]}
                 />
 
                 <CheckboxField

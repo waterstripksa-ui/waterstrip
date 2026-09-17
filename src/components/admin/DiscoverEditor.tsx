@@ -3,8 +3,7 @@ import type { HomeDiscover, HomeDiscoverTile } from '../../lib/content/schemas/h
 import { useSingletonEditor } from './useSingletonEditor.ts';
 import { SectionForm } from './SectionForm.tsx';
 import { ItemList } from './ItemList.tsx';
-import { TextField } from './fields/TextField.tsx';
-import { TextAreaField } from './fields/TextAreaField.tsx';
+import { BilingualTextField, BilingualTextAreaField } from './fields/BilingualFields.tsx';
 import { HrefField } from './fields/HrefField.tsx';
 import { ImageField } from './fields/ImageField.tsx';
 import type { MediaView } from '../../lib/content/cache.ts';
@@ -33,20 +32,26 @@ export default function DiscoverEditor({
       onSave={save}
       onReset={reset}
     >
-      <TextField
+      <BilingualTextField
         label="العنوان الفرعي"
         value={draft.eyebrowAr}
         onChange={(v) => update({ ...draft, eyebrowAr: v })}
         name="eyebrowAr"
         error={errors.eyebrowAr}
+        valueEn={draft.eyebrowEn}
+        onChangeEn={(v) => update({ ...draft, eyebrowEn: v })}
+        errorEn={errors.eyebrowEn}
       />
-      <TextAreaField
+      <BilingualTextAreaField
         label="النص التعريفي"
         value={draft.headingAr}
         onChange={(v) => update({ ...draft, headingAr: v })}
         name="headingAr"
         error={errors.headingAr}
         rows={4}
+        valueEn={draft.headingEn}
+        onChangeEn={(v) => update({ ...draft, headingEn: v })}
+        errorEn={errors.headingEn}
       />
 
       <ItemList<HomeDiscoverTile>
@@ -55,7 +60,9 @@ export default function DiscoverEditor({
         makeItem={(id) => ({
           id,
           eyebrowAr: 'عنوان فرعي',
+          eyebrowEn: '',
           headingAr: 'عنوان البطاقة',
+          headingEn: '',
           href: '#',
           imageId: null,
         })}
@@ -67,19 +74,25 @@ export default function DiscoverEditor({
       >
         {(tile, i, patch) => (
           <>
-            <TextField
+            <BilingualTextField
               label="العنوان الفرعي"
               value={tile.eyebrowAr}
               onChange={(v) => patch({ eyebrowAr: v })}
               name={`tiles.${i}.eyebrowAr`}
               error={errors[`tiles.${i}.eyebrowAr`]}
+              valueEn={tile.eyebrowEn}
+              onChangeEn={(v) => patch({ eyebrowEn: v })}
+              errorEn={errors[`tiles.${i}.eyebrowEn`]}
             />
-            <TextAreaField
+            <BilingualTextAreaField
               label="العنوان"
               value={tile.headingAr}
               onChange={(v) => patch({ headingAr: v })}
               name={`tiles.${i}.headingAr`}
               error={errors[`tiles.${i}.headingAr`]}
+              valueEn={tile.headingEn}
+              onChangeEn={(v) => patch({ headingEn: v })}
+              errorEn={errors[`tiles.${i}.headingEn`]}
             />
             <HrefField
               value={tile.href}

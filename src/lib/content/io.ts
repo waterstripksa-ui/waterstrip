@@ -309,6 +309,7 @@ export function importContent(
           target: media.id,
           set: {
             altAr: row.altAr,
+            altEn: row.altEn,
             originalName: row.originalName,
             updatedBy: options.updatedBy ?? null,
             updatedAt: new Date(),

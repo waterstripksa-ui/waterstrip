@@ -40,7 +40,7 @@ project owner decided the cost of maintaining a hand-authored equivalent wasn't 
 the mockup's CSS and markup directly**, and get parity by construction instead of by chasing it.
 
 **Public pages therefore write mockup markup, not BEM.** Every `.astro` file under
-`src/pages/` (other than `admin/`) uses the mockup's own class names and structure verbatim —
+`src/views/` (and the few public pages left in `src/pages/`, other than `admin/`) uses the mockup's own class names and structure verbatim —
 `.btn-solid`, `.site-head`, `.mcard`, `.wgp__stat`, etc. — with CMS content substituted for the
 mockup's hardcoded text, images and links. Copy `waterstrip/<page>.html`'s `<main>` (and its
 `?id=`-filled sections' *rendered* output, for the pages that build markup client-side — see
@@ -149,7 +149,9 @@ expected, not a bug.
 
 ## RTL
 
-The site is Arabic-only and renders `<html dir="rtl" lang="ar">`.
+Arabic pages render `<html dir="rtl" lang="ar">`; English pages under `/en` render
+`<html dir="ltr" lang="en">` from the same markup (see [i18n.md](i18n.md)). The dashboard is
+always RTL.
 
 **In `admin.css` and `mockup/overrides.css`, author with logical properties** —
 `margin-inline`, `padding-inline-start`, `inset-inline-start`, `border-inline-end`,
@@ -158,8 +160,9 @@ selector there, there is almost certainly a logical property that does the job i
 
 **`mockup/style.css` is the one exception**, because it is never edited: it was authored
 left-to-right and undoes itself with its own `31. RTL` override section plus a `32. HOTFIXES`
-block, all of which the site is always in scope for (the port never runs `dir="ltr"`). Do not
-"fix" this by editing the vendored file — it is intentionally kept byte-identical to the mockup.
+block. That is what lets the English pages run `dir="ltr"` with no new CSS. An LTR-only defect
+goes in `overrides.css` under `[dir="ltr"]`. Do not "fix" either direction by editing the
+vendored file — it is intentionally kept byte-identical to the mockup.
 
 Latin runs inside Arabic prose (emails, URLs, the Water STRIP wordmark) need isolating, or the
 bidi algorithm reorders punctuation: the mockup uses `.u-ltr`; match it in overrides.

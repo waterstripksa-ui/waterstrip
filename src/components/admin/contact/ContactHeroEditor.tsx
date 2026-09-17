@@ -2,8 +2,7 @@
 import type { ContactHero } from '../../../lib/content/schemas/contact-hero.ts';
 import { useSingletonEditor } from '../useSingletonEditor.ts';
 import { SectionForm } from '../SectionForm.tsx';
-import { TextField } from '../fields/TextField.tsx';
-import { TextAreaField } from '../fields/TextAreaField.tsx';
+import { BilingualTextField, BilingualTextAreaField } from '../fields/BilingualFields.tsx';
 
 export default function ContactHeroEditor({ initial }: { initial: ContactHero }) {
   const title = 'العنوان الرئيسي';
@@ -22,20 +21,26 @@ export default function ContactHeroEditor({ initial }: { initial: ContactHero })
       onSave={save}
       onReset={reset}
     >
-      <TextField
+      <BilingualTextField
         label="العنوان"
         value={draft.titleAr}
         onChange={(v) => update({ ...draft, titleAr: v })}
         name="titleAr"
         error={errors.titleAr}
+        valueEn={draft.titleEn}
+        onChangeEn={(v) => update({ ...draft, titleEn: v })}
+        errorEn={errors.titleEn}
       />
-      <TextAreaField
+      <BilingualTextAreaField
         label="النص التعريفي"
         value={draft.ledeAr}
         onChange={(v) => update({ ...draft, ledeAr: v })}
         name="ledeAr"
         error={errors.ledeAr}
         rows={3}
+        valueEn={draft.ledeEn}
+        onChangeEn={(v) => update({ ...draft, ledeEn: v })}
+        errorEn={errors.ledeEn}
       />
     </SectionForm>
   );

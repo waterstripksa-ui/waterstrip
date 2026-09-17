@@ -2,8 +2,14 @@
 // Public pages render the mockup's own markup against its own stylesheet and
 // script (vendored as public/mockup/style.css and src/scripts/mockup), so they
 // match waterstrip/ by construction. /admin uses AdminLayout and admin.css.
+//
+// `lang`/`dir` follow the URL: Arabic RTL at the root, English LTR under /en.
+// style.css was written LTR-first with `[dir="rtl"]` overrides, and main.js
+// reads `documentElement.dir`, so both directions render from the same markup.
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import { dirOf, localeOfPath, switchLocalePath } from '../lib/i18n/locale.ts';
+import { ui } from '../lib/i18n/ui.ts';
 import '@fontsource/ibm-plex-sans-arabic/400.css';
 import '@fontsource/ibm-plex-sans-arabic/500.css';
 import '@fontsource/ibm-plex-sans-arabic/600.css';
@@ -23,18 +29,30 @@ interface Props {
    * docs/porting-the-mockup.md.
    */
   noindex?: boolean;
+  /**
+   * False for pages that exist only in Arabic (login, forgot-password): no
+   * hreflang alternates, and the language switcher leads to the English home.
+   */
+  localized?: boolean;
 }
 
-const {
-  title,
-  description = 'شريط شراكات الابتكار المائي — مبادرة سعودية للابتكار في قطاع المياه.',
-  noindex = true,
-} = Astro.props;
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
 
-const fullTitle = `${title} | شريط شراكات الابتكار المائي`;
+const { title, description = t.site.description, noindex = true, localized = true } = Astro.props;
+
+const fullTitle = `${title} | ${t.site.name}`;
+const path = Astro.url.pathname;
+const alternates = localized
+  ? [
+      { hreflang: 'ar', href: new URL(switchLocalePath(path, 'ar'), Astro.url).href },
+      { hreflang: 'en', href: new URL(switchLocalePath(path, 'en'), Astro.url).href },
+      { hreflang: 'x-default', href: new URL(switchLocalePath(path, 'ar'), Astro.url).href },
+    ]
+  : [];
 ---
 
-<html dir="rtl" lang="ar">
+<html dir={dirOf(locale)} lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -42,6 +60,7 @@ const fullTitle = `${title} | شريط شراكات الابتكار المائ�
     <meta name="description" content={description} />
     <meta name="theme-color" content="#154A91" />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
     <link rel="icon" type="image/png" href="/img/favicon-192.png" />
     <link rel="apple-touch-icon" href="/img/favicon-512.png" />
     {/* Linked, not imported: see the header of public/mockup/style.css. Astro
@@ -52,15 +71,15 @@ const fullTitle = `${title} | شريط شراكات الابتكار المائ�
   </head>
 
   <body>
-    <a class="skip-link" href="#main">تخطَّ إلى المحتوى</a>
-    <SiteHeader />
+    <a class="skip-link" href="#main">{t.site.skipLink}</a>
+    <SiteHeader locale={locale} />
     <main id="main">
       <slot />
     </main>
     {/* The mockup closes <main> before some bands (home partners and about
         banner) and style.css paints `main > section` white, so placement matters. */}
     <slot name="after-main" />
-    <SiteFooter />
+    <SiteFooter locale={locale} />
     {/* Page-specific overlays the mockup places after the footer (media's #lightbox). */}
     <slot name="end" />
   </body>

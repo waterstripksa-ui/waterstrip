@@ -21,7 +21,7 @@ const error = errors[Astro.url.searchParams.get('error') ?? ''];
 const banner = getSingleton('legal_banner');
 ---
 
-<Layout title="تسجيل الدخول" description="تسجيل الدخول لأعضاء شريط شراكات الابتكار المائي.">
+<Layout title="تسجيل الدخول" localized={false} description="تسجيل الدخول لأعضاء شريط شراكات الابتكار المائي.">
   <PageHero
     title="دخول الأعضاء"
     crumbs={[{ label: 'الرئيسية', href: '/' }, { label: 'تسجيل الدخول' }]}

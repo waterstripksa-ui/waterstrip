@@ -11,7 +11,7 @@ import { z } from 'zod';
  * Required Arabic copy. Trimmed, so whitespace-only fails `min`.
  *
  * The messages are Arabic because they are rendered verbatim next to the field
- * in the dashboard, which is Arabic-only like the rest of the site.
+ * in the dashboard, which stays Arabic-only (the public site also has English).
  */
 export function arText(min: number, max: number) {
   return z
@@ -19,6 +19,15 @@ export function arText(min: number, max: number) {
     .trim()
     .min(min, min === 1 ? 'هذا الحقل مطلوب.' : `الحد الأدنى ${min} حرفًا.`)
     .max(max, `الحد الأقصى ${max} حرفًا.`);
+}
+
+/**
+ * Optional English copy, the `xEn` sibling of an `xAr` field. Empty means "not
+ * translated yet": the English page falls back to the Arabic value
+ * (src/lib/i18n/pick.ts). The limit matches the Arabic sibling's `max`.
+ */
+export function enText(max: number) {
+  return z.string().trim().max(max, `الحد الأقصى ${max} حرفًا.`);
 }
 
 /**

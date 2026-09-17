@@ -10,8 +10,8 @@
 import { useState } from 'react';
 import { useCollectionEditor } from '../useCollectionEditor.ts';
 import { ItemList } from '../ItemList.tsx';
+import { BilingualTextField, BilingualTextAreaField } from '../fields/BilingualFields.tsx';
 import { TextField } from '../fields/TextField.tsx';
-import { TextAreaField } from '../fields/TextAreaField.tsx';
 import { HrefField } from '../fields/HrefField.tsx';
 import { CheckboxField } from '../fields/CheckboxField.tsx';
 import type { Event } from '../../../lib/content/cache.ts';
@@ -21,8 +21,11 @@ interface EventRow {
   slug: string;
   day: string;
   monthAr: string;
+  monthEn: string;
   titleAr: string;
+  titleEn: string;
   descAr: string;
+  descEn: string;
   href: string;
   order: number;
   published: boolean;
@@ -34,8 +37,11 @@ function fromRow(row: Event, i: number): EventRow {
     slug: row.slug,
     day: row.day,
     monthAr: row.monthAr,
+    monthEn: row.monthEn,
     titleAr: row.titleAr,
+    titleEn: row.titleEn,
     descAr: row.descAr,
+    descEn: row.descEn,
     href: row.href,
     order: row.order ?? i * 10,
     published: row.published,
@@ -114,8 +120,11 @@ export default function EventsEditor({ initial }: { initial: Event[] }) {
               slug: id,
               day: '01',
               monthAr: '',
+              monthEn: '',
               titleAr: 'فعالية جديدة',
+              titleEn: '',
               descAr: '',
+              descEn: '',
               href: '/register-interest',
               order: draft.length * 10,
               published: true,
@@ -146,28 +155,37 @@ export default function EventsEditor({ initial }: { initial: Event[] }) {
                   hint="مثل 27 أو 01."
                   ltr
                 />
-                <TextField
+                <BilingualTextField
                   label="الشهر"
                   value={item.monthAr}
                   onChange={(v) => patch({ monthAr: v })}
                   name={`${i}.monthAr`}
                   error={errors[`${i}.monthAr`]}
                   hint="مثل يونيو – يوليو، أو نوفمبر 2026."
+                  valueEn={item.monthEn}
+                  onChangeEn={(v) => patch({ monthEn: v })}
+                  errorEn={errors[`${i}.monthEn`]}
                 />
-                <TextField
+                <BilingualTextField
                   label="العنوان"
                   value={item.titleAr}
                   onChange={(v) => patch({ titleAr: v })}
                   name={`${i}.titleAr`}
                   error={errors[`${i}.titleAr`]}
+                  valueEn={item.titleEn}
+                  onChangeEn={(v) => patch({ titleEn: v })}
+                  errorEn={errors[`${i}.titleEn`]}
                 />
-                <TextAreaField
+                <BilingualTextAreaField
                   label="الوصف"
                   value={item.descAr}
                   onChange={(v) => patch({ descAr: v })}
                   name={`${i}.descAr`}
                   error={errors[`${i}.descAr`]}
                   rows={2}
+                  valueEn={item.descEn}
+                  onChangeEn={(v) => patch({ descEn: v })}
+                  errorEn={errors[`${i}.descEn`]}
                 />
                 <HrefField
                   label="رابط التفاصيل"

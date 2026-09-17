@@ -14,8 +14,8 @@
 import { useState } from 'react';
 import { useCollectionEditor } from '../useCollectionEditor.ts';
 import { ItemList } from '../ItemList.tsx';
+import { BilingualTextField, BilingualTextAreaField } from '../fields/BilingualFields.tsx';
 import { TextField } from '../fields/TextField.tsx';
-import { TextAreaField } from '../fields/TextAreaField.tsx';
 import { CheckboxField } from '../fields/CheckboxField.tsx';
 import { ImageField } from '../fields/ImageField.tsx';
 import type { Article } from '../../../lib/content/cache.ts';
@@ -24,26 +24,36 @@ import type { MediaView } from '../../../lib/content/cache.ts';
 interface BlockRow {
   id: string;
   headingAr: string;
+  headingEn: string;
   bodyAr: string;
+  bodyEn: string;
 }
 
 interface TagRow {
   id: string;
   textAr: string;
+  textEn: string;
 }
 
 interface ArticleRow {
   id: string;
   slug: string;
   kindAr: string;
+  kindEn: string;
   dateAr: string;
+  dateEn: string;
   readAr: string;
+  readEn: string;
   imageId: string | null;
   titleAr: string;
+  titleEn: string;
   ledeAr: string;
+  ledeEn: string;
   blocks: BlockRow[];
   quoteAr: string;
+  quoteEn: string;
   quoteByAr: string;
+  quoteByEn: string;
   tags: TagRow[];
   order: number;
   published: boolean;
@@ -54,15 +64,27 @@ function fromRow(row: Article, i: number): ArticleRow {
     id: row.slug,
     slug: row.slug,
     kindAr: row.kindAr,
+    kindEn: row.kindEn,
     dateAr: row.dateAr,
+    dateEn: row.dateEn,
     readAr: row.readAr,
+    readEn: row.readEn,
     imageId: row.imageId,
     titleAr: row.titleAr,
+    titleEn: row.titleEn,
     ledeAr: row.ledeAr,
-    blocks: row.blocks.map((b, j) => ({ id: `${row.slug}-block-${j}`, ...b })),
+    ledeEn: row.ledeEn,
+    blocks: row.blocks.map((b, j) => ({
+      id: `${row.slug}-block-${j}`,
+      ...b,
+      headingEn: b.headingEn ?? '',
+      bodyEn: b.bodyEn ?? '',
+    })),
     quoteAr: row.quoteAr,
+    quoteEn: row.quoteEn,
     quoteByAr: row.quoteByAr,
-    tags: row.tagsAr.map((t, j) => ({ id: `${row.slug}-tag-${j}`, textAr: t })),
+    quoteByEn: row.quoteByEn,
+    tags: row.tagsAr.map((t, j) => ({ id: `${row.slug}-tag-${j}`, textAr: t, textEn: row.tagsEn[j] ?? '' })),
     order: row.order ?? i * 10,
     published: row.published,
   };
@@ -73,6 +95,9 @@ function toPayload(rows: ArticleRow[]) {
     ...rest,
     blocks: blocks.map(({ id: _bid, ...b }) => b),
     tagsAr: tags.map((t) => t.textAr),
+    // English tags are all-or-nothing: none translated stores an empty list (the
+    // English page shows the Arabic tags); otherwise every tag needs its English.
+    tagsEn: tags.some((t) => t.textEn.trim()) ? tags.map((t) => t.textEn) : [],
   }));
 }
 
@@ -149,14 +174,21 @@ export default function ArticlesEditor({ initial, media }: Props) {
               id,
               slug: id,
               kindAr: 'أخبار',
+              kindEn: '',
               dateAr: '',
+              dateEn: '',
               readAr: '',
+              readEn: '',
               imageId: null,
               titleAr: 'خبر جديد',
+              titleEn: '',
               ledeAr: '',
+              ledeEn: '',
               blocks: [],
               quoteAr: '',
+              quoteEn: '',
               quoteByAr: '',
+              quoteByEn: '',
               tags: [],
               order: draft.length * 10,
               published: true,
@@ -178,29 +210,38 @@ export default function ArticlesEditor({ initial, media }: Props) {
                   hint="حروف لاتينية صغيرة وأرقام وشرطات فقط، مثل esg-award."
                   ltr
                 />
-                <TextField
+                <BilingualTextField
                   label="التصنيف"
                   value={item.kindAr}
                   onChange={(v) => patch({ kindAr: v })}
                   name={`${i}.kindAr`}
                   error={errors[`${i}.kindAr`]}
                   hint="مثل أخبار."
+                  valueEn={item.kindEn}
+                  onChangeEn={(v) => patch({ kindEn: v })}
+                  errorEn={errors[`${i}.kindEn`]}
                 />
-                <TextField
+                <BilingualTextField
                   label="التاريخ"
                   value={item.dateAr}
                   onChange={(v) => patch({ dateAr: v })}
                   name={`${i}.dateAr`}
                   error={errors[`${i}.dateAr`]}
                   hint="مثل 8 ديسمبر 2025، أو 2026."
+                  valueEn={item.dateEn}
+                  onChangeEn={(v) => patch({ dateEn: v })}
+                  errorEn={errors[`${i}.dateEn`]}
                 />
-                <TextField
+                <BilingualTextField
                   label="مدة القراءة"
                   value={item.readAr}
                   onChange={(v) => patch({ readAr: v })}
                   name={`${i}.readAr`}
                   error={errors[`${i}.readAr`]}
                   hint="مثل قراءة دقيقتان."
+                  valueEn={item.readEn}
+                  onChangeEn={(v) => patch({ readEn: v })}
+                  errorEn={errors[`${i}.readEn`]}
                 />
 
                 <ImageField
@@ -213,26 +254,32 @@ export default function ArticlesEditor({ initial, media }: Props) {
                   known={media}
                 />
 
-                <TextField
+                <BilingualTextField
                   label="العنوان"
                   value={item.titleAr}
                   onChange={(v) => patch({ titleAr: v })}
                   name={`${i}.titleAr`}
                   error={errors[`${i}.titleAr`]}
+                  valueEn={item.titleEn}
+                  onChangeEn={(v) => patch({ titleEn: v })}
+                  errorEn={errors[`${i}.titleEn`]}
                 />
-                <TextAreaField
+                <BilingualTextAreaField
                   label="المقدمة"
                   value={item.ledeAr}
                   onChange={(v) => patch({ ledeAr: v })}
                   name={`${i}.ledeAr`}
                   error={errors[`${i}.ledeAr`]}
                   rows={2}
+                  valueEn={item.ledeEn}
+                  onChangeEn={(v) => patch({ ledeEn: v })}
+                  errorEn={errors[`${i}.ledeEn`]}
                 />
 
                 <ItemList<BlockRow>
                   items={item.blocks}
                   onChange={(blocks) => patch({ blocks })}
-                  makeItem={(id) => ({ id, headingAr: 'عنوان فرعي', bodyAr: '' })}
+                  makeItem={(id) => ({ id, headingAr: 'عنوان فرعي', headingEn: '', bodyAr: '', bodyEn: '' })}
                   idPrefix={`${item.id}-block`}
                   min={0}
                   max={8}
@@ -241,45 +288,57 @@ export default function ArticlesEditor({ initial, media }: Props) {
                 >
                   {(block, j, patchBlock) => (
                     <>
-                      <TextField
+                      <BilingualTextField
                         label="العنوان الفرعي"
                         value={block.headingAr}
                         onChange={(v) => patchBlock({ headingAr: v })}
                         name={`${i}.blocks.${j}.headingAr`}
                         error={errors[`${i}.blocks.${j}.headingAr`]}
+                        valueEn={block.headingEn}
+                        onChangeEn={(v) => patchBlock({ headingEn: v })}
+                        errorEn={errors[`${i}.blocks.${j}.headingEn`]}
                       />
-                      <TextAreaField
+                      <BilingualTextAreaField
                         label="النص"
                         value={block.bodyAr}
                         onChange={(v) => patchBlock({ bodyAr: v })}
                         name={`${i}.blocks.${j}.bodyAr`}
                         error={errors[`${i}.blocks.${j}.bodyAr`]}
                         rows={4}
+                        valueEn={block.bodyEn}
+                        onChangeEn={(v) => patchBlock({ bodyEn: v })}
+                        errorEn={errors[`${i}.blocks.${j}.bodyEn`]}
                       />
                     </>
                   )}
                 </ItemList>
 
-                <TextAreaField
+                <BilingualTextAreaField
                   label="اقتباس (اختياري)"
                   value={item.quoteAr}
                   onChange={(v) => patch({ quoteAr: v })}
                   name={`${i}.quoteAr`}
                   error={errors[`${i}.quoteAr`]}
                   rows={2}
+                  valueEn={item.quoteEn}
+                  onChangeEn={(v) => patch({ quoteEn: v })}
+                  errorEn={errors[`${i}.quoteEn`]}
                 />
-                <TextField
+                <BilingualTextField
                   label="قائل الاقتباس (اختياري)"
                   value={item.quoteByAr}
                   onChange={(v) => patch({ quoteByAr: v })}
                   name={`${i}.quoteByAr`}
                   error={errors[`${i}.quoteByAr`]}
+                  valueEn={item.quoteByEn}
+                  onChangeEn={(v) => patch({ quoteByEn: v })}
+                  errorEn={errors[`${i}.quoteByEn`]}
                 />
 
                 <ItemList<TagRow>
                   items={item.tags}
                   onChange={(tags) => patch({ tags })}
-                  makeItem={(id) => ({ id, textAr: 'وسم' })}
+                  makeItem={(id) => ({ id, textAr: 'وسم', textEn: '' })}
                   idPrefix={`${item.id}-tag`}
                   min={0}
                   max={8}
@@ -287,12 +346,15 @@ export default function ArticlesEditor({ initial, media }: Props) {
                   addLabel="إضافة وسم"
                 >
                   {(tag, j, patchTag) => (
-                    <TextField
+                    <BilingualTextField
                       label="الوسم"
                       value={tag.textAr}
                       onChange={(v) => patchTag({ textAr: v })}
                       name={`${i}.tagsAr.${j}`}
                       error={errors[`${i}.tagsAr.${j}`]}
+                      valueEn={tag.textEn}
+                      onChangeEn={(v) => patchTag({ textEn: v })}
+                      errorEn={errors[`${i}.tagsEn.${j}`]}
                     />
                   )}
                 </ItemList>

@@ -1,0 +1,14 @@
+---
+// waterstrip/member.html (?id= becomes [slug]). The body is src/views/Member.astro, shared
+// with the Arabic route (docs/i18n.md).
+import Member from '../../../views/Member.astro';
+import { getMember } from '../../../lib/content/cache.ts';
+
+const member = getMember(Astro.params.slug ?? '');
+
+if (!member) {
+  return Astro.rewrite('/en/404');
+}
+---
+
+<Member member={member} />

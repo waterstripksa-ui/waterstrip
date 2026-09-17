@@ -1,5 +1,5 @@
 /**
- * Uploads one image: multipart `file` plus `altAr`.
+ * Uploads one image: multipart `file` plus `altAr` and an optional `altEn`.
  *
  * Returns the media row as a `MediaView`. Uploading does not attach the image to
  * anything — the dashboard puts the returned id into a section's draft, and the
@@ -55,6 +55,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const { media, duplicate } = await ingestImage({
       bytes: Buffer.from(await file.arrayBuffer()),
       altAr: form.get('altAr'),
+      altEn: form.get('altEn'),
       originalName: file.name,
       updatedBy: locals.user.id,
     });
@@ -68,6 +69,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
           width: media.width,
           height: media.height,
           altAr: media.altAr,
+          altEn: media.altEn,
         },
       },
       duplicate ? 200 : 201,

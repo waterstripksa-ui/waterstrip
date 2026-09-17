@@ -5,7 +5,8 @@
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText, itemId } from './fields.ts';
+import { addEnFields } from './add-en-fields.ts';
+import { arText, enText, itemId } from './fields.ts';
 
 const stat = z.object({
   id: itemId,
@@ -20,22 +21,33 @@ const v1 = z.object({
   stats: z.array(stat).length(4),
 });
 
-export type AboutGlanceStat = z.infer<typeof stat>;
-export type AboutGlance = z.infer<typeof v1>;
+/** v2 added the English siblings of the copy fields. */
+const statV2 = stat.extend({
+  labelEn: enText(60),
+});
+
+const v2 = v1.extend({
+  headingEn: enText(60),
+  stats: z.array(statV2).length(4),
+});
+
+export type AboutGlanceStat = z.infer<typeof statV2>;
+export type AboutGlance = z.infer<typeof v2>;
 
 export const aboutGlance = defineSingleton<AboutGlance>({
   key: 'about_glance',
-  version: 1,
-  schema: v1,
-  migrations: [],
+  version: 2,
+  schema: v2,
+  migrations: [addEnFields],
   initial: {
     hidden: false,
     headingAr: 'نظرة عامة',
+    headingEn: '',
     stats: [
-      { id: 'gl-members', value: 29, labelAr: 'عضوًا في الشريط' },
-      { id: 'gl-countries', value: 7, labelAr: 'دول ممثَّلة' },
-      { id: 'gl-groups', value: 8, labelAr: 'مجموعات عمل' },
-      { id: 'gl-assets', value: 8, labelAr: 'أصول وجهات على الشريط' },
+      { id: 'gl-members', value: 29, labelAr: 'عضوًا في الشريط', labelEn: '' },
+      { id: 'gl-countries', value: 7, labelAr: 'دول ممثَّلة', labelEn: '' },
+      { id: 'gl-groups', value: 8, labelAr: 'مجموعات عمل', labelEn: '' },
+      { id: 'gl-assets', value: 8, labelAr: 'أصول وجهات على الشريط', labelEn: '' },
     ],
   },
 });

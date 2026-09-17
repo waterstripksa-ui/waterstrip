@@ -2,7 +2,7 @@
 // Verbatim page-hero markup from the mockup's inner pages. The mockup's crumb
 // text varies per page (a bare text node, sometimes with a leading space, or a
 // <span>), and inline whitespace is visible, so callers pass the current crumb
-// exactly as the mockup writes it.
+// exactly as the mockup writes it. Crumb hrefs arrive already localized.
 interface Crumb {
   label: string;
   href?: string;
@@ -10,9 +10,14 @@ interface Crumb {
   span?: boolean;
 }
 
+/** `fallbackAttrs(...)` from src/lib/i18n/pick.ts, for untranslated copy. */
+type LangAttrs = { lang?: string; dir?: string };
+
 interface Props {
   title: string;
+  titleAttrs?: LangAttrs;
   lede?: string;
+  ledeAttrs?: LangAttrs;
   crumbs?: Crumb[];
   /** `--slim` is forgot-password's band; every other plain page is `--plain`. */
   variant?: 'plain' | 'slim';
@@ -20,7 +25,7 @@ interface Props {
   image?: string;
 }
 
-const { title, lede, crumbs = [], variant = 'plain', image } = Astro.props;
+const { title, titleAttrs = {}, lede, ledeAttrs = {}, crumbs = [], variant = 'plain', image } = Astro.props;
 ---
 
 <section class:list={['page-hero', !image && `page-hero--${variant}`]}>
@@ -29,7 +34,7 @@ const { title, lede, crumbs = [], variant = 'plain', image } = Astro.props;
     {crumbs.length > 0 && (
       <p class="crumbs">{crumbs.map((c, i) => (<>{i > 0 && <span>/</span>}{c.href ? <a href={c.href}>{c.label}</a> : c.span ? <span>{c.label}</span> : c.label}</>))}</p>
     )}
-    <h1>{title}</h1>
-    {lede && <p class="lede">{lede}</p>}
+    <h1 {...titleAttrs}>{title}</h1>
+    {lede && <p class="lede" {...ledeAttrs}>{lede}</p>}
   </div>
 </section>

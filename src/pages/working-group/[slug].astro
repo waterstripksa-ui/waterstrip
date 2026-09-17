@@ -1,67 +1,14 @@
 ---
-// Markup is waterstrip/working-group.html verbatim, filled server-side exactly
-// as main.js §18 fills it from wg-data.js (?id= becomes the [slug] route).
-// Empty sections keep the mockup's `hidden` shells so the DOM matches.
-// Content: the working_group row (/admin/technologies) and technologies_banner.
-import Layout from '../../layouts/Layout.astro';
-import PageHero from '../../components/PageHero.astro';
-import MembershipBanner from '../../components/MembershipBanner.astro';
-import { getWorkingGroup, getSingleton } from '../../lib/content/cache.ts';
+// waterstrip/working-group.html (?id= becomes [slug]). The body is src/views/WorkingGroup.astro, shared
+// with the /en twin (docs/i18n.md).
+import WorkingGroup from '../../views/WorkingGroup.astro';
+import { getWorkingGroup } from '../../lib/content/cache.ts';
 
-const { slug } = Astro.params;
-const group = slug ? getWorkingGroup(slug) : null;
+const group = getWorkingGroup(Astro.params.slug ?? '');
 
 if (!group) {
   return Astro.rewrite('/404');
 }
-
-const banner = getSingleton('technologies_banner');
 ---
 
-<Layout title={group.nameAr} description={group.scopeAr}>
-  <PageHero
-    image="/img/hero/hero-3.svg"
-    title={group.nameAr}
-    crumbs={[
-      { label: 'الرئيسية', href: '/' },
-      { label: 'مجموعات العمل', href: '/technologies' },
-      { label: 'تفاصيل المجموعة', span: true },
-    ]}
-  />
-
-  <section class="ribbon">
-    <div class="wrap">
-      <div class="wgp__head reveal">
-        <span class="wgp__no" id="gNo">{group.no || '—'}</span>
-        <div class="wgp__ident">
-          <p class="eyebrow">مجموعة عمل</p>
-          <h2 class="h-section" id="gName" style="margin-top:8px">{group.nameAr || '—'}</h2>
-        </div>
-        {group.statusAr
-          ? <span class="wg-status" id="gStatus">{group.statusAr}</span>
-          : <span class="wg-status" hidden id="gStatus"></span>}
-      </div>
-      <p class="lede wgp__scope reveal" id="gScope">{group.scopeAr || '—'}</p>
-      {group.stats.length > 0
-        ? <div class="wgp__stats reveal" id="gStats">{group.stats.map((s) => (<div class="wgp__stat"><b>{s.n}</b><span>{s.labelAr}</span></div>))}</div>
-        : <div class="wgp__stats reveal" hidden id="gStats"></div>}
-      <div class="facts reveal">
-        <div class="fact"><b>قائد المجموعة</b><span id="gHead">{group.headAr || '—'}</span></div>
-        <div class="fact"><b>الجهة القائدة</b><span id="gLead">{group.leadAr || '—'}</span></div>
-        <div class="fact fact--wide"><b>الجهات المشاركة</b><span id="gOrgs">{group.orgsAr || '—'}</span></div>
-      </div>
-      <div class="wgp__sec reveal" hidden={group.recs.length === 0} id="gRecsWrap">
-        <h3 class="h-sub">التوصيات</h3>
-        <ol class="wgp__recs" id="gRecs">{group.recs.map((r) => (<li class="wgp__rec"><h4>{r.titleAr}</h4><p>{r.bodyAr}</p></li>))}</ol>
-      </div>
-      <p class="wgp__note reveal" hidden={!group.noteAr} id="gNote">{group.noteAr}</p>
-      <p class="wgp__src reveal" id="gSrc">{group.src && `المصدر: ${group.src}`}</p>
-      <div class="wgp__nav reveal">
-        <a class="btn-pill" href="/technologies">كل مجموعات العمل</a>
-        <a class="btn-pill btn-pill--alt" href="/register-interest">سجّل اهتمامك بالمشاركة</a>
-      </div>
-    </div>
-  </section>
-
-  <MembershipBanner slot="after-main" banner={banner} />
-</Layout>
+<WorkingGroup group={group} />

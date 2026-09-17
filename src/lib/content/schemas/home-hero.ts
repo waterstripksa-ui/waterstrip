@@ -8,7 +8,8 @@
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText, itemId, mediaId, siteHref } from './fields.ts';
+import { addEnFields } from './add-en-fields.ts';
+import { arText, enText, itemId, mediaId, siteHref } from './fields.ts';
 
 const v1 = z.object({
   /** The `h1` in `waterstrip/index.html`. Plain text: the component adds markup. */
@@ -38,8 +39,19 @@ const v3 = z.object({
   panels: z.array(heroPanelV3).min(1).max(6),
 });
 
-export type HomeHeroPanel = z.infer<typeof heroPanelV3>;
-export type HomeHero = z.infer<typeof v3>;
+/** v6 added the English siblings of each panel's copy. */
+const heroPanelV6 = heroPanelV3.extend({
+  eyebrowEn: enText(40),
+  headingEn: enText(160),
+  ctaLabelEn: enText(40),
+});
+
+const v6 = z.object({
+  panels: z.array(heroPanelV6).min(1).max(6),
+});
+
+export type HomeHeroPanel = z.infer<typeof heroPanelV6>;
+export type HomeHero = z.infer<typeof v6>;
 
 /**
  * v1 stored a single `titleAr` — the first panel's heading. The other two panels
@@ -118,32 +130,41 @@ function v4_to_v5(data: unknown): unknown {
 
 export const homeHero = defineSingleton<HomeHero>({
   key: 'home_hero',
-  version: 5,
-  schema: v3,
-  migrations: [v1_to_v2, v2_to_v3, v3_to_v4, v4_to_v5],
+  version: 6,
+  schema: v6,
+  migrations: [v1_to_v2, v2_to_v3, v3_to_v4, v4_to_v5, addEnFields],
   initial: {
     panels: [
       {
         id: 'hero-1',
         eyebrowAr: 'رؤى الشريط',
+        eyebrowEn: '',
         headingAr: 'معرفة تطبيقية تسرّع تبنّي تقنيات المياه في المملكة.',
+        headingEn: '',
         ctaLabelAr: 'استعرض الرؤى',
+        ctaLabelEn: '',
         ctaHref: '/media#news',
         imageId: null,
       },
       {
         id: 'hero-2',
         eyebrowAr: 'الشراكات',
+        eyebrowEn: '',
         headingAr: 'جهات حكومية ومؤسسات بحثية وقطاع خاص — شريط واحد للابتكار المائي.',
+        headingEn: '',
         ctaLabelAr: 'تعرّف على الأعضاء',
+        ctaLabelEn: '',
         ctaHref: '/members',
         imageId: null,
       },
       {
         id: 'hero-3',
         eyebrowAr: 'الإعلانات',
+        eyebrowEn: '',
         headingAr: 'وزارة البيئة والمياه والزراعة تُطلق شريط شراكات الابتكار المائي من جدة.',
+        headingEn: '',
         ctaLabelAr: 'اعرف المزيد',
+        ctaLabelEn: '',
         ctaHref: '/media#news',
         imageId: null,
       },

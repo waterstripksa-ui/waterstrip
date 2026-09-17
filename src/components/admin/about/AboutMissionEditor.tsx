@@ -2,8 +2,7 @@
 import type { AboutMission } from '../../../lib/content/schemas/about-mission.ts';
 import { useSingletonEditor } from '../useSingletonEditor.ts';
 import { SectionForm } from '../SectionForm.tsx';
-import { TextField } from '../fields/TextField.tsx';
-import { TextAreaField } from '../fields/TextAreaField.tsx';
+import { BilingualTextField, BilingualTextAreaField } from '../fields/BilingualFields.tsx';
 import { ImageField } from '../fields/ImageField.tsx';
 import type { MediaView } from '../../../lib/content/cache.ts';
 
@@ -30,35 +29,47 @@ export default function AboutMissionEditor({
       onSave={save}
       onReset={reset}
     >
-      <TextField
+      <BilingualTextField
         label="العنوان الفرعي"
         value={draft.eyebrowAr}
         onChange={(v) => update({ ...draft, eyebrowAr: v })}
         name="eyebrowAr"
         error={errors.eyebrowAr}
+        valueEn={draft.eyebrowEn}
+        onChangeEn={(v) => update({ ...draft, eyebrowEn: v })}
+        errorEn={errors.eyebrowEn}
       />
-      <TextField
+      <BilingualTextField
         label="العنوان"
         value={draft.headingAr}
         onChange={(v) => update({ ...draft, headingAr: v })}
         name="headingAr"
         error={errors.headingAr}
+        valueEn={draft.headingEn}
+        onChangeEn={(v) => update({ ...draft, headingEn: v })}
+        errorEn={errors.headingEn}
       />
-      <TextAreaField
+      <BilingualTextAreaField
         label="الفقرة الأولى"
         value={draft.bodyAr1}
         onChange={(v) => update({ ...draft, bodyAr1: v })}
         name="bodyAr1"
         error={errors.bodyAr1}
         rows={5}
+        valueEn={draft.bodyEn1}
+        onChangeEn={(v) => update({ ...draft, bodyEn1: v })}
+        errorEn={errors.bodyEn1}
       />
-      <TextAreaField
+      <BilingualTextAreaField
         label="الفقرة الثانية"
         value={draft.bodyAr2}
         onChange={(v) => update({ ...draft, bodyAr2: v })}
         name="bodyAr2"
         error={errors.bodyAr2}
         rows={4}
+        valueEn={draft.bodyEn2}
+        onChangeEn={(v) => update({ ...draft, bodyEn2: v })}
+        errorEn={errors.bodyEn2}
       />
       <ImageField
         label="الصورة"

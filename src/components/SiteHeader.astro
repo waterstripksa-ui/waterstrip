@@ -2,22 +2,36 @@
 // Verbatim markup from waterstrip/*.html (scroll progress, header, drawer).
 // Behaviour comes from the vendored src/scripts/mockup/main.js, which keys
 // off these exact ids and class names — do not rename them.
+// The language switch (.lang-switch) is the one addition; the mockup never
+// designed one, so its styling lives in src/styles/mockup/overrides.css.
 import { getSingleton } from '../lib/content/cache.ts';
+import { localizePath, stripLocale, switchLocalePath, type Locale } from '../lib/i18n/locale.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = ui(locale);
+const href = (path: string) => localizePath(path, locale);
 
 const awards = getSingleton('home_awards');
-const path = Astro.url.pathname;
+const path = stripLocale(Astro.url.pathname);
+const otherLocale: Locale = locale === 'ar' ? 'en' : 'ar';
+const switchHref = switchLocalePath(Astro.url.pathname, otherLocale);
 // The mockup only highlights the current link on these pages (media and the
 // inner/legal pages show no current link), so is-current is limited to them.
 const HIGHLIGHTED = new Set(['/', '/about', '/technologies', '/members', '/contact']);
 const current = HIGHLIGHTED.has(path) ? path : null;
 
 const navLinks = [
-  { label: 'الرئيسية', href: '/' },
-  { label: 'عن الشريط', href: '/about' },
-  { label: 'مجموعات العمل', href: '/technologies' },
-  { label: 'الأعضاء', href: '/members' },
-  { label: 'الأخبار والفعاليات', href: '/media' },
-  { label: 'تواصل معنا', href: '/contact' },
+  { label: t.nav.home, href: '/' },
+  { label: t.nav.about, href: '/about' },
+  { label: t.nav.groups, href: '/technologies' },
+  { label: t.nav.members, href: '/members' },
+  { label: t.nav.media, href: '/media' },
+  { label: t.nav.contact, href: '/contact' },
 ];
 ---
 
@@ -25,29 +39,30 @@ const navLinks = [
 <header class="site-head" id="siteHead">
   <nav class="navbar">
     <div class="wrap">
-      <a aria-label="Water STRIP — شريط شراكات الابتكار المائي" class="brand" href="/"><img alt="Water STRIP — شريط شراكات الابتكار المائي" src="/img/logo-waterstrip-white.svg" /></a>
+      <a aria-label={t.site.brandLabel} class="brand" href={href('/')}><img alt={t.site.brandLabel} src="/img/logo-waterstrip-white.svg" /></a>
       <div class="nav-actions">
-        <a class="btn-pill btn-pill--solid" href="/register-interest"><span>سجّل اهتمامك</span></a>
-        <button aria-controls="drawer" aria-expanded="false" aria-label="القائمة" class="nav-toggle" id="navToggle" type="button"><svg fill="none" height="26" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="26" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"></path></svg></button>
+        <a aria-label={t.site.switchAria} class="lang-switch" href={switchHref} hreflang={otherLocale} lang={otherLocale}>{t.site.switchLabel}</a>
+        <a class="btn-pill btn-pill--solid" href={href('/register-interest')}><span>{t.nav.register}</span></a>
+        <button aria-controls="drawer" aria-expanded="false" aria-label={t.nav.menu} class="nav-toggle" id="navToggle" type="button"><svg fill="none" height="26" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="26" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"></path></svg></button>
       </div>
     </div>
   </nav>
 </header>
 <div aria-hidden="true" class="drawer" id="drawer">
-  <button aria-label="إغلاق" class="drawer__close" id="drawerClose" type="button">×</button>
+  <button aria-label={t.nav.close} class="drawer__close" id="drawerClose" type="button">×</button>
   <nav class="drawer__nav">
     {navLinks.slice(0, 4).map((link) => (
-      <a class:list={[link.href === current && 'is-current']} href={link.href}>{link.label}</a>
+      <a class:list={[link.href === current && 'is-current']} href={href(link.href)}>{link.label}</a>
     ))}
     {/* The mockup marks this link "coming soon" on every page except the home
         page, where it is a plain (still disabled) anchor to #awards. */}
     {!awards.hidden && (path === '/'
-      ? <a aria-disabled="true" class="" href="/#awards" tabindex="-1"><span>الجوائز والتكريم</span></a>
-      : <a aria-disabled="true" class="is-soon" href="#" tabindex="-1"><span>الجوائز والتكريم</span><em class="soon-tag">قريبًا</em></a>
+      ? <a aria-disabled="true" class="" href={href('/#awards')} tabindex="-1"><span>{t.nav.awards}</span></a>
+      : <a aria-disabled="true" class="is-soon" href="#" tabindex="-1"><span>{t.nav.awards}</span><em class="soon-tag">{t.nav.soon}</em></a>
     )}
     {navLinks.slice(4).map((link) => (
-      <a class:list={[link.href === current && 'is-current']} href={link.href}>{link.label}</a>
+      <a class:list={[link.href === current && 'is-current']} href={href(link.href)}>{link.label}</a>
     ))}
   </nav>
-  <div class="drawer-cta"><a class="is-solid" href="/register-interest">سجّل اهتمامك</a></div>
+  <div class="drawer-cta"><a class="is-solid" href={href('/register-interest')}>{t.nav.register}</a></div>
 </div>

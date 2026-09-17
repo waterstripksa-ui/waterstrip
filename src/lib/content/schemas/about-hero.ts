@@ -4,23 +4,32 @@
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText } from './fields.ts';
+import { addEnFields } from './add-en-fields.ts';
+import { arText, enText } from './fields.ts';
 
 const v1 = z.object({
   titleAr: arText(1, 80),
   ledeAr: arText(1, 300),
 });
 
-export type AboutHero = z.infer<typeof v1>;
+/** v2 added the English siblings of the copy fields. */
+const v2 = v1.extend({
+  titleEn: enText(80),
+  ledeEn: enText(300),
+});
+
+export type AboutHero = z.infer<typeof v2>;
 
 export const aboutHero = defineSingleton<AboutHero>({
   key: 'about_hero',
-  version: 1,
-  schema: v1,
-  migrations: [],
+  version: 2,
+  schema: v2,
+  migrations: [addEnFields],
   initial: {
     titleAr: 'عن الشريط',
+    titleEn: '',
     ledeAr:
       'مبادرة وطنية للتعاون والتنسيق وتبادل المعرفة في ابتكار تقنيات المياه، دعمًا لرؤية السعودية 2030.',
+    ledeEn: '',
   },
 });

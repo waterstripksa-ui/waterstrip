@@ -6,7 +6,8 @@
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText, mediaId, siteHref } from './fields.ts';
+import { addEnFields } from './add-en-fields.ts';
+import { arText, enText, mediaId, siteHref } from './fields.ts';
 
 const v1 = z.object({
   eyebrowAr: arText(1, 40),
@@ -17,7 +18,15 @@ const v1 = z.object({
   imageId: mediaId.nullable(),
 });
 
-export type AboutFoundingStatement = z.infer<typeof v1>;
+/** v3 added the English siblings of the copy fields. */
+const v3 = v1.extend({
+  eyebrowEn: enText(40),
+  quoteEn: enText(500),
+  attributionEn: enText(120),
+  ctaLabelEn: enText(40),
+});
+
+export type AboutFoundingStatement = z.infer<typeof v3>;
 
 /** `members` was ported after this CTA shipped pointing at `'#'`. */
 function v1_to_v2(data: unknown): unknown {
@@ -26,15 +35,19 @@ function v1_to_v2(data: unknown): unknown {
 
 export const aboutFoundingStatement = defineSingleton<AboutFoundingStatement>({
   key: 'about_founding_statement',
-  version: 2,
-  schema: v1,
-  migrations: [v1_to_v2],
+  version: 3,
+  schema: v3,
+  migrations: [v1_to_v2, addEnFields],
   initial: {
     eyebrowAr: 'البيان التأسيسي',
+    eyebrowEn: '',
     quoteAr:
       'تمثّل المبادرة فرصة تحوّلية لتشكيل مستقبل قطاع المياه في المملكة العربية السعودية، ونتطلّع إلى انضمام أصحاب المصلحة الرئيسيين في دفع هذه الرؤية للأمام.',
+    quoteEn: '',
     attributionAr: 'وكالة البحث والابتكار — وزارة البيئة والمياه والزراعة',
+    attributionEn: '',
     ctaLabelAr: 'تعرّف على الأعضاء',
+    ctaLabelEn: '',
     ctaHref: '/members',
     imageId: null,
   },

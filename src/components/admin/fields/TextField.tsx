@@ -12,11 +12,15 @@ interface Props {
   name: string;
   error?: string;
   hint?: string;
+  /** No required marker. Only English (`xEn`) fields are optional. */
+  optional?: boolean;
+  /** Set on English inputs, which also switch the control to LTR. */
+  lang?: 'en';
   /** Isolates a Latin-only value (a path, a URL) inside the RTL form. */
   ltr?: boolean;
 }
 
-export function TextField({ label, value, onChange, name, error, hint, ltr }: Props) {
+export function TextField({ label, value, onChange, name, error, hint, ltr, optional, lang }: Props) {
   const id = useId();
   const hintId = `${id}-hint`;
   const errorId = `${id}-error`;
@@ -26,9 +30,11 @@ export function TextField({ label, value, onChange, name, error, hint, ltr }: Pr
     <div className="form__field">
       <label className="form__label" htmlFor={id}>
         {label}
-        <span className="form__required" aria-hidden="true">
-          *
-        </span>
+        {!optional && (
+          <span className="form__required" aria-hidden="true">
+            *
+          </span>
+        )}
       </label>
       <input
         id={id}
@@ -38,7 +44,8 @@ export function TextField({ label, value, onChange, name, error, hint, ltr }: Pr
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={error ? true : undefined}
         aria-describedby={describedBy || undefined}
-        dir={ltr ? 'ltr' : undefined}
+        dir={ltr || lang === 'en' ? 'ltr' : undefined}
+        lang={lang}
       />
       {hint && (
         <p className="form__hint" id={hintId}>

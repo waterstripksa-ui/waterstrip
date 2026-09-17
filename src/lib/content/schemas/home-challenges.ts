@@ -7,7 +7,8 @@
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText, itemId, mediaId } from './fields.ts';
+import { addEnFields } from './add-en-fields.ts';
+import { arText, enText, itemId, mediaId } from './fields.ts';
 
 const challenge = z.object({
   id: itemId,
@@ -29,8 +30,19 @@ const v2 = v1.extend({
   items: z.array(challengeV2).min(1).max(12),
 });
 
-export type HomeChallenge = z.infer<typeof challengeV2>;
-export type HomeChallenges = z.infer<typeof v2>;
+/** v3 added the English siblings of the copy fields. */
+const challengeV3 = challengeV2.extend({
+  labelEn: enText(120),
+});
+
+const v3 = v2.extend({
+  eyebrowEn: enText(40),
+  headingEn: enText(400),
+  items: z.array(challengeV3).min(1).max(12),
+});
+
+export type HomeChallenge = z.infer<typeof challengeV3>;
+export type HomeChallenges = z.infer<typeof v3>;
 
 /** v2 made each slide's illustration uploadable. Existing slides start with none. */
 function v1_to_v2(data: unknown): unknown {
@@ -40,21 +52,38 @@ function v1_to_v2(data: unknown): unknown {
 
 export const homeChallenges = defineSingleton<HomeChallenges>({
   key: 'home_challenges',
-  version: 2,
-  schema: v2,
-  migrations: [v1_to_v2],
+  version: 3,
+  schema: v3,
+  migrations: [v1_to_v2, addEnFields],
   initial: {
     eyebrowAr: 'التحديات',
+    eyebrowEn: '',
     headingAr:
       'يواجه قطاع المياه في المملكة تحديات مترابطة تؤثّر في كفاءة الموارد وتكلفة الخدمة واستدامة الإمداد.',
+    headingEn: '',
     items: [
-      { id: 'ch-scarcity', labelAr: 'ندرة الموارد المائية', imageId: null },
-      { id: 'ch-desal', labelAr: 'ارتفاع تكاليف التحلية', imageId: null },
-      { id: 'ch-wastewater', labelAr: 'ضعف كفاءة معالجة مياه الصرف الصحي', imageId: null },
-      { id: 'ch-infra', labelAr: 'تقادم البنية التحتية', imageId: null },
-      { id: 'ch-consumption', labelAr: 'ارتفاع استهلاك الفرد من المياه', imageId: null },
-      { id: 'ch-groundwater', labelAr: 'الاعتماد على المياه الجوفية غير المتجددة', imageId: null },
-      { id: 'ch-fragmentation', labelAr: 'تشتّت الجهات والخبرات', imageId: null },
+      { id: 'ch-scarcity', labelAr: 'ندرة الموارد المائية', labelEn: '', imageId: null },
+      { id: 'ch-desal', labelAr: 'ارتفاع تكاليف التحلية', labelEn: '', imageId: null },
+      {
+        id: 'ch-wastewater',
+        labelAr: 'ضعف كفاءة معالجة مياه الصرف الصحي',
+        labelEn: '',
+        imageId: null,
+      },
+      { id: 'ch-infra', labelAr: 'تقادم البنية التحتية', labelEn: '', imageId: null },
+      {
+        id: 'ch-consumption',
+        labelAr: 'ارتفاع استهلاك الفرد من المياه',
+        labelEn: '',
+        imageId: null,
+      },
+      {
+        id: 'ch-groundwater',
+        labelAr: 'الاعتماد على المياه الجوفية غير المتجددة',
+        labelEn: '',
+        imageId: null,
+      },
+      { id: 'ch-fragmentation', labelAr: 'تشتّت الجهات والخبرات', labelEn: '', imageId: null },
     ],
   },
 });

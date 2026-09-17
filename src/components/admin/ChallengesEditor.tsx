@@ -3,8 +3,7 @@ import type { HomeChallenge, HomeChallenges } from '../../lib/content/schemas/ho
 import { useSingletonEditor } from './useSingletonEditor.ts';
 import { SectionForm } from './SectionForm.tsx';
 import { ItemList } from './ItemList.tsx';
-import { TextField } from './fields/TextField.tsx';
-import { TextAreaField } from './fields/TextAreaField.tsx';
+import { BilingualTextField, BilingualTextAreaField } from './fields/BilingualFields.tsx';
 import { ImageField } from './fields/ImageField.tsx';
 import type { MediaView } from '../../lib/content/cache.ts';
 
@@ -32,26 +31,32 @@ export default function ChallengesEditor({
       onSave={save}
       onReset={reset}
     >
-      <TextField
+      <BilingualTextField
         label="العنوان الفرعي"
         value={draft.eyebrowAr}
         onChange={(v) => update({ ...draft, eyebrowAr: v })}
         name="eyebrowAr"
         error={errors.eyebrowAr}
+        valueEn={draft.eyebrowEn}
+        onChangeEn={(v) => update({ ...draft, eyebrowEn: v })}
+        errorEn={errors.eyebrowEn}
       />
-      <TextAreaField
+      <BilingualTextAreaField
         label="النص التعريفي"
         value={draft.headingAr}
         onChange={(v) => update({ ...draft, headingAr: v })}
         name="headingAr"
         error={errors.headingAr}
         rows={3}
+        valueEn={draft.headingEn}
+        onChangeEn={(v) => update({ ...draft, headingEn: v })}
+        errorEn={errors.headingEn}
       />
 
       <ItemList<HomeChallenge>
         items={draft.items}
         onChange={(items) => update({ ...draft, items })}
-        makeItem={(id) => ({ id, labelAr: 'تحدٍّ جديد', imageId: null })}
+        makeItem={(id) => ({ id, labelAr: 'تحدٍّ جديد', labelEn: '', imageId: null })}
         idPrefix="ch"
         min={1}
         max={12}
@@ -60,12 +65,15 @@ export default function ChallengesEditor({
       >
         {(item, i, patch) => (
           <>
-            <TextField
+            <BilingualTextField
               label="النص"
               value={item.labelAr}
               onChange={(v) => patch({ labelAr: v })}
               name={`items.${i}.labelAr`}
               error={errors[`items.${i}.labelAr`]}
+              valueEn={item.labelEn}
+              onChangeEn={(v) => patch({ labelEn: v })}
+              errorEn={errors[`items.${i}.labelEn`]}
             />
             <ImageField
               label="الصورة"

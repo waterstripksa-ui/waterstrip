@@ -2,13 +2,19 @@
 // The closing "join the alliance" banner, verbatim mockup markup. The mockup
 // always places it after </main>, so pages render it with slot="after-main".
 import { MEMBERSHIP_BANNER_IMG, resolveImage } from '../lib/media-assets.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
 
 interface Banner {
   imageId: string | null;
   eyebrowAr: string;
+  eyebrowEn: string;
   headingAr: string;
+  headingEn: string;
   ledeAr: string;
+  ledeEn: string;
   ctaLabelAr: string;
+  ctaLabelEn: string;
   ctaHref: string;
 }
 
@@ -17,16 +23,17 @@ interface Props {
 }
 
 const { banner } = Astro.props;
+const L = localizer(localeOfPath(Astro.url.pathname));
 ---
 
 <section class="about-banner">
   <img alt="" loading="lazy" {...resolveImage(banner.imageId, MEMBERSHIP_BANNER_IMG)} />
   <div class="about-banner__in">
-    <p class="eyebrow eyebrow--light">{banner.eyebrowAr}</p>
-    <h2>{banner.headingAr}</h2>
-    <p class="about-banner__lede">{banner.ledeAr}</p>
-    <a class="btn-brand" href={banner.ctaHref}>
-      <span>{banner.ctaLabelAr}</span>
+    <p class="eyebrow eyebrow--light" {...L.attrs(banner, 'eyebrow')}>{L.text(banner, 'eyebrow')}</p>
+    <h2 {...L.attrs(banner, 'heading')}>{L.text(banner, 'heading')}</h2>
+    <p class="about-banner__lede" {...L.attrs(banner, 'lede')}>{L.text(banner, 'lede')}</p>
+    <a class="btn-brand" href={L.href(banner.ctaHref)}>
+      <span {...L.attrs(banner, 'ctaLabel')}>{L.text(banner, 'ctaLabel')}</span>
       <svg fill="none" height="15" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24" width="15" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
     </a>
   </div>

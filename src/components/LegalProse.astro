@@ -4,14 +4,30 @@
 // the admin-managed sections. Each body is markdown-lite rendered by
 // src/lib/prose.ts — see that file and legal-shared.ts for why it is not a
 // freeform HTML field even though the section list itself is dynamic.
+// An untranslated section falls back to Arabic as a whole, heading and body
+// together, so an English page never mixes a translated heading over Arabic prose.
 import { renderProse } from '../lib/prose.ts';
 import type { LegalPage } from '../lib/content/schemas/legal-shared.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
 
 interface Props {
   page: LegalPage;
 }
 
 const { page } = Astro.props;
+const locale = localeOfPath(Astro.url.pathname);
+const L = localizer(locale);
+
+const sections = page.sections.map((s) => {
+  const english = locale === 'en' && s.bodyEn.trim() !== '';
+  return {
+    title: english ? L.text(s, 'title') : s.titleAr,
+    titleAttrs: english ? L.attrs(s, 'title') : L.attrs(s, 'body'),
+    body: english ? s.bodyEn : s.bodyAr,
+    bodyAttrs: L.attrs(s, 'body'),
+  };
+});
 ---
 
-<section class="ribbon"><div class="wrap"><div class="prose reveal"><p class="updated">{page.updatedLabelAr}</p>{page.sections.map((section) => (<><h2>{section.titleAr}</h2><Fragment set:html={renderProse(section.bodyAr)} /></>))}</div></div></section>
+<section class="ribbon"><div class="wrap"><div class="prose reveal"><p class="updated" {...L.attrs(page, 'updatedLabel')}>{L.text(page, 'updatedLabel')}</p>{sections.map((s) => (<><h2 {...s.titleAttrs}>{s.title}</h2>{s.bodyAttrs.lang ? <div {...s.bodyAttrs}><Fragment set:html={renderProse(s.body, L.href)} /></div> : <Fragment set:html={renderProse(s.body, L.href)} />}</>))}</div></div></section>

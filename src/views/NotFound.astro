@@ -1,0 +1,58 @@
+---
+// Markup is waterstrip/404.html verbatim. Pure navigation, like sitemap.astro:
+// no CMS surface beyond the shared legal_banner closing banner.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+
+// Rendered for unmatched paths and for rewrites from a missing slug, in both
+// languages; the status is set here so every entry point answers 404.
+Astro.response.status = 404;
+
+const banner = getSingleton('legal_banner');
+
+const quickLinks = [
+  { label: t.nav.about, href: '/about' },
+  { label: t.nav.groups, href: '/technologies' },
+  { label: t.nav.members, href: '/members' },
+  { label: t.nav.media, href: '/media' },
+  { label: t.nav.register, href: '/register-interest' },
+  { label: t.nav.contact, href: '/contact' },
+];
+---
+
+<Layout title={t.notFound.title}>
+  <PageHero
+    title={t.notFound.heading}
+    lede={t.notFound.lede}
+    crumbs={[{ label: t.nav.home, href: L.href('/') }, { label: t.notFound.crumb, span: true }]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-head__txt">
+          <p class="eyebrow">{t.notFound.eyebrow}</p>
+          <h2 class="h-section">{t.notFound.where}</h2>
+        </div>
+        <a class="cta-circle" href={L.href('/')}><span>{t.notFound.home}</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
+      </div>
+      <div class="docs reveal">
+        <h3>{t.footer.quickLinks}</h3>
+        {quickLinks.map((link) => (
+          <div class="doc"><div class="doc__row"><a href={L.href(link.href)}>{link.label}</a></div></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <MembershipBanner slot="after-main" banner={banner} />
+</Layout>

@@ -6,7 +6,8 @@ The public site is being ported page by page from a finished static mockup
 ([waterstrip/](../waterstrip/)) into Astro, and an authenticated CMS dashboard is being built
 alongside it so staff can edit the content without touching code.
 
-The site is Arabic-only and RTL. The audience is a Saudi water-innovation initiative with
+The public site is Arabic (RTL) at the root and English (LTR) under `/en`; the dashboard is
+Arabic only. See [i18n.md](i18n.md). The audience is a Saudi water-innovation initiative with
 government stakeholders, so treat data residency and dependency count as real constraints.
 
 ## Stack
@@ -77,6 +78,8 @@ plugin endpoints.
 | [src/db/index.ts](../src/db/index.ts) | `better-sqlite3` connection (WAL, foreign keys on) wrapped in Drizzle. |
 | [src/db/schema.ts](../src/db/schema.ts) | Drizzle tables. Auth tables are **generated**; CMS tables get added here by hand. |
 | [src/middleware.ts](../src/middleware.ts) | Session lookup + `/admin` route guard. |
+| [src/views/](../src/views/) | Public page markup, shared by the Arabic route in `src/pages/` and its twin in `src/pages/en/`. |
+| [src/lib/i18n/](../src/lib/i18n/) | Locale paths, interface copy (`ui.ts`) and the Arabic-fallback helpers (`pick.ts`). See [i18n.md](i18n.md). |
 | [src/env.d.ts](../src/env.d.ts) | `App.Locals` types, inferred from the auth instance. |
 | [scripts/seed-admin.ts](../scripts/seed-admin.ts) | Idempotent first-admin seed. |
 | [drizzle.config.ts](../drizzle.config.ts) | drizzle-kit config. |

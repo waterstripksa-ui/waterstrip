@@ -1,0 +1,130 @@
+---
+// Markup is waterstrip/about.html verbatim (inline styles included); copy and
+// imagery come from the content cache, editable at /admin/about. An image slot
+// with no upload shows its placeholder artwork (src/lib/about-assets.ts).
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+import { FOUNDING_STATEMENT_IMG, MISSION_IMG, nationalChallengeImages } from '../lib/about-assets.ts';
+import { imageFor, resolveImage } from '../lib/media-assets.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { fallbackAttrs, localizer, pick } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+
+const hero = getSingleton('about_hero');
+const mission = getSingleton('about_mission');
+const glance = getSingleton('about_glance');
+const challenges = getSingleton('about_challenges');
+const goals = getSingleton('about_goals');
+const founding = getSingleton('about_founding_statement');
+const banner = getSingleton('about_banner');
+
+/** The panel's 01, 02, … ordinal — derived from position, never stored. */
+const ordinal = (i: number) => String(i + 1).padStart(2, '0');
+
+/** The mockup's guillemets around the quote are Arabic typography; English uses curly quotes. */
+const quoteFallback = locale === 'en' && !founding.quoteEn.trim();
+const [quoteOpen, quoteClose] = locale === 'ar' || quoteFallback ? ['«', '»'] : ['“', '”'];
+---
+
+<Layout title={L.text(hero, 'title')}>
+  <PageHero
+    title={L.text(hero, 'title')}
+    titleAttrs={L.attrs(hero, 'title')}
+    lede={L.text(hero, 'lede')}
+    ledeAttrs={L.attrs(hero, 'lede')}
+    crumbs={[{ label: t.nav.home, href: L.href('/') }, { label: ` ${L.text(hero, 'title')}` }]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="split reveal">
+        <figure><img alt="" {...resolveImage(founding.imageId, FOUNDING_STATEMENT_IMG)} /></figure>
+        <div>
+          <p class="eyebrow" {...L.attrs(founding, 'eyebrow')}>{L.text(founding, 'eyebrow')}</p>
+          <h3 style="font-family:var(--f-head);font-size:27px;line-height:38px;font-weight:500;margin:16px 0 24px" {...L.attrs(founding, 'quote')}>{quoteOpen}{L.text(founding, 'quote')}{quoteClose}</h3><p class="eyebrow" style="margin:-8px 0 24px" {...L.attrs(founding, 'attribution')}>{L.text(founding, 'attribution')}</p>
+          <a class="cta-circle" href={L.href(founding.ctaHref)}><span {...L.attrs(founding, 'ctaLabel')}>{L.text(founding, 'ctaLabel')}</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ribbon ribbon--grey">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-head__txt">
+          <p class="eyebrow" {...L.attrs(mission, 'eyebrow')}>{L.text(mission, 'eyebrow')}</p>
+          <h2 class="h-section" {...L.attrs(mission, 'heading')}>{L.text(mission, 'heading')}</h2>
+        </div>
+      </div>
+      <div class="split reveal">
+        <div>
+          <p style="font-size:17px;line-height:29px;margin-bottom:20px;" {...fallbackAttrs(locale, mission.bodyEn1)}>{pick(locale, mission.bodyAr1, mission.bodyEn1)}</p>
+          <p style="font-size:17px;line-height:29px;" {...fallbackAttrs(locale, mission.bodyEn2)}>{pick(locale, mission.bodyAr2, mission.bodyEn2)}</p>
+        </div>
+        <figure><img alt={t.about.missionImageAlt} loading="lazy" {...resolveImage(mission.imageId, MISSION_IMG)} /></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-head__txt">
+          <p class="eyebrow" {...L.attrs(goals, 'eyebrow')}>{L.text(goals, 'eyebrow')}</p>
+          <h2 class="h-section" {...L.attrs(goals, 'heading')}>{L.text(goals, 'heading')}</h2>
+          <p class="lede" {...L.attrs(goals, 'lede')}>{L.text(goals, 'lede')}</p>
+        </div>
+      </div>
+      <div class="grid-4 reveal">
+        {goals.items.map((goal, i) => (
+          <div class="fact" style="border-top-width:2px;padding-top:22px">
+            <b>{ordinal(i)}</b><h3 style="font-size:20px;font-weight:500;margin:6px 0 12px" {...L.attrs(goal, 'title')}>{L.text(goal, 'title')}</h3>
+            <p style="font-size:15px;line-height:25px;color:var(--c-text-soft)" {...L.attrs(goal, 'body')}>{L.text(goal, 'body')}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {!glance.hidden && (
+    <section class="ribbon ribbon--grey glance">
+      <div class="wrap reveal glance__panel">
+        <h2 class="h-section" {...L.attrs(glance, 'heading')}>{L.text(glance, 'heading')}</h2>
+        <div class="stats" style="grid-template-columns:repeat(4,1fr)">
+          {glance.stats.map((stat) => (
+            <div class="stat"><b data-count={stat.value}>0</b><p {...L.attrs(stat, 'label')}>{L.text(stat, 'label')}</p></div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-head__txt">
+          <p class="eyebrow" {...L.attrs(challenges, 'eyebrow')}>{L.text(challenges, 'eyebrow')}</p>
+          <h2 class="h-section" {...L.attrs(challenges, 'heading')}>{L.text(challenges, 'heading')}</h2>
+          <p class="lede" {...L.attrs(challenges, 'lede')}>{L.text(challenges, 'lede')}</p>
+        </div>
+        <a class="cta-circle" href={L.href(challenges.ctaHref)}><span {...L.attrs(challenges, 'ctaLabel')}>{L.text(challenges, 'ctaLabel')}</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
+      </div>
+      <div class="grid-3 reveal">
+        {challenges.items.map((item) => (
+          <article class="tri__card">
+            <figure><img alt={L.text(item, 'title')} {...resolveImage(item.imageId, imageFor(nationalChallengeImages, item.id))} /></figure>
+            <h3 {...L.attrs(item, 'title')}>{L.text(item, 'title')}</h3><p {...L.attrs(item, 'body')}>{L.text(item, 'body')}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <MembershipBanner slot="after-main" banner={banner} />
+</Layout>

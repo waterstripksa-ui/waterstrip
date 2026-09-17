@@ -1,0 +1,14 @@
+---
+// waterstrip/working-group.html (?id= becomes [slug]). The body is src/views/WorkingGroup.astro, shared
+// with the Arabic route (docs/i18n.md).
+import WorkingGroup from '../../../views/WorkingGroup.astro';
+import { getWorkingGroup } from '../../../lib/content/cache.ts';
+
+const group = getWorkingGroup(Astro.params.slug ?? '');
+
+if (!group) {
+  return Astro.rewrite('/en/404');
+}
+---
+
+<WorkingGroup group={group} />

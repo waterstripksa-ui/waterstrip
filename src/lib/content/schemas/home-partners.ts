@@ -7,7 +7,8 @@
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText, itemId, mediaId, siteHref } from './fields.ts';
+import { addEnFields } from './add-en-fields.ts';
+import { arText, enText, itemId, mediaId, siteHref } from './fields.ts';
 
 const partner = z.object({
   id: itemId,
@@ -31,8 +32,19 @@ const v2 = v1.extend({
   items: z.array(partnerV2).min(1).max(20),
 });
 
-export type HomePartner = z.infer<typeof partnerV2>;
-export type HomePartners = z.infer<typeof v2>;
+/** v4 added the English siblings of the copy fields. */
+const partnerV4 = partnerV2.extend({
+  nameEn: enText(120),
+});
+
+const v4 = v2.extend({
+  labelEn: enText(60),
+  noteEn: enText(200),
+  items: z.array(partnerV4).min(1).max(20),
+});
+
+export type HomePartner = z.infer<typeof partnerV4>;
+export type HomePartners = z.infer<typeof v4>;
 
 /** v2 made each partner's logo uploadable. Existing partners start with none. */
 function v1_to_v2(data: unknown): unknown {
@@ -48,25 +60,40 @@ function v2_to_v3(data: unknown): unknown {
 
 export const homePartners = defineSingleton<HomePartners>({
   key: 'home_partners',
-  version: 3,
-  schema: v2,
-  migrations: [v1_to_v2, v2_to_v3],
+  version: 4,
+  schema: v4,
+  migrations: [v1_to_v2, v2_to_v3, addEnFields],
   initial: {
     labelAr: 'الجهات الاستراتيجية',
+    labelEn: '',
     noteAr: 'جهات استراتيجية ضمن شريط شراكات الابتكار المائي.',
+    noteEn: '',
     items: [
-      { id: 'pa-swa', nameAr: 'الهيئة السعودية للمياه', href: '/members', logoId: null },
-      { id: 'pa-nwc', nameAr: 'الشركة الوطنية للمياه', href: '/members', logoId: null },
       {
-        id: 'pa-kaust',
-        nameAr: 'جامعة الملك عبدالله للعلوم والتقنية',
+        id: 'pa-swa',
+        nameAr: 'الهيئة السعودية للمياه',
+        nameEn: '',
         href: '/members',
         logoId: null,
       },
-      { id: 'pa-acwa', nameAr: 'أكوا باور', href: '/members', logoId: null },
-      { id: 'pa-veolia', nameAr: 'فيوليا', href: '/members', logoId: null },
-      { id: 'pa-enowa', nameAr: 'نيوم ENOWA', href: '/members', logoId: null },
-      { id: 'pa-kaec', nameAr: 'مدينة الملك عبدالله الاقتصادية', href: '/members', logoId: null },
+      { id: 'pa-nwc', nameAr: 'الشركة الوطنية للمياه', nameEn: '', href: '/members', logoId: null },
+      {
+        id: 'pa-kaust',
+        nameAr: 'جامعة الملك عبدالله للعلوم والتقنية',
+        nameEn: '',
+        href: '/members',
+        logoId: null,
+      },
+      { id: 'pa-acwa', nameAr: 'أكوا باور', nameEn: '', href: '/members', logoId: null },
+      { id: 'pa-veolia', nameAr: 'فيوليا', nameEn: '', href: '/members', logoId: null },
+      { id: 'pa-enowa', nameAr: 'نيوم ENOWA', nameEn: '', href: '/members', logoId: null },
+      {
+        id: 'pa-kaec',
+        nameAr: 'مدينة الملك عبدالله الاقتصادية',
+        nameEn: '',
+        href: '/members',
+        logoId: null,
+      },
     ],
   },
 });

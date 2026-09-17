@@ -6,7 +6,8 @@ initiative. Two things are being built:
 1. The public site, ported **incrementally** from the finished static mockup in [waterstrip/](waterstrip/).
 2. An authenticated **CMS dashboard** at `/admin` so staff can edit site content.
 
-Arabic-only, RTL (`<html dir="rtl" lang="ar">`). Deploys to a self-managed VPS.
+Bilingual public site: Arabic (RTL) at `/`, English (LTR) under `/en`; the dashboard stays
+Arabic. Deploys to a self-managed VPS.
 
 > `CLAUDE.md` is a symlink to this file — edit `AGENTS.md`, never replace the symlink.
 
@@ -83,6 +84,11 @@ Copy [.env.example](.env.example) to `.env` before anything else. `.env` and `da
   zero-JS-framework — their interactivity is vanilla inline `<script>`. Do not add a
   `client:*` island to a public page; see
   [docs/architecture.md](docs/architecture.md#why-this-and-not-something-else).
+- **Every public page is a view plus two routes.** Markup lives in [src/views/](src/views/);
+  `src/pages/<name>.astro` and `src/pages/en/<name>.astro` only render it. Interface copy goes in
+  [src/lib/i18n/ui.ts](src/lib/i18n/ui.ts), every on-site `href` through `localizePath`, and every
+  editable Arabic field `xAr` has an optional `xEn` sibling rendered with `localizer` (falls back
+  to Arabic). See [docs/i18n.md](docs/i18n.md).
 - **An image field is a media id, never a path, URL or filename.** Build it from `mediaId` in
   [src/lib/content/schemas/fields.ts](src/lib/content/schemas/fields.ts) — references are found
   by that schema object, so a lookalike regex is never existence-checked. Uploads land in
@@ -94,6 +100,7 @@ Copy [.env.example](.env.example) to `.env` before anything else. `.env` and `da
 
 - [docs/architecture.md](docs/architecture.md) — stack, decisions and why, request flow, file map
 - [docs/content-storage.md](docs/content-storage.md) — CMS storage, caching, versioning, media, import/export
+- [docs/i18n.md](docs/i18n.md) — Arabic/English routing, interface copy, `xAr`/`xEn` fields, LTR styling
 - [docs/better-auth.md](docs/better-auth.md) — version-specific auth API, seeding, session access
 - [docs/css-architecture.md](docs/css-architecture.md) — style layers, BEM, breakpoints, RTL rules
 - [docs/porting-the-mockup.md](docs/porting-the-mockup.md) — mockup inventory, porting order, CMS content model

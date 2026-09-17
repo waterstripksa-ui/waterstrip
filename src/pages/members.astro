@@ -1,43 +1,7 @@
 ---
-// Markup is waterstrip/members.html verbatim (hardcoded cards there; rendered
-// from the member table here, editable at /admin/members). The a–f accent
-// modifier cycles by list position, exactly as the mockup's cards do.
-import Layout from '../layouts/Layout.astro';
-import PageHero from '../components/PageHero.astro';
-import MembershipBanner from '../components/MembershipBanner.astro';
-import { listMembers, getSingleton } from '../lib/content/cache.ts';
-import { resolveImage, PLACEHOLDER_IMG } from '../lib/media-assets.ts';
-import { accentFor } from '../lib/member-visuals.ts';
-
-const members = listMembers();
-const banner = getSingleton('members_banner');
+// waterstrip/members.html — the page body is src/views/Members.astro, shared by the Arabic
+// route and its /en twin (docs/i18n.md).
+import Members from '../views/Members.astro';
 ---
 
-<Layout title="الأعضاء" description="أعضاء شريط شراكات الابتكار المائي من الجهات الحكومية والأكاديمية والقطاع الخاص والمنظمات الدولية.">
-  <PageHero
-    title="الأعضاء"
-    lede="جهات حكومية وأكاديمية ومن القطاع الخاص ومنظمات دولية تعمل معًا في تقنيات المياه."
-    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: ' الأعضاء' }]}
-  />
-
-  <section class="ribbon">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <div class="sec-head__txt">
-          <p class="eyebrow">الشريط</p>
-          <h2 class="h-section">أعضاء الشريط</h2>
-          <p class="lede">جهات حكومية ومؤسسات أكاديمية وشركات من القطاع الخاص ومنظمات دولية تعمل معًا للنهوض بقطاع المياه في المملكة.</p>
-        </div>
-      </div>
-      <p class="demo-note"><svg fill="none" height="17" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="17" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg><span><b>المصدر:</b> سجل عضوية شريط شراكات الابتكار المائي — الجهات التي اكتمل انضمامها. الجهات قيد الرد لم تُدرج.</span></p>
-      <div class="grid-3" id="memberGrid">{members.map((m, i) => (
-        <a class={`mcard member-card member-card--${accentFor(i)} reveal`} href={`/member/${m.slug}`}>
-          <span class="member-card__logo"><img alt={m.nameAr} loading="lazy" {...resolveImage(m.logoId, PLACEHOLDER_IMG)} /></span>
-          <h3>{m.nameAr}</h3>
-        </a>
-      ))}</div>
-    </div>
-  </section>
-
-  <MembershipBanner slot="after-main" banner={banner} />
-</Layout>
+<Members />

@@ -6,8 +6,7 @@ import type { HomeHero, HomeHeroPanel } from '../../lib/content/schemas/home-her
 import { useSingletonEditor } from './useSingletonEditor.ts';
 import { SectionForm } from './SectionForm.tsx';
 import { ItemList } from './ItemList.tsx';
-import { TextField } from './fields/TextField.tsx';
-import { TextAreaField } from './fields/TextAreaField.tsx';
+import { BilingualTextField, BilingualTextAreaField } from './fields/BilingualFields.tsx';
 import { HrefField } from './fields/HrefField.tsx';
 import { ImageField } from './fields/ImageField.tsx';
 import type { MediaView } from '../../lib/content/cache.ts';
@@ -42,8 +41,11 @@ export default function HeroEditor({
         makeItem={(id) => ({
           id,
           eyebrowAr: 'عنوان فرعي',
+          eyebrowEn: '',
           headingAr: 'عنوان الشريحة',
+          headingEn: '',
           ctaLabelAr: 'اعرف المزيد',
+          ctaLabelEn: '',
           ctaHref: '#',
           imageId: null,
         })}
@@ -55,27 +57,36 @@ export default function HeroEditor({
       >
         {(panel, i, patch) => (
           <>
-            <TextField
+            <BilingualTextField
               label="العنوان الفرعي (ويظهر أيضًا في التبويب)"
               value={panel.eyebrowAr}
               onChange={(v) => patch({ eyebrowAr: v })}
               name={`panels.${i}.eyebrowAr`}
               error={errors[`panels.${i}.eyebrowAr`]}
+              valueEn={panel.eyebrowEn}
+              onChangeEn={(v) => patch({ eyebrowEn: v })}
+              errorEn={errors[`panels.${i}.eyebrowEn`]}
             />
-            <TextAreaField
+            <BilingualTextAreaField
               label="العنوان"
               value={panel.headingAr}
               onChange={(v) => patch({ headingAr: v })}
               name={`panels.${i}.headingAr`}
               error={errors[`panels.${i}.headingAr`]}
               hint={i === 0 ? 'هذا هو العنوان الرئيسي (h1) للصفحة.' : undefined}
+              valueEn={panel.headingEn}
+              onChangeEn={(v) => patch({ headingEn: v })}
+              errorEn={errors[`panels.${i}.headingEn`]}
             />
-            <TextField
+            <BilingualTextField
               label="نص الزر"
               value={panel.ctaLabelAr}
               onChange={(v) => patch({ ctaLabelAr: v })}
               name={`panels.${i}.ctaLabelAr`}
               error={errors[`panels.${i}.ctaLabelAr`]}
+              valueEn={panel.ctaLabelEn}
+              onChangeEn={(v) => patch({ ctaLabelEn: v })}
+              errorEn={errors[`panels.${i}.ctaLabelEn`]}
             />
             <HrefField
               value={panel.ctaHref}

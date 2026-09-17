@@ -15,7 +15,7 @@ import { mkdir, rename, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import sharp, { type Metadata, type OutputInfo } from 'sharp';
 import { mediaFilePath, MEDIA_MIME_TYPES } from './media-paths.ts';
-import { ContentValidationError, findMedia, insertMedia, mediaAlt } from './repo.ts';
+import { ContentValidationError, findMedia, insertMedia, mediaAlt, mediaAltEn } from './repo.ts';
 import type { Media } from './cache.ts';
 
 /** Enforced here and in the endpoint; the reverse proxy should match it. */
@@ -36,6 +36,8 @@ export class MediaRejectedError extends Error {}
 export interface IngestInput {
   bytes: Buffer;
   altAr: unknown;
+  /** Optional English alt text; empty or absent means "fall back to `altAr`". */
+  altEn?: unknown;
   originalName?: string | null;
   updatedBy?: string | null;
 }
@@ -67,6 +69,13 @@ export async function ingestImage(input: IngestInput): Promise<IngestResult> {
     throw new ContentValidationError(
       'النص البديل للصورة مطلوب.',
       alt.error.issues.map((issue) => ({ ...issue, path: ['altAr', ...issue.path] })),
+    );
+  }
+  const altEn = mediaAltEn.safeParse(input.altEn ?? '');
+  if (!altEn.success) {
+    throw new ContentValidationError(
+      'النص البديل الإنجليزي غير صالح.',
+      altEn.error.issues.map((issue) => ({ ...issue, path: ['altEn', ...issue.path] })),
     );
   }
   if (input.bytes.length === 0) throw new MediaRejectedError('الملف فارغ.');
@@ -133,6 +142,7 @@ export async function ingestImage(input: IngestInput): Promise<IngestResult> {
       width: output.info.width,
       height: output.info.height,
       altAr: alt.data,
+      altEn: altEn.data,
       originalName: displayName(input.originalName),
     },
     input.updatedBy,

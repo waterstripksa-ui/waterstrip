@@ -1,0 +1,84 @@
+---
+// Markup is waterstrip/member.html verbatim, filled server-side exactly as
+// main.js §14 fills it from WSTRIP_MEMBERS (?id= becomes the [slug] route).
+// The cooperation list and contact prompt are the mockup's fixed copy; the
+// facts come from the member row (/admin/members), the banner from members_banner.
+// The route resolves the slug (and 404s), then passes the row in.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton, type Member } from '../lib/content/cache.ts';
+import { resolveImage, PLACEHOLDER_IMG } from '../lib/media-assets.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+interface Props {
+  member: Member;
+}
+
+const { member } = Astro.props;
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+const banner = getSingleton('members_banner');
+---
+
+<Layout title={L.text(member, 'name')} description={t.member.description(L.text(member, 'name'))}>
+  <PageHero
+    title={t.member.title}
+    crumbs={[
+      { label: t.nav.home, href: L.href('/') },
+      { label: t.nav.members, href: L.href('/members') },
+      { label: t.member.title },
+    ]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <p class="demo-note"><svg fill="none" height="17" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="17" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg><span><b>{t.common.sourceLabel}</b> {t.member.source}</span></p>
+      <div class="member-head reveal">
+        <span class="member-card__logo" id="mLogo"><img alt="" {...resolveImage(member.logoId, PLACEHOLDER_IMG)} /></span>
+        <div>
+          <p class="eyebrow" id="mCat" {...L.attrs(member, 'category')}>{L.text(member, 'category')}</p>
+          <h2 class="h-section" id="mName" style="margin-top:10px" {...L.attrs(member, 'name')}>{L.text(member, 'name')}</h2>
+        </div>
+      </div>
+      <div class="facts reveal">
+        <div class="fact"><b>{t.member.role}</b><span id="mRole" {...L.attrs(member, 'role')}>{L.text(member, 'role')}</span></div>
+        <div class="fact"><b>{t.member.sector}</b><span id="mSector" {...L.attrs(member, 'sector')}>{L.text(member, 'sector')}</span></div>
+        <div class="fact"><b>{t.member.since}</b><span id="mSince" {...L.attrs(member, 'since')}>{L.text(member, 'since')}</span></div>
+      </div>
+      <div class="prose reveal" style="margin-top:72px">
+        <h2>{t.member.bio}</h2>
+        <p id="mBio" {...L.attrs(member, 'bio')}>{L.text(member, 'bio')}</p>
+        <h2>{t.member.cooperation}</h2>
+        <ul>
+          {t.member.cooperationItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+      <div class="mcontact reveal">
+        <div class="mcontact__txt">
+          <p class="eyebrow">{t.member.contactEyebrow}</p>
+          <h2>{t.member.contactHeading}</h2>
+          <p>{t.member.contactBody}</p>
+        </div>
+        <div class="mcontact__acts">
+          <a class="btn-solid" href={L.href('/contact')}>
+            <span>{t.member.contactCta}</span>
+            <svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+          </a>
+          <a class="mcontact__mail" href="mailto:support@waterstrip.org">
+            <svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><rect height="15" rx="2.5" width="19" x="2.5" y="4.5"></rect><path d="M3 6.5l9 6.5 9-6.5"></path></svg>
+            <span>support@waterstrip.org</span>
+          </a>
+        </div>
+      </div>
+      <div style="margin-top:64px">
+        <a class="cta-circle" href={L.href('/members')}><span>{t.member.back}</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
+      </div>
+    </div>
+  </section>
+
+  <MembershipBanner slot="after-main" banner={banner} />
+</Layout>

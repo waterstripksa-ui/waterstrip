@@ -1,0 +1,73 @@
+---
+// Markup is waterstrip/working-group.html verbatim, filled server-side exactly
+// as main.js §18 fills it from wg-data.js (?id= becomes the [slug] route).
+// Empty sections keep the mockup's `hidden` shells so the DOM matches.
+// Content: the working_group row (/admin/technologies) and technologies_banner.
+// The route resolves the slug (and 404s), then passes the row in.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton, type WorkingGroup } from '../lib/content/cache.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { fallbackAttrs, localizer, pick } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+interface Props {
+  group: WorkingGroup;
+}
+
+const { group } = Astro.props;
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+const banner = getSingleton('technologies_banner');
+---
+
+<Layout title={L.text(group, 'name')} description={L.text(group, 'scope')}>
+  <PageHero
+    image="/img/hero/hero-3.svg"
+    title={L.text(group, 'name')}
+    titleAttrs={L.attrs(group, 'name')}
+    crumbs={[
+      { label: t.nav.home, href: L.href('/') },
+      { label: t.nav.groups, href: L.href('/technologies') },
+      { label: t.group.crumb, span: true },
+    ]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="wgp__head reveal">
+        <span class="wgp__no" id="gNo">{group.no || '—'}</span>
+        <div class="wgp__ident">
+          <p class="eyebrow">{t.group.eyebrow}</p>
+          <h2 class="h-section" id="gName" style="margin-top:8px" {...L.attrs(group, 'name')}>{L.text(group, 'name') || '—'}</h2>
+        </div>
+        {group.statusAr
+          ? <span class="wg-status" id="gStatus" {...L.attrs(group, 'status')}>{L.text(group, 'status')}</span>
+          : <span class="wg-status" hidden id="gStatus"></span>}
+      </div>
+      <p class="lede wgp__scope reveal" id="gScope" {...L.attrs(group, 'scope')}>{L.text(group, 'scope') || '—'}</p>
+      {group.stats.length > 0
+        ? <div class="wgp__stats reveal" id="gStats">{group.stats.map((s) => (<div class="wgp__stat"><b>{s.n}</b><span {...fallbackAttrs(locale, s.labelEn)}>{pick(locale, s.labelAr, s.labelEn)}</span></div>))}</div>
+        : <div class="wgp__stats reveal" hidden id="gStats"></div>}
+      <div class="facts reveal">
+        <div class="fact"><b>{t.group.head}</b><span id="gHead" {...L.attrs(group, 'head')}>{L.text(group, 'head') || '—'}</span></div>
+        <div class="fact"><b>{t.group.lead}</b><span id="gLead" {...L.attrs(group, 'lead')}>{L.text(group, 'lead') || '—'}</span></div>
+        <div class="fact fact--wide"><b>{t.group.orgs}</b><span id="gOrgs" {...L.attrs(group, 'orgs')}>{L.text(group, 'orgs') || '—'}</span></div>
+      </div>
+      <div class="wgp__sec reveal" hidden={group.recs.length === 0} id="gRecsWrap">
+        <h3 class="h-sub">{t.group.recs}</h3>
+        <ol class="wgp__recs" id="gRecs">{group.recs.map((r) => (<li class="wgp__rec"><h4 {...fallbackAttrs(locale, r.titleEn)}>{pick(locale, r.titleAr, r.titleEn)}</h4><p {...fallbackAttrs(locale, r.bodyEn)}>{pick(locale, r.bodyAr, r.bodyEn)}</p></li>))}</ol>
+      </div>
+      <p class="wgp__note reveal" hidden={!group.noteAr} id="gNote" {...(group.noteAr ? L.attrs(group, 'note') : {})}>{L.text(group, 'note')}</p>
+      <p class="wgp__src reveal" id="gSrc">{group.src && t.group.source(group.src)}</p>
+      <div class="wgp__nav reveal">
+        <a class="btn-pill" href={L.href('/technologies')}>{t.group.all}</a>
+        <a class="btn-pill btn-pill--alt" href={L.href('/register-interest')}>{t.group.join}</a>
+      </div>
+    </div>
+  </section>
+
+  <MembershipBanner slot="after-main" banner={banner} />
+</Layout>

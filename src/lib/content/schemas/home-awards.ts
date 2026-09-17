@@ -7,7 +7,8 @@
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText, itemId, siteHref } from './fields.ts';
+import { addEnFields } from './add-en-fields.ts';
+import { arText, enText, itemId, siteHref } from './fields.ts';
 
 const award = z.object({
   id: itemId,
@@ -29,8 +30,22 @@ const v2 = v1.extend({
   hidden: z.boolean(),
 });
 
-export type HomeAward = z.infer<typeof award>;
-export type HomeAwards = z.infer<typeof v2>;
+/** v4 added the English siblings of the copy fields. */
+const awardV4 = award.extend({
+  titleEn: enText(200),
+  bodyEn: enText(400),
+});
+
+const v4 = v2.extend({
+  eyebrowEn: enText(40),
+  headingEn: enText(120),
+  ledeEn: enText(400),
+  ctaLabelEn: enText(40),
+  items: z.array(awardV4).min(1).max(12),
+});
+
+export type HomeAward = z.infer<typeof awardV4>;
+export type HomeAwards = z.infer<typeof v4>;
 
 /** `register-interest` was ported after this CTA shipped pointing at `'#'`. */
 function v2_to_v3(data: unknown): unknown {
@@ -39,29 +54,37 @@ function v2_to_v3(data: unknown): unknown {
 
 export const homeAwards = defineSingleton<HomeAwards>({
   key: 'home_awards',
-  version: 3,
-  schema: v2,
-  migrations: [(data) => ({ ...(data as object), hidden: false }), v2_to_v3],
+  version: 4,
+  schema: v4,
+  migrations: [(data) => ({ ...(data as object), hidden: false }), v2_to_v3, addEnFields],
   initial: {
     eyebrowAr: 'التميّز',
+    eyebrowEn: '',
     headingAr: 'الجوائز والتكريم',
+    headingEn: '',
     ledeAr:
       'تكريمات نالها الشريط وترشيحات دخلها خلال سنته الأولى، تعكس أثر العمل المشترك بين أعضائه في قطاع المياه.',
+    ledeEn: '',
     ctaLabelAr: 'انضم إلى الشريط',
+    ctaLabelEn: '',
     ctaHref: '/register-interest',
     hidden: false,
     items: [
-      { id: 'aw-global-esg', titleAr: 'جائزة Global ESG', bodyAr: 'تكريم حصل عليه الشريط في 2025.' },
-      { id: 'aw-steves', titleAr: "جائزة Steve's Award", bodyAr: 'تكريم حصل عليه الشريط في 2026.' },
+      { id: 'aw-global-esg', titleAr: 'جائزة Global ESG', titleEn: '', bodyAr: 'تكريم حصل عليه الشريط في 2025.', bodyEn: '' },
+      { id: 'aw-steves', titleAr: "جائزة Steve's Award", titleEn: '', bodyAr: 'تكريم حصل عليه الشريط في 2026.', bodyEn: '' },
       {
         id: 'aw-idra-ppp',
         titleAr: 'ترشيح — التميّز في الشراكات بين القطاعين العام والخاص',
+        titleEn: '',
         bodyAr: 'ضمن جوائز IDRA للصناعة والاستدامة.',
+        bodyEn: '',
       },
       {
         id: 'aw-idra-reuse',
         titleAr: 'ترشيح — القيادة الملهمة في سياسات إعادة استخدام المياه',
+        titleEn: '',
         bodyAr: 'ضمن جوائز IDRA للصناعة والاستدامة.',
+        bodyEn: '',
       },
     ],
   },

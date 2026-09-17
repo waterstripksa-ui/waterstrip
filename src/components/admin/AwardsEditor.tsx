@@ -6,8 +6,7 @@ import type { HomeAward, HomeAwards } from '../../lib/content/schemas/home-award
 import { useSingletonEditor } from './useSingletonEditor.ts';
 import { SectionForm } from './SectionForm.tsx';
 import { ItemList } from './ItemList.tsx';
-import { TextField } from './fields/TextField.tsx';
-import { TextAreaField } from './fields/TextAreaField.tsx';
+import { BilingualTextField, BilingualTextAreaField } from './fields/BilingualFields.tsx';
 import { HrefField } from './fields/HrefField.tsx';
 import { CheckboxField } from './fields/CheckboxField.tsx';
 
@@ -36,34 +35,46 @@ export default function AwardsEditor({ initial }: { initial: HomeAwards }) {
         name="hidden"
         error={errors.hidden}
       />
-      <TextField
+      <BilingualTextField
         label="العنوان الفرعي"
         value={draft.eyebrowAr}
         onChange={(v) => update({ ...draft, eyebrowAr: v })}
         name="eyebrowAr"
         error={errors.eyebrowAr}
+        valueEn={draft.eyebrowEn}
+        onChangeEn={(v) => update({ ...draft, eyebrowEn: v })}
+        errorEn={errors.eyebrowEn}
       />
-      <TextField
+      <BilingualTextField
         label="العنوان"
         value={draft.headingAr}
         onChange={(v) => update({ ...draft, headingAr: v })}
         name="headingAr"
         error={errors.headingAr}
+        valueEn={draft.headingEn}
+        onChangeEn={(v) => update({ ...draft, headingEn: v })}
+        errorEn={errors.headingEn}
       />
-      <TextAreaField
+      <BilingualTextAreaField
         label="النص التعريفي"
         value={draft.ledeAr}
         onChange={(v) => update({ ...draft, ledeAr: v })}
         name="ledeAr"
         error={errors.ledeAr}
         rows={3}
+        valueEn={draft.ledeEn}
+        onChangeEn={(v) => update({ ...draft, ledeEn: v })}
+        errorEn={errors.ledeEn}
       />
-      <TextField
+      <BilingualTextField
         label="نص الزر"
         value={draft.ctaLabelAr}
         onChange={(v) => update({ ...draft, ctaLabelAr: v })}
         name="ctaLabelAr"
         error={errors.ctaLabelAr}
+        valueEn={draft.ctaLabelEn}
+        onChangeEn={(v) => update({ ...draft, ctaLabelEn: v })}
+        errorEn={errors.ctaLabelEn}
       />
       <HrefField
         value={draft.ctaHref}
@@ -75,7 +86,7 @@ export default function AwardsEditor({ initial }: { initial: HomeAwards }) {
       <ItemList<HomeAward>
         items={draft.items}
         onChange={(items) => update({ ...draft, items })}
-        makeItem={(id) => ({ id, titleAr: 'عنوان الجائزة', bodyAr: 'وصف الجائزة.' })}
+        makeItem={(id) => ({ id, titleAr: 'عنوان الجائزة', titleEn: '', bodyAr: 'وصف الجائزة.', bodyEn: '' })}
         idPrefix="aw"
         min={1}
         max={12}
@@ -84,21 +95,27 @@ export default function AwardsEditor({ initial }: { initial: HomeAwards }) {
       >
         {(award, i, patch) => (
           <>
-            <TextAreaField
+            <BilingualTextAreaField
               label="العنوان"
               value={award.titleAr}
               onChange={(v) => patch({ titleAr: v })}
               name={`items.${i}.titleAr`}
               error={errors[`items.${i}.titleAr`]}
               rows={2}
+              valueEn={award.titleEn}
+              onChangeEn={(v) => patch({ titleEn: v })}
+              errorEn={errors[`items.${i}.titleEn`]}
             />
-            <TextAreaField
+            <BilingualTextAreaField
               label="الوصف"
               value={award.bodyAr}
               onChange={(v) => patch({ bodyAr: v })}
               name={`items.${i}.bodyAr`}
               error={errors[`items.${i}.bodyAr`]}
               rows={2}
+              valueEn={award.bodyEn}
+              onChangeEn={(v) => patch({ bodyEn: v })}
+              errorEn={errors[`items.${i}.bodyEn`]}
             />
           </>
         )}

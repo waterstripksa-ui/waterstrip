@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Water STRIP — Water Partnerships Innovation Strip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Sans+Arabic:wght@400;600;700&family=Space+Mono&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --abyss:#06152e;
+    --deep:#0d2c5c;
+    --ocean:#124c97;
+    --ocean-2:#2b8ccc;
+    --aqua:#2fb2dc;
+    --aqua-soft:#dff5fc;
+    --emerald:#2b8ccc;
+    --emerald-soft:#6fc9ec;
+    --mist:#9fc0d8;
+    --mist-2:#6d94b2;
+    --white:#ffffff;
+    --glass:rgba(18,76,151,.45);
+    --line:rgba(120,180,210,.14);
+    --font-d:"Space Grotesk",sans-serif;
+    --font-b:"Inter",sans-serif;
+    --font-m:"Space Mono",monospace;
+    --font-ar:"IBM Plex Sans Arabic",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font-b);
+    background:var(--abyss);
+    color:var(--white);
+    overflow-x:hidden;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--aqua);color:var(--abyss)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+  .eyebrow{
+    font-family:var(--font-m);font-size:12px;letter-spacing:.28em;
+    text-transform:uppercase;color:var(--aqua);display:inline-block;
+  }
+  .display{font-family:var(--font-d);font-weight:600;line-height:1.02;letter-spacing:-.02em}
+  h2.display{font-size:clamp(30px,5vw,58px)}
+  .muted{color:var(--mist)}
+  .grad-text{
+    background:linear-gradient(100deg,var(--aqua) 0%,var(--aqua-soft) 40%,var(--emerald-soft) 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:130;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 32px;transition:background .4s,backdrop-filter .4s,border-color .4s;
+    border-bottom:1px solid transparent;
+  }
+  nav.scrolled{
+    background:rgba(6,21,46,.72);backdrop-filter:blur(18px);
+    border-bottom:1px solid var(--line);padding:12px 32px;
+  }
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo .mark{width:40px;height:40px;flex-shrink:0}
+  .logo .word{display:flex;flex-direction:column;line-height:1}
+  .logo .word b{font-family:var(--font-d);font-weight:700;font-size:19px;letter-spacing:-.01em;color:var(--white)}
+  .logo .word b span{color:var(--aqua)}
+  .logo .word small{font-family:var(--font-ar);font-size:10.5px;color:var(--mist);direction:rtl;margin-top:2px}
+  .nav-links{display:flex;gap:30px;align-items:center}
+  .nav-links a{font-size:14px;color:var(--mist);transition:color .25s;position:relative}
+  .nav-links a:hover{color:var(--white)}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:-6px;height:1px;width:0;background:var(--aqua);transition:width .3s}
+  .nav-links a:hover::after{width:100%}
+  .btn{
+    font-family:var(--font-b);font-size:14px;font-weight:500;cursor:pointer;
+    padding:11px 22px;border-radius:100px;border:1px solid var(--aqua);
+    background:linear-gradient(120deg,rgba(47,178,220,.16),rgba(43,140,204,.10));
+    color:var(--white);transition:transform .25s,box-shadow .25s,background .25s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px -8px rgba(47,178,220,.5);background:linear-gradient(120deg,rgba(47,178,220,.3),rgba(43,140,204,.18))}
+  .btn.ghost{border-color:var(--line);background:transparent}
+  .btn.ghost:hover{border-color:var(--aqua);box-shadow:none}
+  .nav-toggle{display:none;background:none;border:none;color:var(--white);cursor:pointer}
+
+  /* ---------- HAMBURGER + OVERLAY MENU ---------- */
+  .menu-btn{position:relative;z-index:135;display:flex;flex-direction:column;justify-content:center;gap:5px;
+    width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--glass);
+    backdrop-filter:blur(10px);cursor:pointer;transition:border-color .3s,transform .3s}
+  .menu-btn:hover{border-color:var(--aqua);transform:scale(1.05)}
+  .menu-btn span{display:block;width:20px;height:2px;margin:0 auto;background:var(--white);border-radius:2px;
+    transition:transform .45s cubic-bezier(.7,0,.3,1),opacity .25s}
+  body.menu-open .menu-btn span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+  body.menu-open .menu-btn span:nth-child(2){opacity:0}
+  body.menu-open .menu-btn span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+  .overlay{position:fixed;inset:0;z-index:120;display:flex;align-items:center;
+    background:radial-gradient(120% 90% at 85% 8%,rgba(18,76,151,.55),transparent 55%),rgba(6,21,46,.92);
+    backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);
+    opacity:0;visibility:hidden;transition:opacity .6s cubic-bezier(.4,0,.2,1),visibility .6s}
+  body.menu-open .overlay{opacity:1;visibility:visible}
+  body.menu-open{overflow:hidden}
+  .menu-inner{max-width:1240px;margin:0 auto;padding:0 32px;width:100%}
+  .menu-eyebrow{font-family:var(--font-m);font-size:12px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--aqua);display:block;margin-bottom:28px;opacity:0;transform:translateY(12px);
+    transition:opacity .5s .1s,transform .5s .1s}
+  body.menu-open .menu-eyebrow{opacity:1;transform:none}
+  .menu-list{list-style:none}
+  .menu-list li{overflow:hidden}
+  .menu-link{display:flex;align-items:baseline;gap:22px;padding:5px 0;width:fit-content;
+    transform:translateY(120%);transition:transform .85s cubic-bezier(.16,1,.3,1)}
+  body.menu-open .menu-link{transform:translateY(0)}
+  .menu-list li:nth-child(1) .menu-link{transition-delay:.16s}
+  .menu-list li:nth-child(2) .menu-link{transition-delay:.22s}
+  .menu-list li:nth-child(3) .menu-link{transition-delay:.28s}
+  .menu-list li:nth-child(4) .menu-link{transition-delay:.34s}
+  .menu-list li:nth-child(5) .menu-link{transition-delay:.40s}
+  .menu-list li:nth-child(6) .menu-link{transition-delay:.46s}
+  .menu-link .idx{font-family:var(--font-m);font-size:14px;color:var(--mist-2);min-width:2.6ch;transition:color .3s}
+  .menu-link .mtext{font-family:var(--font-d);font-weight:600;letter-spacing:-.02em;line-height:1.02;
+    font-size:clamp(38px,7vw,74px);color:var(--mist);transition:color .35s,transform .5s cubic-bezier(.16,1,.3,1)}
+  .menu-link .arrow{font-family:var(--font-d);font-size:clamp(24px,4vw,42px);color:var(--aqua);
+    opacity:0;transform:translateX(-16px);transition:opacity .4s,transform .4s}
+  .menu-link:hover .mtext,.menu-link:focus-visible .mtext{color:var(--white);transform:translateX(18px)}
+  .menu-link:hover .idx,.menu-link:focus-visible .idx{color:var(--aqua)}
+  .menu-link:hover .arrow,.menu-link:focus-visible .arrow{opacity:1;transform:translateX(0)}
+  .menu-link.active .mtext{color:var(--white)}
+  .menu-link.active .idx{color:var(--aqua)}
+  .menu-link.active .arrow{opacity:.55;transform:translateX(0)}
+  .menu-foot{display:flex;justify-content:space-between;align-items:center;gap:22px;flex-wrap:wrap;
+    margin-top:54px;padding-top:26px;border-top:1px solid var(--line);
+    opacity:0;transform:translateY(14px);transition:opacity .6s .5s,transform .6s .5s}
+  body.menu-open .menu-foot{opacity:1;transform:none}
+  .menu-contact{display:flex;gap:26px;align-items:center;flex-wrap:wrap;font-size:14px}
+  .menu-contact a{color:var(--mist);transition:color .25s}
+  .menu-contact a:hover{color:var(--aqua)}
+  .menu-dash{font-family:var(--font-m);font-size:13px;letter-spacing:.02em;border:1px solid var(--line);padding:9px 16px;border-radius:100px}
+  .menu-dash:hover{border-color:var(--aqua)}
+  .menu-social{display:flex;gap:12px}
+  .menu-social a{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);display:flex;
+    align-items:center;justify-content:center;color:var(--mist);font-size:13px;transition:.25s}
+  .menu-social a:hover{color:var(--aqua);border-color:var(--aqua)}
+
+  /* ---------- EVENTS ---------- */
+  .ev-list{border-top:1px solid var(--line)}
+  .ev-row{display:flex;align-items:center;gap:26px;padding:22px 0;border-bottom:1px solid var(--line);transition:padding-left .35s}
+  .ev-row:hover{padding-left:14px}
+  .ev-date{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:64px;
+    border:1px solid var(--line);border-radius:14px;padding:10px 0;background:var(--glass)}
+  .ev-date .d{font-family:var(--font-d);font-weight:600;font-size:24px;line-height:1}
+  .ev-date .m{font-family:var(--font-m);font-size:11px;color:var(--aqua);margin-top:3px;letter-spacing:.1em}
+  .ev-info{flex:1}
+  .ev-info h4{font-family:var(--font-d);font-weight:600;font-size:19px}
+  .ev-info p{font-size:14px;color:var(--mist);margin-top:4px}
+  .ev-tag{font-family:var(--font-m);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--aqua-soft);
+    border:1px solid var(--line);border-radius:100px;padding:7px 14px;white-space:nowrap}
+
+  /* ---------- CERTIFICATIONS ---------- */
+  .cert-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .cert{background:linear-gradient(165deg,rgba(18,76,151,.35),rgba(6,21,46,.4));border:1px solid var(--line);
+    border-radius:20px;padding:30px 26px;transition:transform .4s,border-color .4s}
+  .cert:hover{transform:translateY(-8px);border-color:rgba(47,178,220,.45)}
+  .cert-badge{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+    font-size:24px;color:var(--abyss);background:linear-gradient(135deg,var(--aqua),var(--ocean));margin-bottom:20px;
+    box-shadow:0 10px 30px -10px rgba(47,178,220,.5)}
+  .cert h4{font-family:var(--font-d);font-weight:600;font-size:19px;margin-bottom:10px}
+  .cert p{font-size:14px;color:var(--mist)}
+
+  /* ---------- OVERVIEW / OBJECTIVES ---------- */
+  .ov-facts,.obj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  .ov{background:linear-gradient(165deg,rgba(18,76,151,.30),rgba(6,21,46,.4));border:1px solid var(--line);
+    border-radius:20px;padding:28px 26px;transition:transform .4s,border-color .4s}
+  .ov:hover{transform:translateY(-6px);border-color:rgba(47,178,220,.4)}
+  .ov-k{font-family:var(--font-m);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--aqua)}
+  .ov h4{font-family:var(--font-d);font-weight:600;font-size:20px;margin:12px 0 10px}
+  .ov p{font-size:14px;color:var(--mist)}
+  @media(max-width:900px){.ov-facts,.obj-grid{grid-template-columns:1fr}}
+  @media(max-width:900px){.cert-grid{grid-template-columns:1fr 1fr}.ev-tag{display:none}}
+  @media(max-width:560px){.cert-grid{grid-template-columns:1fr}.menu-foot{flex-direction:column;align-items:flex-start;gap:18px}.menu-link{gap:14px}}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden}
+  #water-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+  .hero::after{content:"";position:absolute;inset:0;z-index:1;
+    background:radial-gradient(120% 90% at 50% 8%,transparent 30%,var(--abyss) 92%),
+               linear-gradient(180deg,rgba(6,21,46,.35),transparent 30%,rgba(6,21,46,.55))}
+  .hero-inner{position:relative;z-index:2;width:100%;padding-top:70px}
+  .hero h1{font-family:var(--font-d);font-weight:600;letter-spacing:-.03em;
+    font-size:clamp(40px,7.6vw,92px);line-height:.98;max-width:15ch}
+  .hero p.lead{margin-top:26px;max-width:52ch;font-size:clamp(16px,2vw,20px);color:var(--mist)}
+  .hero-cta{margin-top:38px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .vision-badge{display:inline-flex;align-items:center;gap:9px;margin-bottom:26px;
+    padding:7px 15px;border:1px solid var(--line);border-radius:100px;
+    background:var(--glass);backdrop-filter:blur(8px);font-size:12.5px;color:var(--mist)}
+  .vision-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--emerald);box-shadow:0 0 12px var(--emerald)}
+  .scroll-hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:3;
+    font-family:var(--font-m);font-size:11px;letter-spacing:.2em;color:var(--mist-2);
+    display:flex;flex-direction:column;align-items:center;gap:10px}
+  .scroll-hint .line{width:1px;height:44px;background:linear-gradient(var(--aqua),transparent);animation:drip 2.2s infinite}
+  @keyframes drip{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+  /* ---------- REVEAL ---------- */
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  section{position:relative;padding:120px 0}
+  .sec-head{max-width:60ch;margin-bottom:56px}
+  .sec-head h2{margin-top:16px}
+  .sec-head p{margin-top:18px;font-size:17px;color:var(--mist);max-width:52ch}
+
+  /* ---------- KPI STRIP ---------- */
+  .kpis{background:linear-gradient(180deg,var(--deep),var(--abyss));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+  .kpi{padding:20px 28px;border-left:1px solid var(--line)}
+  .kpi:first-child{border-left:none;padding-left:0}
+  .kpi .num{font-family:var(--font-d);font-weight:600;font-size:clamp(34px,4.5vw,52px);letter-spacing:-.02em}
+  .kpi .num .suf{color:var(--aqua)}
+  .kpi .lbl{margin-top:6px;font-size:13.5px;color:var(--mist);letter-spacing:.01em}
+
+  /* ---------- ECOSYSTEM NETWORK ---------- */
+  .eco{display:grid;grid-template-columns:1.05fr .95fr;gap:60px;align-items:center}
+  .eco-viz{position:relative;aspect-ratio:1/1;width:100%}
+  .eco-viz svg{width:100%;height:100%;overflow:visible}
+  .node-label{font-family:var(--font-b);font-size:12px;fill:var(--white)}
+  .node-count{font-family:var(--font-m);font-size:10px;fill:var(--aqua)}
+  .eco-legend{margin-top:30px;display:grid;grid-template-columns:1fr 1fr;gap:14px 24px}
+  .eco-legend div{display:flex;align-items:center;gap:11px;font-size:14px;color:var(--mist)}
+  .eco-legend .sw{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+
+  /* ---------- PIPELINE ---------- */
+  .pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;position:relative}
+  .stage{background:var(--glass);border:1px solid var(--line);border-radius:16px;padding:26px 22px;
+    backdrop-filter:blur(6px);position:relative;overflow:hidden;transition:transform .35s,border-color .35s}
+  .stage:hover{transform:translateY(-6px);border-color:rgba(47,178,220,.4)}
+  .stage .st-no{font-family:var(--font-m);font-size:12px;color:var(--aqua)}
+  .stage h4{font-family:var(--font-d);font-weight:600;font-size:20px;margin:14px 0 8px}
+  .stage p{font-size:13.5px;color:var(--mist)}
+  .stage .bar{position:absolute;left:0;bottom:0;height:3px;width:100%;background:linear-gradient(90deg,var(--aqua),var(--emerald));transform:scaleX(0);transform-origin:left;transition:transform .5s}
+  .stage:hover .bar{transform:scaleX(1)}
+
+  /* ---------- PROJECTS ---------- */
+  .proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .card{background:linear-gradient(165deg,rgba(18,76,151,.7),rgba(13,44,92,.4));border:1px solid var(--line);
+    border-radius:20px;padding:0;overflow:hidden;transition:transform .4s,border-color .4s;position:relative}
+  .card:hover{transform:translateY(-8px);border-color:rgba(47,178,220,.4)}
+  .card .thumb{height:150px;position:relative;overflow:hidden}
+  .card .thumb .glow{position:absolute;inset:0;opacity:.85}
+  .card .thumb .trl{position:absolute;top:14px;right:14px;font-family:var(--font-m);font-size:10.5px;
+    padding:5px 10px;border-radius:100px;background:rgba(6,21,46,.6);border:1px solid var(--line);color:var(--aqua)}
+  .card .body{padding:22px 24px 26px}
+  .card .tag{font-family:var(--font-m);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--emerald-soft)}
+  .card h4{font-family:var(--font-d);font-weight:600;font-size:20px;margin:12px 0 10px}
+  .card p{font-size:14px;color:var(--mist)}
+  .card .meta{margin-top:18px;display:flex;justify-content:space-between;font-size:12.5px;color:var(--mist-2);border-top:1px solid var(--line);padding-top:14px}
+
+  /* ---------- MAP ---------- */
+  .map-sec{background:linear-gradient(180deg,var(--abyss),var(--deep) 60%,var(--abyss))}
+  .map-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:56px;align-items:center}
+  .map-viz{position:relative}
+  .map-viz svg{width:100%;height:auto;overflow:visible}
+  .hub-legend{margin-top:8px}
+  .hub-item{display:flex;gap:16px;padding:16px 0;border-top:1px solid var(--line);align-items:flex-start}
+  .hub-item:last-child{border-bottom:1px solid var(--line)}
+  .hub-item .idx{font-family:var(--font-m);font-size:12px;color:var(--aqua);width:26px;flex-shrink:0}
+  .hub-item h5{font-family:var(--font-d);font-weight:600;font-size:16px}
+  .hub-item p{font-size:13px;color:var(--mist);margin-top:3px}
+  .hub-item .val{margin-left:auto;font-family:var(--font-m);font-size:13px;color:var(--emerald-soft);white-space:nowrap}
+
+  /* ---------- TIMELINE ---------- */
+  .tl{position:relative;padding-left:0}
+  .tl-row{display:grid;grid-template-columns:120px 1fr;gap:34px;padding:26px 0;border-top:1px solid var(--line);align-items:baseline}
+  .tl-row .yr{font-family:var(--font-d);font-weight:600;font-size:26px;color:var(--aqua)}
+  .tl-row h4{font-family:var(--font-d);font-weight:600;font-size:20px;margin-bottom:8px}
+  .tl-row p{font-size:14.5px;color:var(--mist);max-width:60ch}
+
+  /* ---------- PARTNERS ---------- */
+  .partners{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+  .plogo{padding:16px 26px;border:1px solid var(--line);border-radius:12px;background:var(--glass);
+    font-family:var(--font-d);font-weight:500;font-size:15px;color:var(--mist);transition:.3s;letter-spacing:.01em}
+  .plogo:hover{color:var(--white);border-color:rgba(47,178,220,.4)}
+
+  /* ---------- CTA ---------- */
+  .cta-band{position:relative;border-radius:28px;overflow:hidden;padding:76px 56px;text-align:center;
+    background:linear-gradient(130deg,var(--ocean-2),var(--ocean) 45%,var(--deep));border:1px solid var(--line)}
+  .cta-band::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(60% 120% at 15% 0%,rgba(47,178,220,.28),transparent 60%),
+    radial-gradient(60% 120% at 90% 100%,rgba(43,140,204,.22),transparent 60%)}
+  .cta-band>*{position:relative;z-index:1}
+  .cta-band h2{margin-bottom:18px}
+  .cta-band p{color:var(--aqua-soft);max-width:48ch;margin:0 auto 30px;font-size:17px}
+  .news-form{display:flex;gap:10px;max-width:420px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+  .news-form input{flex:1;min-width:220px;padding:13px 18px;border-radius:100px;border:1px solid var(--line);
+    background:rgba(6,21,46,.5);color:var(--white);font-family:var(--font-b);font-size:14px}
+  .news-form input::placeholder{color:var(--mist-2)}
+  .news-form input:focus{outline:none;border-color:var(--aqua)}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--line);padding:70px 0 40px;background:var(--abyss)}
+  .foot-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;margin-bottom:50px}
+  .foot-col h6{font-family:var(--font-d);font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--white);margin-bottom:18px}
+  .foot-col a{display:block;font-size:14px;color:var(--mist);margin-bottom:11px;transition:color .2s}
+  .foot-col a:hover{color:var(--aqua)}
+  .foot-col p{font-size:14px;color:var(--mist);max-width:34ch;margin-top:16px}
+  .foot-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:26px;border-top:1px solid var(--line);flex-wrap:wrap;gap:16px}
+  .foot-bottom small{color:var(--mist-2);font-size:13px}
+  .socials{display:flex;gap:12px}
+  .socials a{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--mist);transition:.25s}
+  .socials a:hover{color:var(--aqua);border-color:var(--aqua)}
+
+  @media(max-width:900px){
+    .nav-links{display:none}
+    .kpi-grid,.eco,.map-grid{grid-template-columns:1fr;gap:40px}
+    .kpi{border-left:none;border-top:1px solid var(--line);padding:20px 0}
+    .kpi:first-child{border-top:none}
+    .pipe{grid-template-columns:1fr 1fr}
+    .proj-grid{grid-template-columns:1fr}
+    .foot-grid{grid-template-columns:1fr 1fr}
+    section{padding:80px 0}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- reusable logo mark -->
+<svg width="0" height="0" style="position:absolute"><defs>
+  <linearGradient id="wave" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#dff5fc"/><stop offset=".5" stop-color="#2fb2dc"/><stop offset="1" stop-color="#124c97"/>
+  </linearGradient>
+  <symbol id="logo-mark" viewBox="0 0 100 100">
+    <path d="M18 60 Q35 44 52 55 T88 50 Q84 78 55 84 Q24 88 18 60Z" fill="url(#wave)"/>
+    <path d="M14 66 Q34 50 52 61 T90 54" fill="none" stroke="#2b8ccc" stroke-width="4" stroke-linecap="round"/>
+    <g stroke="#2fb2dc" stroke-width="2.4" fill="#dff5fc">
+      <line x1="50" y1="16" x2="34" y2="30"/><line x1="50" y1="16" x2="66" y2="30"/>
+      <line x1="34" y1="30" x2="34" y2="48"/><line x1="66" y1="30" x2="66" y2="48"/>
+      <line x1="34" y1="48" x2="50" y2="40"/><line x1="66" y1="48" x2="50" y2="40"/>
+      <line x1="50" y1="16" x2="50" y2="40"/>
+      <circle cx="50" cy="16" r="5"/><circle cx="34" cy="30" r="4.5"/><circle cx="66" cy="30" r="4.5"/>
+      <circle cx="34" cy="48" r="4.5"/><circle cx="66" cy="48" r="4.5"/><circle cx="50" cy="40" r="5" fill="#2b8ccc"/>
+    </g>
+  </symbol>
+</defs></svg>
+
+<nav id="nav">
+  <a class="logo" href="#top">
+    <svg class="mark"><use href="#logo-mark"/></svg>
+    <span class="word"><b>Water <span>STRIP</span></b><small>شريط شراكات الابتكار المائي</small></span>
+  </a>
+  <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="overlay" id="overlay" role="dialog" aria-modal="true" aria-label="Main menu">
+  <div class="menu-inner">
+    <span class="menu-eyebrow">Navigate</span>
+    <ul class="menu-list">
+      <li><a class="menu-link" href="#overview" data-target="overview"><span class="idx">01</span><span class="mtext">Overview</span><span class="arrow">→</span></a></li>
+      <li><a class="menu-link" href="#news" data-target="news"><span class="idx">02</span><span class="mtext">News</span><span class="arrow">→</span></a></li>
+      <li><a class="menu-link" href="#events" data-target="events"><span class="idx">03</span><span class="mtext">Events</span><span class="arrow">→</span></a></li>
+      <li><a class="menu-link" href="#certifications" data-target="certifications"><span class="idx">04</span><span class="mtext">Certifications</span><span class="arrow">→</span></a></li>
+      <li><a class="menu-link" href="#join" data-target="join"><span class="idx">05</span><span class="mtext">Join Us</span><span class="arrow">→</span></a></li>
+      <li><a class="menu-link" href="#contact" data-target="contact"><span class="idx">06</span><span class="mtext">Contact</span><span class="arrow">→</span></a></li>
+    </ul>
+    <div class="menu-foot">
+      <div class="menu-contact">
+        <a href="water-strip-dashboard.html" class="menu-dash">Enterprise Dashboard ↗</a>
+        <a href="mailto:hello@waterstrip.sa">hello@waterstrip.sa</a>
+      </div>
+      <div class="menu-social">
+        <a href="#" aria-label="LinkedIn">in</a><a href="#" aria-label="X">X</a><a href="#" aria-label="YouTube">▶</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<header class="hero" id="top">
+  <canvas id="water-canvas"></canvas>
+  <div class="hero-inner">
+    <div class="wrap">
+      <span class="vision-badge"><span class="dot"></span>Red Sea Coastal Strip · MEWA · Vision 2030</span>
+      <h1>Where the Red Sea coast <span class="grad-text">commercializes</span> water innovation.</h1>
+      <p class="lead">Water STRIP is a coastline strip along the Red Sea that unites the region's water sector — MEWA, private companies, and leading institutions — to drive commercialization and foster collaboration across the Kingdom's water ecosystem.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#overview">What is the STRIP</a>
+        <a class="btn ghost" href="#objectives">Our objectives →</a>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint"><span>SCROLL</span><span class="line"></span></div>
+</header>
+
+<!-- ===== KPIs ===== -->
+<section class="kpis" style="padding:60px 0">
+  <div class="wrap">
+    <div class="kpi-grid">
+      <div class="kpi reveal"><div class="num"><span data-count="400">0</span><span class="suf">+</span></div><div class="lbl">Water STRIP members</div></div>
+      <div class="kpi reveal"><div class="num"><span data-count="8">0</span></div><div class="lbl">Flagship assets on the strip</div></div>
+      <div class="kpi reveal"><div class="num"><span data-count="9">0</span></div><div class="lbl">Anchor partners & institutions</div></div>
+      <div class="kpi reveal"><div class="num"><span data-count="3">0</span></div><div class="lbl">Shared strategic objectives</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== OVERVIEW ===== -->
+<section id="overview">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Overview</span>
+      <h2 class="display">A coastline strip built for water innovation.</h2>
+      <p>The Water STRIP is a coastline strip along the Red Sea that brings together the main water-sector actors of the region — MEWA, private companies, and leading institutions — to drive commercialization and foster collaboration across the Kingdom's water ecosystem.</p>
+    </div>
+    <div class="ov-facts">
+      <div class="ov reveal"><span class="ov-k">Where</span><h4>The Red Sea coast</h4><p>A defined corridor running from Rabigh through KAEC and Thuwal to Jeddah, concentrating the region's water assets in one strip.</p></div>
+      <div class="ov reveal"><span class="ov-k">Who</span><h4>MEWA, industry & academia</h4><p>Convened around the Ministry of Environment, Water &amp; Agriculture with private companies and leading universities and research centers.</p></div>
+      <div class="ov reveal"><span class="ov-k">Why</span><h4>Commercialize &amp; collaborate</h4><p>To move water technologies toward commercialization and forge lasting linkages between the actors who can scale them.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== OBJECTIVES ===== -->
+<section id="objectives" style="background:linear-gradient(180deg,var(--abyss),var(--deep),var(--abyss))">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Objectives</span>
+      <h2 class="display">Three objectives, one water ecosystem.</h2>
+      <p>Everything on the STRIP works toward the goals its members share.</p>
+    </div>
+    <div class="obj-grid">
+      <div class="cert reveal"><div class="cert-badge">◇</div><h4>Community Building</h4><p>Advancing technological solutions that sustainably address the water needs of the Kingdom.</p></div>
+      <div class="cert reveal"><div class="cert-badge">◎</div><h4>Catalyze Partnerships</h4><p>Facilitating collaboration and forging linkages amongst members through proactive matchmaking.</p></div>
+      <div class="cert reveal"><div class="cert-badge">✦</div><h4>Inform Policy</h4><p>Prioritizing and informing policies that collectively benefit the water ecosystem.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ECOSYSTEM ===== -->
+<section id="ecosystem">
+  <div class="wrap">
+    <div class="eco">
+      <div class="reveal">
+        <span class="eyebrow">Innovation Ecosystem</span>
+        <h2 class="display" style="margin-top:16px">Every actor on the coast, in one network.</h2>
+        <p class="muted" style="margin-top:20px;font-size:17px">Water STRIP connects the Red Sea region's water players — the Ministry, water authorities, utilities, industry, and universities and research centers — into one coordinated network built for commercialization and proactive matchmaking.</p>
+        <div class="eco-legend">
+          <div><span class="sw" style="background:#1c6bb0"></span>Government &amp; regulators — MEWA</div>
+          <div><span class="sw" style="background:#124c97"></span>Water authorities — SWA</div>
+          <div><span class="sw" style="background:#dff5fc"></span>Utilities — NWC</div>
+          <div><span class="sw" style="background:#9ed8ee"></span>Energy, desal &amp; industry</div>
+          <div><span class="sw" style="background:#2b8ccc"></span>Universities &amp; research</div>
+          <div><span class="sw" style="background:#2fb2dc"></span>Operators &amp; construction</div>
+        </div>
+      </div>
+      <div class="eco-viz reveal">
+        <svg viewBox="0 0 460 460" id="eco-svg">
+          <g id="eco-links" stroke-width="1.2" opacity=".5"></g>
+          <g id="eco-nodes"></g>
+          <circle cx="230" cy="230" r="46" fill="none" stroke="url(#wave)" stroke-width="1.5" opacity=".6"/>
+          <use href="#logo-mark" x="205" y="205" width="50" height="50"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PIPELINE ===== -->
+<section id="pipeline" style="background:linear-gradient(180deg,var(--abyss),var(--deep),var(--abyss))">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Innovation Pipeline</span>
+      <h2 class="display">From lab to commercialization, along the coast.</h2>
+      <p>Solutions on the STRIP follow one path toward commercialization — with the corridor's assets and partners matched in at every stage.</p>
+    </div>
+    <div class="pipe">
+      <div class="stage reveal"><div class="st-no">01</div><h4>Idea</h4><p>Challenge-driven concepts sourced from utilities, ministries, and open calls.</p><div class="bar"></div></div>
+      <div class="stage reveal"><div class="st-no">02</div><h4>Evaluation</h4><p>Technical, commercial, and water-impact assessment by expert panels.</p><div class="bar"></div></div>
+      <div class="stage reveal"><div class="st-no">03</div><h4>Pilot</h4><p>Funded, monitored field trials at real sites with defined KPIs.</p><div class="bar"></div></div>
+      <div class="stage reveal"><div class="st-no">04</div><h4>Deployment</h4><p>Validated solutions integrated into partner operations and procurement.</p><div class="bar"></div></div>
+      <div class="stage reveal"><div class="st-no">05</div><h4>Scale</h4><p>National rollout, export readiness, and knowledge transfer across the Kingdom.</p><div class="bar"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROJECTS ===== -->
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Featured Innovations</span>
+      <h2 class="display">Technologies moving through the Strip.</h2>
+      <p>Illustrative solutions across desalination, reuse, and smart networks, mapped onto the corridor's assets from Rabigh to KAEC.</p>
+    </div>
+    <div class="proj-grid">
+      <div class="card reveal">
+        <div class="thumb"><div class="glow" style="background:radial-gradient(120% 100% at 20% 0%,#2fb2dc,#124c97)"></div><span class="trl">TRL 7</span></div>
+        <div class="body"><span class="tag">Desalination</span><h4>Low-energy membrane array</h4><p>Graphene-enhanced RO modules cutting energy use per cubic meter in coastal plants.</p>
+        <div class="meta"><span>Pilot · Rabigh</span><span>−31% energy</span></div></div>
+      </div>
+      <div class="card reveal">
+        <div class="thumb"><div class="glow" style="background:radial-gradient(120% 100% at 80% 0%,#2b8ccc,#0d2c5c)"></div><span class="trl">TRL 6</span></div>
+        <div class="body"><span class="tag">Water Reuse</span><h4>Decentralized greywater loop</h4><p>Modular treatment returning irrigation-grade water on-site, drawing on Thuwal's STP.</p>
+        <div class="meta"><span>Deployment · Thuwal</span><span>+40% reuse</span></div></div>
+      </div>
+      <div class="card reveal">
+        <div class="thumb"><div class="glow" style="background:radial-gradient(120% 100% at 50% 0%,#1c6bb0,#2b8ccc)"></div><span class="trl">TRL 8</span></div>
+        <div class="body"><span class="tag">Smart Networks</span><h4>AI leak-detection grid</h4><p>Acoustic sensors and models flagging non-revenue water losses with NWC.</p>
+        <div class="meta"><span>Scale · KAEC</span><span>−22% losses</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ASSETS ON THE STRIP ===== -->
+<section class="map-sec" id="map">
+  <div class="wrap">
+    <div class="sec-head reveal" style="margin-bottom:44px">
+      <span class="eyebrow">Assets on the STRIP</span>
+      <h2 class="display">One corridor, from Rabigh to Jeddah.</h2>
+      <p>The strip runs down the Red Sea coast, concentrating the region's flagship water assets — treatment plants, campuses, and desalination facilities — within a single connected corridor.</p>
+    </div>
+    <div class="map-grid">
+      <div class="map-viz reveal">
+        <svg viewBox="0 0 420 470" id="strip-map">
+          <defs>
+            <linearGradient id="sea" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" stop-color="#124c97" stop-opacity=".55"/>
+              <stop offset="1" stop-color="#2fb2dc" stop-opacity=".12"/>
+            </linearGradient>
+          </defs>
+          <!-- sea -->
+          <rect x="0" y="0" width="150" height="470" fill="url(#sea)"/>
+          <text x="34" y="240" fill="#9fc0d8" font-size="12" font-family="'Space Mono',monospace" letter-spacing="3" transform="rotate(-90 34 240)">RED&#160;SEA</text>
+          <!-- coastline -->
+          <path d="M150 0 Q135 60 152 120 Q168 180 150 240 Q134 300 154 360 Q170 420 150 470"
+            fill="none" stroke="rgba(47,178,220,.5)" stroke-width="1.5"/>
+          <!-- strip corridor -->
+          <rect x="138" y="46" width="36" height="384" rx="18" fill="rgba(47,178,220,.10)" stroke="rgba(47,178,220,.35)" stroke-width="1"/>
+          <line x1="156" y1="70" x2="156" y2="406" stroke="rgba(47,178,220,.5)" stroke-width="1.5" stroke-dasharray="2 5"/>
+
+          <!-- Rabigh cluster -->
+          <g>
+            <circle cx="156" cy="86" r="7" fill="#2fb2dc"/>
+            <circle cx="156" cy="86" r="7" fill="none" stroke="#2fb2dc" stroke-width="1.5"><animate attributeName="r" values="7;24;7" dur="3s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;0;.9" dur="3s" repeatCount="indefinite"/></circle>
+            <text x="176" y="82" fill="#ffffff" font-size="14" font-family="'Space Grotesk',sans-serif" font-weight="600">Rabigh</text>
+            <text x="176" y="98" fill="#9fc0d8" font-size="10.5" font-family="Inter,sans-serif">ACWA Power · Veolia · SWA Oasis</text>
+            <g font-family="'Space Mono',monospace" font-size="10" fill="#06152e">
+              <circle cx="120" cy="72" r="9" fill="#dff5fc"/><text x="120" y="76" text-anchor="middle">4</text>
+              <circle cx="120" cy="100" r="9" fill="#dff5fc"/><text x="120" y="104" text-anchor="middle">5</text>
+              <circle cx="98" cy="86" r="9" fill="#dff5fc"/><text x="98" y="90" text-anchor="middle">8</text>
+            </g>
+          </g>
+          <!-- KAEC cluster -->
+          <g>
+            <circle cx="156" cy="180" r="7" fill="#2b8ccc"/>
+            <circle cx="156" cy="180" r="7" fill="none" stroke="#2b8ccc" stroke-width="1.5"><animate attributeName="r" values="7;24;7" dur="3s" begin=".7s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;0;.9" dur="3s" begin=".7s" repeatCount="indefinite"/></circle>
+            <text x="176" y="176" fill="#ffffff" font-size="14" font-family="'Space Grotesk',sans-serif" font-weight="600">KAEC</text>
+            <text x="176" y="192" fill="#9fc0d8" font-size="10.5" font-family="Inter,sans-serif">Business Park · NWC STP</text>
+            <g font-family="'Space Mono',monospace" font-size="10" fill="#06152e">
+              <circle cx="120" cy="168" r="9" fill="#9ed8ee"/><text x="120" y="172" text-anchor="middle">3</text>
+              <circle cx="120" cy="194" r="9" fill="#9ed8ee"/><text x="120" y="198" text-anchor="middle">6</text>
+            </g>
+          </g>
+          <!-- Thuwal cluster -->
+          <g>
+            <circle cx="156" cy="278" r="7" fill="#2fb2dc"/>
+            <circle cx="156" cy="278" r="7" fill="none" stroke="#2fb2dc" stroke-width="1.5"><animate attributeName="r" values="7;24;7" dur="3s" begin="1.4s" repeatCount="indefinite"/><animate attributeName="opacity" values=".9;0;.9" dur="3s" begin="1.4s" repeatCount="indefinite"/></circle>
+            <text x="176" y="274" fill="#ffffff" font-size="14" font-family="'Space Grotesk',sans-serif" font-weight="600">Thuwal</text>
+            <text x="176" y="290" fill="#9fc0d8" font-size="10.5" font-family="Inter,sans-serif">KAUST · WTIIRA · STP</text>
+            <g font-family="'Space Mono',monospace" font-size="10" fill="#06152e">
+              <circle cx="120" cy="264" r="9" fill="#dff5fc"/><text x="120" y="268" text-anchor="middle">1</text>
+              <circle cx="98" cy="278" r="9" fill="#dff5fc"/><text x="98" y="282" text-anchor="middle">2</text>
+              <circle cx="120" cy="292" r="9" fill="#dff5fc"/><text x="120" y="296" text-anchor="middle">7</text>
+            </g>
+          </g>
+          <!-- Jeddah cluster (transport gateway) -->
+          <g>
+            <circle cx="156" cy="392" r="7" fill="#1c6bb0"/>
+            <text x="176" y="388" fill="#ffffff" font-size="14" font-family="'Space Grotesk',sans-serif" font-weight="600">Jeddah</text>
+            <text x="176" y="404" fill="#9fc0d8" font-size="10.5" font-family="Inter,sans-serif">✈ KAIA · Haramain High-Speed Rail</text>
+          </g>
+        </svg>
+      </div>
+      <div class="hub-legend reveal">
+        <div class="hub-item"><span class="idx">01</span><div><h5>Thuwal Sewage Treatment Plant</h5><p>Wastewater treatment feeding reuse pilots</p></div><span class="val">Thuwal</span></div>
+        <div class="hub-item"><span class="idx">02</span><div><h5>KAUST Campus</h5><p>Research anchor and living testbed</p></div><span class="val">Thuwal</span></div>
+        <div class="hub-item"><span class="idx">03</span><div><h5>KAEC Business Park</h5><p>Commercialization and industry base</p></div><span class="val">KAEC</span></div>
+        <div class="hub-item"><span class="idx">04</span><div><h5>ACWA Power Facilities</h5><p>Power and desalination capacity</p></div><span class="val">Rabigh</span></div>
+        <div class="hub-item"><span class="idx">05</span><div><h5>Veolia (Rabigh 3)</h5><p>Desalination operations</p></div><span class="val">Rabigh</span></div>
+        <div class="hub-item"><span class="idx">06</span><div><h5>NWC Sewage Treatment Plant</h5><p>National Water Company treatment</p></div><span class="val">KAEC</span></div>
+        <div class="hub-item"><span class="idx">07</span><div><h5>WTIIRA</h5><p>Water technologies innovation &amp; research</p></div><span class="val">Thuwal</span></div>
+        <div class="hub-item"><span class="idx">08</span><div><h5>SWA Rabigh Water Oasis</h5><p>Saudi Water Authority facility</p></div><span class="val">Rabigh</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== JOURNEY / TIMELINE ===== -->
+<section id="journey">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">The Journey</span>
+      <h2 class="display">Building the Strip, milestone by milestone.</h2>
+    </div>
+    <div class="tl">
+      <div class="tl-row reveal"><div class="yr">2023</div><div><h4>The Strip is founded</h4><p>Water STRIP launches along the Red Sea coast to connect the region's water actors around MEWA.</p></div></div>
+      <div class="tl-row reveal"><div class="yr">2024</div><div><h4>First challenge cohort</h4><p>Anchor members and flagship assets join the corridor from Rabigh through Thuwal to Jeddah.</p></div></div>
+      <div class="tl-row reveal"><div class="yr">2025</div><div><h4>Commercialization engine</h4><p>Proactive matchmaking and partnership programs begin moving solutions toward commercialization.</p></div></div>
+      <div class="tl-row reveal"><div class="yr">2026</div><div><h4>Scaling the strip</h4><p>Validated technologies scale across the corridor's assets, informing policy for the wider Kingdom.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PARTNERS ===== -->
+<section style="padding-top:40px">
+  <div class="wrap">
+    <p class="eyebrow reveal" style="text-align:center;display:block;margin-bottom:34px">Members &amp; sponsors of the Water STRIP</p>
+    <div class="partners reveal">
+      <span class="plogo">MEWA</span>
+      <span class="plogo">Saudi Water Authority</span>
+      <span class="plogo">National Water Company</span>
+      <span class="plogo">KAUST</span>
+      <span class="plogo">King Abdulaziz University</span>
+      <span class="plogo">Saudi Aramco</span>
+      <span class="plogo">ACWA Power</span>
+      <span class="plogo">Veolia</span>
+      <span class="plogo">Saudi Tumpane</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== NEWS ===== -->
+<section id="news">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">News & Insights</span>
+      <h2 class="display">Signals from the Strip.</h2>
+      <p>Announcements, milestones, and thinking from across the Kingdom's water innovation ecosystem.</p>
+    </div>
+    <div class="proj-grid">
+      <div class="card reveal">
+        <div class="thumb"><div class="glow" style="background:radial-gradient(120% 100% at 20% 0%,#2fb2dc,#124c97)"></div><span class="trl">Press</span></div>
+        <div class="body"><span class="tag">14 Jul 2026</span><h4>KAEC leak-detection grid cuts losses 22%</h4><p>The corridor's non-revenue-water analytics rollout reports its strongest quarter with NWC.</p>
+        <div class="meta"><span>Announcement</span><span>3 min read</span></div></div>
+      </div>
+      <div class="card reveal">
+        <div class="thumb"><div class="glow" style="background:radial-gradient(120% 100% at 80% 0%,#2b8ccc,#06152e)"></div><span class="trl">Insight</span></div>
+        <div class="body"><span class="tag">02 Jul 2026</span><h4>Why decentralized reuse scales faster</h4><p>Lessons from Thuwal's district reuse pilots — and what they mean for procurement along the strip.</p>
+        <div class="meta"><span>Perspective</span><span>6 min read</span></div></div>
+      </div>
+      <div class="card reveal">
+        <div class="thumb"><div class="glow" style="background:radial-gradient(120% 100% at 50% 0%,#1c6bb0,#124c97)"></div><span class="trl">Report</span></div>
+        <div class="body"><span class="tag">21 Jun 2026</span><h4>2026 Water Innovation Readiness Index</h4><p>Our annual review of technology readiness levels across the national pipeline.</p>
+        <div class="meta"><span>Research</span><span>Download</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EVENTS ===== -->
+<section id="events" style="background:linear-gradient(180deg,var(--abyss),var(--deep),var(--abyss))">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Events</span>
+      <h2 class="display">Where the ecosystem meets.</h2>
+      <p>Challenge launches, demo days, and convenings that move technologies from idea to national scale.</p>
+    </div>
+    <div class="ev-list">
+      <div class="ev-row reveal">
+        <div class="ev-date"><span class="d">09</span><span class="m">SEP</span></div>
+        <div class="ev-info"><h4>Water STRIP Demo Day 2026</h4><p>Thuwal · KAUST Campus</p></div>
+        <span class="ev-tag">Demo Day</span>
+      </div>
+      <div class="ev-row reveal">
+        <div class="ev-date"><span class="d">21</span><span class="m">OCT</span></div>
+        <div class="ev-info"><h4>Smart Networks Challenge — Launch</h4><p>Virtual · SAR 30M funding call opens</p></div>
+        <span class="ev-tag">Challenge</span>
+      </div>
+      <div class="ev-row reveal">
+        <div class="ev-date"><span class="d">18</span><span class="m">NOV</span></div>
+        <div class="ev-info"><h4>Desalination Innovation Forum</h4><p>Rabigh · ACWA Power</p></div>
+        <span class="ev-tag">Forum</span>
+      </div>
+      <div class="ev-row reveal">
+        <div class="ev-date"><span class="d">03</span><span class="m">DEC</span></div>
+        <div class="ev-info"><h4>Vision 2030 Water Partnership Summit</h4><p>KAEC · Invitation only</p></div>
+        <span class="ev-tag">Summit</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CERTIFICATIONS ===== -->
+<section id="certifications">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Certifications & Standards</span>
+      <h2 class="display">A trusted mark for water innovation.</h2>
+      <p>Recognition that helps ministries, utilities, and investors identify solutions ready for the field — and for scale.</p>
+    </div>
+    <div class="cert-grid">
+      <div class="cert reveal"><div class="cert-badge">✓</div><h4>Verified Innovator</h4><p>Organizations vetted for technical credibility and standing on the Strip.</p></div>
+      <div class="cert reveal"><div class="cert-badge">◇</div><h4>Water-Tech Readiness</h4><p>Independent TRL assessment against national water benchmarks.</p></div>
+      <div class="cert reveal"><div class="cert-badge">◎</div><h4>Pilot-Proven</h4><p>Solutions validated in real field trials with measured water impact.</p></div>
+      <div class="cert reveal"><div class="cert-badge">✦</div><h4>Vision 2030 Aligned</h4><p>Recognized for contribution to the Kingdom's water sustainability goals.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CTA / JOIN US ===== -->
+<section id="join">
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <span class="eyebrow">Join the Strip</span>
+      <h2 class="display" style="margin-top:14px">Put your water innovation on the national map.</h2>
+      <p>Whether you build, fund, research, or regulate — there's a place for you on the Strip. Get updates on challenges, funding calls, and events.</p>
+      <div class="news-form">
+        <input type="email" placeholder="you@organization.sa" aria-label="Email address"/>
+        <button class="btn">Subscribe</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER / CONTACT ===== -->
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <a class="logo" href="#top">
+          <svg class="mark"><use href="#logo-mark"/></svg>
+          <span class="word"><b>Water <span>STRIP</span></b><small>شريط شراكات الابتكار المائي</small></span>
+        </a>
+        <p>A coastline strip along the Red Sea connecting the Kingdom's water ecosystem from idea to commercialization.</p>
+      </div>
+      <div class="foot-col"><h6>Explore</h6><a href="#overview">Overview</a><a href="#news">News</a><a href="#events">Events</a></div>
+      <div class="foot-col"><h6>Engage</h6><a href="#certifications">Certifications</a><a href="#join">Join Us</a><a href="#contact">Contact</a></div>
+      <div class="foot-col"><h6>Connect</h6><a href="water-strip-dashboard.html">Dashboard ↗</a><a href="mailto:hello@waterstrip.sa">hello@waterstrip.sa</a><a href="#">LinkedIn</a></div>
+    </div>
+    <div class="foot-bottom">
+      <small>© 2026 Water STRIP · شريط شراكات الابتكار المائي · Riyadh, Saudi Arabia</small>
+      <div class="socials">
+        <a href="#" aria-label="LinkedIn">in</a>
+        <a href="#" aria-label="X">X</a>
+        <a href="#" aria-label="YouTube">▶</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------- NAV scroll ---------- */
+const nav=document.getElementById('nav');
+addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>40));
+
+/* ---------- Reveal on scroll ---------- */
+const io=new IntersectionObserver((e)=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.16});
+document.querySelectorAll('.reveal').forEach((el,i)=>{el.style.transitionDelay=(i%4*70)+'ms';io.observe(el)});
+
+/* ---------- Animated counters ---------- */
+const ceo=new IntersectionObserver((es)=>es.forEach(x=>{
+  if(!x.isIntersecting)return;
+  const el=x.target,end=+el.dataset.count,dur=1600,t0=performance.now();
+  (function tick(t){const p=Math.min((t-t0)/dur,1),e=1-Math.pow(1-p,3);
+    el.textContent=Math.round(end*e).toLocaleString();if(p<1)requestAnimationFrame(tick);})(t0);
+  ceo.unobserve(el);
+}),{threshold:.6});
+document.querySelectorAll('[data-count]').forEach(el=>ceo.observe(el));
+
+/* ---------- Ecosystem network ---------- */
+(function(){
+  const colors={s:'#2fb2dc',u:'#2b8ccc',g:'#1c6bb0',i:'#124c97',c:'#9ed8ee',h:'#dff5fc'};
+  const items=[['Government','g','MEWA'],['Water authority','i','SWA'],['Utilities','h','NWC'],
+    ['Energy & desal','c','ACWA Power'],['Industry','c','Aramco'],['Universities','u','KAUST · KAU'],
+    ['Research','u','WTIIRA'],['Operators','s','Veolia · Tumpane']];
+  const cx=230,cy=230,R=165,nG=document.getElementById('eco-nodes'),lG=document.getElementById('eco-links');
+  const pts=items.map((it,k)=>{const a=(k/items.length)*Math.PI*2-Math.PI/2;
+    return{x:cx+Math.cos(a)*R,y:cy+Math.sin(a)*R,c:colors[it[1]],name:it[0],n:it[2]};});
+  // links to centre + neighbours
+  pts.forEach((p,k)=>{
+    lG.insertAdjacentHTML('beforeend',`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="${p.c}"/>`);
+    const nx=pts[(k+1)%pts.length];
+    lG.insertAdjacentHTML('beforeend',`<line x1="${p.x}" y1="${p.y}" x2="${nx.x}" y2="${nx.y}" stroke="rgba(120,180,210,.25)"/>`);
+  });
+  pts.forEach((p,k)=>{
+    const anchor=p.x<cx?'end':'start',dx=p.x<cx?-14:14;
+    nG.insertAdjacentHTML('beforeend',`
+      <g style="opacity:0;animation:pop .5s ${.25+k*.08}s forwards">
+        <circle cx="${p.x}" cy="${p.y}" r="11" fill="${p.c}"/>
+        <circle cx="${p.x}" cy="${p.y}" r="11" fill="none" stroke="${p.c}" stroke-width="1.5" opacity=".5">
+          <animate attributeName="r" values="11;20;11" dur="3s" begin="${k*.3}s" repeatCount="indefinite"/>
+          <animate attributeName="opacity" values=".5;0;.5" dur="3s" begin="${k*.3}s" repeatCount="indefinite"/>
+        </circle>
+        <text class="node-label" x="${p.x+dx}" y="${p.y-2}" text-anchor="${anchor}">${p.name}</text>
+        <text class="node-count" x="${p.x+dx}" y="${p.y+12}" text-anchor="${anchor}">${p.n}</text>
+      </g>`);
+  });
+  const st=document.createElement('style');st.textContent='@keyframes pop{to{opacity:1}}';document.head.appendChild(st);
+})();
+
+/* ---------- Flowing water hero (canvas) ---------- */
+(function(){
+  const c=document.getElementById('water-canvas'),x=c.getContext('2d');
+  let w,h,t=0;const reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function size(){w=c.width=innerWidth*devicePixelRatio;h=c.height=innerHeight*devicePixelRatio;}
+  size();addEventListener('resize',size);
+  const waves=[
+    {amp:.10,len:.004,sp:.010,y:.62,col:'rgba(18,76,151,.55)'},
+    {amp:.08,len:.006,sp:.016,y:.70,col:'rgba(43,140,204,.5)'},
+    {amp:.06,len:.009,sp:.022,y:.78,col:'rgba(47,178,220,.14)'},
+    {amp:.05,len:.013,sp:.030,y:.86,col:'rgba(43,140,204,.10)'}
+  ];
+  // drifting particles (bubbles)
+  const parts=Array.from({length:reduce?0:46},()=>({x:Math.random()*w,y:Math.random()*h,r:(Math.random()*2+.5)*devicePixelRatio,sp:(Math.random()*.4+.1)*devicePixelRatio,o:Math.random()*.4+.1}));
+  function draw(){
+    x.clearRect(0,0,w,h);
+    // deep gradient wash
+    const g=x.createLinearGradient(0,0,0,h);
+    g.addColorStop(0,'#06152e');g.addColorStop(.55,'#0a2547');g.addColorStop(1,'#124c97');
+    x.fillStyle=g;x.fillRect(0,0,w,h);
+    waves.forEach(wv=>{
+      x.beginPath();x.moveTo(0,h);
+      for(let i=0;i<=w;i+=6*devicePixelRatio){
+        const y=h*wv.y+Math.sin(i*wv.len+t*wv.sp)*h*wv.amp+Math.sin(i*wv.len*.5+t*wv.sp*1.7)*h*wv.amp*.4;
+        x.lineTo(i,y);
+      }
+      x.lineTo(w,h);x.closePath();x.fillStyle=wv.col;x.fill();
+    });
+    parts.forEach(p=>{p.y-=p.sp;if(p.y<-10){p.y=h+10;p.x=Math.random()*w;}
+      x.beginPath();x.arc(p.x+Math.sin(p.y*.01+t*.02)*8,p.y,p.r,0,7);x.fillStyle='rgba(223,245,252,'+p.o+')';x.fill();});
+    t+=1;requestAnimationFrame(draw);
+  }
+  if(reduce){x.fillStyle='#0a2547';x.fillRect(0,0,w,h);}else draw();
+})();
+
+/* ---------- Overlay menu ---------- */
+(function(){
+  const body=document.body,btn=document.getElementById('menuBtn'),ov=document.getElementById('overlay');
+  const inner=ov.querySelector('.menu-inner');
+  const links=[...ov.querySelectorAll('.menu-link')];
+  const open=()=>{body.classList.add('menu-open');btn.setAttribute('aria-expanded','true');btn.setAttribute('aria-label','Close menu');};
+  const close=()=>{body.classList.remove('menu-open');btn.setAttribute('aria-expanded','false');btn.setAttribute('aria-label','Open menu');};
+  btn.addEventListener('click',()=>body.classList.contains('menu-open')?close():open());
+  ov.addEventListener('click',close);                       // click outside the menu
+  inner.addEventListener('click',e=>e.stopPropagation());   // keep clicks inside from closing
+  addEventListener('keydown',e=>{if(e.key==='Escape'&&body.classList.contains('menu-open'))close();});
+  links.forEach(a=>a.addEventListener('click',e=>{           // navigate + smooth scroll
+    e.preventDefault();const id=a.getAttribute('href');close();
+    setTimeout(()=>{const t=document.querySelector(id);if(t)t.scrollIntoView({behavior:'smooth',block:'start'});},480);
+  }));
+  inner.querySelectorAll('a:not(.menu-link)').forEach(a=>a.addEventListener('click',close)); // dashboard/email links
+  /* active page indicator via scroll-spy */
+  const spy=new IntersectionObserver((es)=>es.forEach(x=>{if(x.isIntersecting)
+    links.forEach(l=>l.classList.toggle('active',l.dataset.target===x.target.id));}),
+    {rootMargin:'-45% 0px -45% 0px',threshold:0});
+  ['overview','news','events','certifications','join','contact'].forEach(id=>{const el=document.getElementById(id);if(el)spy.observe(el);});
+})();
+</script>
+</body>
+</html>

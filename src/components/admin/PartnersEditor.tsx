@@ -6,7 +6,7 @@ import type { HomePartner, HomePartners } from '../../lib/content/schemas/home-p
 import { useSingletonEditor } from './useSingletonEditor.ts';
 import { SectionForm } from './SectionForm.tsx';
 import { ItemList } from './ItemList.tsx';
-import { TextField } from './fields/TextField.tsx';
+import { BilingualTextField } from './fields/BilingualFields.tsx';
 import { HrefField } from './fields/HrefField.tsx';
 import { ImageField } from './fields/ImageField.tsx';
 import type { MediaView } from '../../lib/content/cache.ts';
@@ -35,25 +35,31 @@ export default function PartnersEditor({
       onSave={save}
       onReset={reset}
     >
-      <TextField
+      <BilingualTextField
         label="عنوان الشريط"
         value={draft.labelAr}
         onChange={(v) => update({ ...draft, labelAr: v })}
         name="labelAr"
         error={errors.labelAr}
+        valueEn={draft.labelEn}
+        onChangeEn={(v) => update({ ...draft, labelEn: v })}
+        errorEn={errors.labelEn}
       />
-      <TextField
+      <BilingualTextField
         label="الملاحظة أسفل الشريط"
         value={draft.noteAr}
         onChange={(v) => update({ ...draft, noteAr: v })}
         name="noteAr"
         error={errors.noteAr}
+        valueEn={draft.noteEn}
+        onChangeEn={(v) => update({ ...draft, noteEn: v })}
+        errorEn={errors.noteEn}
       />
 
       <ItemList<HomePartner>
         items={draft.items}
         onChange={(items) => update({ ...draft, items })}
-        makeItem={(id) => ({ id, nameAr: 'اسم الجهة', href: '#', logoId: null })}
+        makeItem={(id) => ({ id, nameAr: 'اسم الجهة', nameEn: '', href: '#', logoId: null })}
         idPrefix="pa"
         min={1}
         max={20}
@@ -62,12 +68,15 @@ export default function PartnersEditor({
       >
         {(partner, i, patch) => (
           <>
-            <TextField
+            <BilingualTextField
               label="الاسم"
               value={partner.nameAr}
               onChange={(v) => patch({ nameAr: v })}
               name={`items.${i}.nameAr`}
               error={errors[`items.${i}.nameAr`]}
+              valueEn={partner.nameEn}
+              onChangeEn={(v) => patch({ nameEn: v })}
+              errorEn={errors[`items.${i}.nameEn`]}
             />
             <HrefField
               value={partner.href}

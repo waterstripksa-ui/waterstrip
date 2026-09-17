@@ -12,8 +12,8 @@
 import { useState } from 'react';
 import { useCollectionEditor } from '../useCollectionEditor.ts';
 import { ItemList } from '../ItemList.tsx';
+import { BilingualTextField, BilingualTextAreaField } from '../fields/BilingualFields.tsx';
 import { TextField } from '../fields/TextField.tsx';
-import { TextAreaField } from '../fields/TextAreaField.tsx';
 import { CheckboxField } from '../fields/CheckboxField.tsx';
 import type { WorkingGroup } from '../../../lib/content/cache.ts';
 import { CHALLENGE_LABELS_AR } from '../../../lib/wg-visuals.ts';
@@ -22,12 +22,15 @@ interface StatRow {
   id: string;
   n: string;
   labelAr: string;
+  labelEn: string;
 }
 
 interface RecRow {
   id: string;
   titleAr: string;
+  titleEn: string;
   bodyAr: string;
+  bodyEn: string;
 }
 
 interface GroupRow {
@@ -36,14 +39,21 @@ interface GroupRow {
   no: string;
   challenge: 'supply' | 'treat' | 'reuse' | 'smart';
   nameAr: string;
+  nameEn: string;
   statusAr: string;
+  statusEn: string;
   leadAr: string;
+  leadEn: string;
   headAr: string;
+  headEn: string;
   orgsAr: string;
+  orgsEn: string;
   scopeAr: string;
+  scopeEn: string;
   stats: StatRow[];
   recs: RecRow[];
   noteAr: string;
+  noteEn: string;
   src: string;
   order: number;
   published: boolean;
@@ -56,14 +66,26 @@ function fromRow(row: WorkingGroup, i: number): GroupRow {
     no: row.no,
     challenge: row.challenge as GroupRow['challenge'],
     nameAr: row.nameAr,
+    nameEn: row.nameEn,
     statusAr: row.statusAr,
+    statusEn: row.statusEn,
     leadAr: row.leadAr,
+    leadEn: row.leadEn,
     headAr: row.headAr,
+    headEn: row.headEn,
     orgsAr: row.orgsAr,
+    orgsEn: row.orgsEn,
     scopeAr: row.scopeAr,
-    stats: row.stats.map((s, j) => ({ id: `${row.slug}-stat-${j}`, ...s })),
-    recs: row.recs.map((r, j) => ({ id: `${row.slug}-rec-${j}`, ...r })),
+    scopeEn: row.scopeEn,
+    stats: row.stats.map((s, j) => ({ id: `${row.slug}-stat-${j}`, ...s, labelEn: s.labelEn ?? '' })),
+    recs: row.recs.map((r, j) => ({
+      id: `${row.slug}-rec-${j}`,
+      ...r,
+      titleEn: r.titleEn ?? '',
+      bodyEn: r.bodyEn ?? '',
+    })),
     noteAr: row.noteAr,
+    noteEn: row.noteEn,
     src: row.src,
     order: row.order ?? i * 10,
     published: row.published,
@@ -150,14 +172,21 @@ export default function WorkingGroupsEditor({ initial }: { initial: WorkingGroup
               no: String(draft.length + 1).padStart(2, '0'),
               challenge: 'supply',
               nameAr: 'مجموعة عمل جديدة',
+              nameEn: '',
               statusAr: '',
+              statusEn: '',
               leadAr: '',
+              leadEn: '',
               headAr: 'غير متوفر',
+              headEn: '',
               orgsAr: 'غير متوفر',
+              orgsEn: '',
               scopeAr: '',
+              scopeEn: '',
               stats: [],
               recs: [],
               noteAr: '',
+              noteEn: '',
               src: '',
               order: draft.length * 10,
               published: true,
@@ -208,56 +237,77 @@ export default function WorkingGroupsEditor({ initial }: { initial: WorkingGroup
                   )}
                 </div>
 
-                <TextField
+                <BilingualTextField
                   label="اسم المجموعة"
                   value={item.nameAr}
                   onChange={(v) => patch({ nameAr: v })}
                   name={`${i}.nameAr`}
                   error={errors[`${i}.nameAr`]}
+                  valueEn={item.nameEn}
+                  onChangeEn={(v) => patch({ nameEn: v })}
+                  errorEn={errors[`${i}.nameEn`]}
                 />
-                <TextField
+                <BilingualTextField
                   label="الحالة (اختياري)"
                   value={item.statusAr}
                   onChange={(v) => patch({ statusAr: v })}
                   name={`${i}.statusAr`}
                   error={errors[`${i}.statusAr`]}
+                  valueEn={item.statusEn}
+                  onChangeEn={(v) => patch({ statusEn: v })}
+                  errorEn={errors[`${i}.statusEn`]}
                 />
-                <TextAreaField
+                <BilingualTextAreaField
                   label="نطاق العمل"
                   value={item.scopeAr}
                   onChange={(v) => patch({ scopeAr: v })}
                   name={`${i}.scopeAr`}
                   error={errors[`${i}.scopeAr`]}
                   rows={2}
+                  valueEn={item.scopeEn}
+                  onChangeEn={(v) => patch({ scopeEn: v })}
+                  errorEn={errors[`${i}.scopeEn`]}
                 />
-                <TextField
+                <BilingualTextField
                   label="قائد المجموعة"
                   value={item.headAr}
                   onChange={(v) => patch({ headAr: v })}
                   name={`${i}.headAr`}
                   error={errors[`${i}.headAr`]}
+                  valueEn={item.headEn}
+                  onChangeEn={(v) => patch({ headEn: v })}
+                  errorEn={errors[`${i}.headEn`]}
                 />
-                <TextField
+                <BilingualTextField
                   label="الجهة القائدة"
                   value={item.leadAr}
                   onChange={(v) => patch({ leadAr: v })}
                   name={`${i}.leadAr`}
                   error={errors[`${i}.leadAr`]}
+                  valueEn={item.leadEn}
+                  onChangeEn={(v) => patch({ leadEn: v })}
+                  errorEn={errors[`${i}.leadEn`]}
                 />
-                <TextField
+                <BilingualTextField
                   label="الجهات المشاركة"
                   value={item.orgsAr}
                   onChange={(v) => patch({ orgsAr: v })}
                   name={`${i}.orgsAr`}
                   error={errors[`${i}.orgsAr`]}
+                  valueEn={item.orgsEn}
+                  onChangeEn={(v) => patch({ orgsEn: v })}
+                  errorEn={errors[`${i}.orgsEn`]}
                 />
-                <TextAreaField
+                <BilingualTextAreaField
                   label="ملاحظة (اختياري)"
                   value={item.noteAr}
                   onChange={(v) => patch({ noteAr: v })}
                   name={`${i}.noteAr`}
                   error={errors[`${i}.noteAr`]}
                   rows={2}
+                  valueEn={item.noteEn}
+                  onChangeEn={(v) => patch({ noteEn: v })}
+                  errorEn={errors[`${i}.noteEn`]}
                 />
                 <TextField
                   label="المصدر"
@@ -277,7 +327,7 @@ export default function WorkingGroupsEditor({ initial }: { initial: WorkingGroup
                 <ItemList<StatRow>
                   items={item.stats}
                   onChange={(stats) => patch({ stats })}
-                  makeItem={(id) => ({ id, n: '0', labelAr: 'مؤشر جديد' })}
+                  makeItem={(id) => ({ id, n: '0', labelAr: 'مؤشر جديد', labelEn: '' })}
                   idPrefix={`${item.id}-stat`}
                   min={0}
                   max={6}
@@ -294,12 +344,15 @@ export default function WorkingGroupsEditor({ initial }: { initial: WorkingGroup
                         error={errors[`${i}.stats.${j}.n`]}
                         ltr
                       />
-                      <TextField
+                      <BilingualTextField
                         label="الوصف"
                         value={stat.labelAr}
                         onChange={(v) => patchStat({ labelAr: v })}
                         name={`${i}.stats.${j}.labelAr`}
                         error={errors[`${i}.stats.${j}.labelAr`]}
+                        valueEn={stat.labelEn}
+                        onChangeEn={(v) => patchStat({ labelEn: v })}
+                        errorEn={errors[`${i}.stats.${j}.labelEn`]}
                       />
                     </>
                   )}
@@ -308,7 +361,7 @@ export default function WorkingGroupsEditor({ initial }: { initial: WorkingGroup
                 <ItemList<RecRow>
                   items={item.recs}
                   onChange={(recs) => patch({ recs })}
-                  makeItem={(id) => ({ id, titleAr: 'توصية جديدة', bodyAr: '' })}
+                  makeItem={(id) => ({ id, titleAr: 'توصية جديدة', titleEn: '', bodyAr: '', bodyEn: '' })}
                   idPrefix={`${item.id}-rec`}
                   min={0}
                   max={12}
@@ -317,20 +370,26 @@ export default function WorkingGroupsEditor({ initial }: { initial: WorkingGroup
                 >
                   {(rec, j, patchRec) => (
                     <>
-                      <TextField
+                      <BilingualTextField
                         label="عنوان التوصية"
                         value={rec.titleAr}
                         onChange={(v) => patchRec({ titleAr: v })}
                         name={`${i}.recs.${j}.titleAr`}
                         error={errors[`${i}.recs.${j}.titleAr`]}
+                        valueEn={rec.titleEn}
+                        onChangeEn={(v) => patchRec({ titleEn: v })}
+                        errorEn={errors[`${i}.recs.${j}.titleEn`]}
                       />
-                      <TextAreaField
+                      <BilingualTextAreaField
                         label="نص التوصية"
                         value={rec.bodyAr}
                         onChange={(v) => patchRec({ bodyAr: v })}
                         name={`${i}.recs.${j}.bodyAr`}
                         error={errors[`${i}.recs.${j}.bodyAr`]}
                         rows={2}
+                        valueEn={rec.bodyEn}
+                        onChangeEn={(v) => patchRec({ bodyEn: v })}
+                        errorEn={errors[`${i}.recs.${j}.bodyEn`]}
                       />
                     </>
                   )}

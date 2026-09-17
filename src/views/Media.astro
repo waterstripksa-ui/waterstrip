@@ -1,0 +1,80 @@
+---
+// Markup is waterstrip/media.html verbatim. News cards come from the article
+// table; #eventsList is rendered server-side exactly as main.js §24 builds it
+// from events-data.js, from the event table (both editable at /admin/media).
+// Tab switching is main.js §25. One deliberate deviation: §24 prints the link
+// label as English "Details" (Arabic only in data-ar, and no i18n runs), so
+// the label is rendered in the page language instead.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { listArticles, listEvents, getSingleton } from '../lib/content/cache.ts';
+import { imageFor, resolveImage } from '../lib/media-assets.ts';
+import { articleImages } from '../lib/article-assets.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { isFallback, localizer } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+
+const articles = listArticles();
+const events = listEvents();
+const banner = getSingleton('media_banner');
+
+/** main.js §24's safeHref: blank or script-scheme links fall back to register-interest. */
+const safeHref = (u: string | null | undefined) => {
+  const v = String(u ?? '').trim();
+  return L.href(!v || /^\s*(javascript|data|vbscript):/i.test(v) ? '/register-interest' : v);
+};
+const isExternal = (u: string) => /^https?:\/\//i.test(u);
+---
+
+<Layout title={t.media.title} description={t.media.description}>
+  <PageHero
+    title={t.media.title}
+    lede={t.media.lede}
+    crumbs={[{ label: t.nav.home, href: L.href('/') }, { label: ` ${t.media.title}` }]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <p class="demo-note"><svg fill="none" height="17" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="17" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8h.01M11 12h1v4h1"></path></svg><span><b>{t.common.sourceLabel}</b> {t.media.source}</span></p>
+      <div aria-label={t.media.title} class="mtabs" role="tablist">
+        <button aria-selected="true" class="mtab is-active" data-mtab="news" role="tab" type="button">{t.media.news}</button>
+        <button aria-selected="false" class="mtab" data-mtab="events" role="tab" type="button">{t.media.events}</button>
+      </div>
+      <div class="mtab-panel is-active" id="news" role="tabpanel">
+        <div class="card-row bleed reveal">{articles.map((a) => (
+          <a class="news-card" href={L.href(`/article/${a.slug}`)}>
+            <div class="news-card__media"><img alt={L.text(a, 'title')} {...resolveImage(a.imageId, imageFor(articleImages, a.slug))} /></div>
+            <div class="news-card__body"><p class="news-card__meta" {...(isFallback(locale, a.kindEn) && isFallback(locale, a.dateEn) ? L.attrs(a, 'kind') : {})}>{L.text(a, 'kind')} · {L.text(a, 'date')}</p><h3 {...L.attrs(a, 'title')}>{L.text(a, 'title')}</h3></div>
+            <div class="news-card__foot"><span class="circ-sm"><svg fill="none" height="13" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="13" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></div>
+          </a>
+        ))}</div>
+      </div>
+      <div class="mtab-panel" hidden id="events" role="tabpanel">
+        <div class="reveal" id="eventsList">{events.map((e) => {
+          const href = safeHref(e.href);
+          return (
+            <div class="event"><div class="event__date"><b>{e.day}</b><span {...L.attrs(e, 'month')}>{L.text(e, 'month')}</span></div><div><h3 {...L.attrs(e, 'title')}>{L.text(e, 'title')}</h3><p {...L.attrs(e, 'desc')}>{L.text(e, 'desc')}</p></div>{isExternal(href)
+              ? <a class="cta-circle" href={href} target="_blank" rel="noopener"><span>{t.media.details}</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
+              : <a class="cta-circle" href={href}><span>{t.media.details}</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>}</div>
+          );
+        })}</div>
+      </div>
+    </div>
+  </section>
+
+  <MembershipBanner slot="after-main" banner={banner} />
+
+  <Fragment slot="end">
+    <div aria-hidden="true" aria-modal="true" class="lightbox" id="lightbox" role="dialog">
+      <button aria-label={t.common.close} class="lightbox__close" id="lbClose" type="button">×</button>
+      <button aria-label={t.common.prev} class="lightbox__nav lightbox__nav--prev" id="lbPrev" type="button">‹</button>
+      <button aria-label={t.common.next} class="lightbox__nav lightbox__nav--next" id="lbNext" type="button">›</button>
+      <figure class="lightbox__fig"><img alt="" id="lbImg" src="" /><figcaption id="lbCap"></figcaption></figure>
+    </div>
+  </Fragment>
+</Layout>

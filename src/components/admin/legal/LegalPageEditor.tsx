@@ -9,8 +9,7 @@ import type { SingletonKey } from '../../../lib/content/schemas/index.ts';
 import { useSingletonEditor } from '../useSingletonEditor.ts';
 import { SectionForm } from '../SectionForm.tsx';
 import { ItemList } from '../ItemList.tsx';
-import { TextField } from '../fields/TextField.tsx';
-import { TextAreaField } from '../fields/TextAreaField.tsx';
+import { BilingualTextField, BilingualTextAreaField } from '../fields/BilingualFields.tsx';
 
 const PROSE_HINT =
   'افصل بين الفقرات بسطر فارغ. لعرض قائمة نقطية ابدأ كل سطر بـ "- ". لتمييز جزء من النص بالخط الغامق أحطه بين نجمتين مثل **هكذا**. لإضافة رابط استخدم الصيغة ‎[النص](الرابط)‎، والروابط المسموحة هي مسار داخلي مثل ‎/contact‎ أو ‎mailto:‎.';
@@ -42,26 +41,32 @@ export default function LegalPageEditor({
       onSave={save}
       onReset={reset}
     >
-      <TextField
+      <BilingualTextField
         label="عنوان الصفحة"
         value={draft.titleAr}
         onChange={(v) => update({ ...draft, titleAr: v })}
         name="titleAr"
         error={errors.titleAr}
+        valueEn={draft.titleEn}
+        onChangeEn={(v) => update({ ...draft, titleEn: v })}
+        errorEn={errors.titleEn}
       />
-      <TextField
+      <BilingualTextField
         label="تاريخ آخر تحديث"
         value={draft.updatedLabelAr}
         onChange={(v) => update({ ...draft, updatedLabelAr: v })}
         name="updatedLabelAr"
         error={errors.updatedLabelAr}
         hint="يظهر كما هو، مثل «آخر تحديث: 3 أغسطس 2026»."
+        valueEn={draft.updatedLabelEn}
+        onChangeEn={(v) => update({ ...draft, updatedLabelEn: v })}
+        errorEn={errors.updatedLabelEn}
       />
 
       <ItemList<LegalSection>
         items={draft.sections}
         onChange={(sections) => update({ ...draft, sections })}
-        makeItem={(id) => ({ id, titleAr: 'قسم جديد', bodyAr: 'نص القسم.' })}
+        makeItem={(id) => ({ id, titleAr: 'قسم جديد', titleEn: '', bodyAr: 'نص القسم.', bodyEn: '' })}
         idPrefix="sec"
         min={1}
         max={20}
@@ -70,14 +75,17 @@ export default function LegalPageEditor({
       >
         {(section, i, patch) => (
           <>
-            <TextField
+            <BilingualTextField
               label="عنوان القسم"
               value={section.titleAr}
               onChange={(v) => patch({ titleAr: v })}
               name={`sections.${i}.titleAr`}
               error={errors[`sections.${i}.titleAr`]}
+              valueEn={section.titleEn}
+              onChangeEn={(v) => patch({ titleEn: v })}
+              errorEn={errors[`sections.${i}.titleEn`]}
             />
-            <TextAreaField
+            <BilingualTextAreaField
               label="نص القسم"
               value={section.bodyAr}
               onChange={(v) => patch({ bodyAr: v })}
@@ -85,6 +93,9 @@ export default function LegalPageEditor({
               error={errors[`sections.${i}.bodyAr`]}
               hint={PROSE_HINT}
               rows={6}
+              valueEn={section.bodyEn}
+              onChangeEn={(v) => patch({ bodyEn: v })}
+              errorEn={errors[`sections.${i}.bodyEn`]}
             />
           </>
         )}

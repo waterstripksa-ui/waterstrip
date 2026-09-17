@@ -1,0 +1,69 @@
+---
+// Markup is waterstrip/sitemap.html verbatim. Pure site navigation — the same
+// routes SiteHeader/SiteFooter carry — so no CMS surface beyond the shared
+// legal_banner. Update this list alongside those components, not via /admin.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+
+const banner = getSingleton('legal_banner');
+
+const groups = [
+  {
+    heading: t.sitemap.main,
+    links: [
+      { label: t.nav.home, href: '/' },
+      { label: t.nav.about, href: '/about' },
+      { label: t.nav.groups, href: '/technologies' },
+      { label: t.nav.members, href: '/members' },
+      { label: t.nav.media, href: '/media' },
+      { label: t.nav.contact, href: '/contact' },
+    ],
+  },
+  {
+    heading: t.sitemap.participate,
+    links: [
+      { label: t.nav.register, href: '/register-interest' },
+      { label: t.sitemap.directory, href: '/members' },
+      { label: t.member.title, href: '/members' },
+    ],
+  },
+  {
+    heading: t.nav.media,
+    links: [
+      { label: t.media.news, href: '/media' },
+      { label: t.media.events, href: '/media' },
+    ],
+  },
+  {
+    heading: t.footer.legal,
+    links: [
+      { label: t.footer.terms, href: '/terms' },
+      { label: t.footer.privacy, href: '/privacy' },
+      { label: t.footer.cookies, href: '/cookies' },
+      { label: t.footer.accessibility, href: '/accessibility' },
+      { label: t.footer.sitemap, href: '/sitemap' },
+    ],
+  },
+];
+---
+
+<Layout title={t.footer.sitemap}>
+  <PageHero
+    title={t.footer.sitemap}
+    lede={t.sitemap.lede}
+    crumbs={[{ label: t.nav.home, href: L.href('/') }, { label: ` ${t.footer.sitemap}` }]}
+  />
+
+  <section class="ribbon"><div class="wrap"><div class="sitemap reveal">{groups.map((g) => (<div><h3>{g.heading}</h3><ul>{g.links.map((l) => (<li><a href={L.href(l.href)}>{l.label}</a></li>))}</ul></div>))}</div></div></section>
+
+  <MembershipBanner slot="after-main" banner={banner} />
+</Layout>

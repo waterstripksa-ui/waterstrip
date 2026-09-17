@@ -205,3 +205,21 @@
     line-height: 18px;
   }
 }
+
+/* English pages (dir="ltr") can hold Arabic copy that has no translation yet;
+   those elements carry lang="ar" dir="rtl" (src/lib/i18n/pick.ts). style.css
+   only relaxes its Latin tracking and uppercase for a whole-page [lang="ar"],
+   so apply the same relaxation to the individual fallback elements. */
+[dir="ltr"] [lang="ar"] {
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* ...and keep their block alignment with the page's (left), so a half-translated
+   page does not look broken. :where() gives it no specificity, so any
+   alignment style.css sets explicitly (centred heroes, cards) still wins. */
+:where([dir="ltr"] [lang="ar"][dir="rtl"]) {
+  /* Chromium only knows the prefixed keyword; Firefox the standard one. */
+  text-align: -webkit-match-parent;
+  text-align: match-parent;
+}

@@ -12,6 +12,14 @@ export default defineConfig({
   // React is for the dashboard only — see docs/architecture.md. Public pages stay
   // zero-JS-framework and keep their vanilla inline scripts.
   integrations: [react()],
+  // Arabic (RTL) at the root, English (LTR) under /en. Each public page is a
+  // view in src/views/ with a thin route in both src/pages/ and src/pages/en/.
+  // See docs/i18n.md.
+  i18n: {
+    locales: ['ar', 'en'],
+    defaultLocale: 'ar',
+    routing: { prefixDefaultLocale: false },
+  },
   security: {
     allowedDomains: [
       { hostname: "waterstrip.org", protocol: "https" }

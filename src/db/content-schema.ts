@@ -49,6 +49,8 @@ export const media = sqliteTable('media', {
   width: integer('width').notNull(),
   height: integer('height').notNull(),
   altAr: text('alt_ar').notNull(),
+  /** Optional; the English site falls back to `altAr`. */
+  altEn: text('alt_en').notNull().default(''),
   /** Display only; never a path. */
   originalName: text('original_name'),
   updatedAt: updatedAt(),
@@ -58,8 +60,10 @@ export const media = sqliteTable('media', {
 /**
  * Events, ported from `waterstrip/assets/js/events-data.js`.
  *
- * The mockup carries both `x` and `x_ar` variants of every string; the site is
- * Arabic-only, so only the `_ar` fields come forward. `day` and `monthAr` are text
+ * The mockup carries both `x` and `x_ar` variants of every string, but its `x`
+ * values are Arabic copies, so only the `_ar` fields came forward. Each has an
+ * English `_en` sibling that defaults to '' — untranslated — and the English site
+ * falls back to the Arabic value (src/lib/i18n/pick.ts). `day` and `monthAr` are text
  * rather than a real date because the reference prints them as written labels
  * ("يونيو – يوليو", "نوفمبر 2026") that no date type can round-trip.
  */
@@ -69,8 +73,11 @@ export const event = sqliteTable(
     slug: text('slug').primaryKey(),
     day: text('day').notNull(),
     monthAr: text('month_ar').notNull(),
+    monthEn: text('month_en').notNull().default(''),
     titleAr: text('title_ar').notNull(),
+    titleEn: text('title_en').notNull().default(''),
     descAr: text('desc_ar').notNull(),
+    descEn: text('desc_en').notNull().default(''),
     href: text('href').notNull(),
     /** Ordering within the list only — not layout. Lower sorts first. */
     order: integer('order').notNull().default(0),
@@ -84,8 +91,9 @@ export const event = sqliteTable(
 /**
  * Expert working groups, ported from `waterstrip/assets/js/wg-data.js`.
  *
- * As with `event`, only the `_ar` string variants come forward — the site is
- * Arabic-only. `stats` and `recs` are small open repeatable lists (see
+ * As with `event`, only the `_ar` string variants came forward, each with an
+ * English `_en` sibling. Inside `stats` and `recs`, older rows may lack the `En`
+ * keys, so they are optional in the stored type. `stats` and `recs` are small open repeatable lists (see
  * docs/porting-the-mockup.md#content-model-rules); every group in the reference
  * currently has both empty, so they store as JSON rather than earning their own
  * tables. `challenge` drives which of the mockup's four fixed icon/colour themes
@@ -100,16 +108,25 @@ export const workingGroup = sqliteTable(
     no: text('no').notNull(),
     challenge: text('challenge', { enum: ['supply', 'treat', 'reuse', 'smart'] }).notNull(),
     nameAr: text('name_ar').notNull(),
+    nameEn: text('name_en').notNull().default(''),
     statusAr: text('status_ar').notNull().default(''),
+    statusEn: text('status_en').notNull().default(''),
     leadAr: text('lead_ar').notNull(),
+    leadEn: text('lead_en').notNull().default(''),
     headAr: text('head_ar').notNull(),
+    headEn: text('head_en').notNull().default(''),
     orgsAr: text('orgs_ar').notNull(),
+    orgsEn: text('orgs_en').notNull().default(''),
     scopeAr: text('scope_ar').notNull(),
-    stats: text('stats', { mode: 'json' }).notNull().$type<{ n: string; labelAr: string }[]>(),
+    scopeEn: text('scope_en').notNull().default(''),
+    stats: text('stats', { mode: 'json' })
+      .notNull()
+      .$type<{ n: string; labelAr: string; labelEn?: string }[]>(),
     recs: text('recs', { mode: 'json' })
       .notNull()
-      .$type<{ titleAr: string; bodyAr: string }[]>(),
+      .$type<{ titleAr: string; titleEn?: string; bodyAr: string; bodyEn?: string }[]>(),
     noteAr: text('note_ar').notNull().default(''),
+    noteEn: text('note_en').notNull().default(''),
     src: text('src').notNull(),
     /** Ordering within the list only — not layout. Lower sorts first. */
     order: integer('order').notNull().default(0),
@@ -123,8 +140,9 @@ export const workingGroup = sqliteTable(
 /**
  * News articles, ported from `waterstrip/assets/js/article-data.js`.
  *
- * As with `event` and `workingGroup`, only the `_ar` string variants come
- * forward. `blocks` is a small open repeatable list of heading/body pairs, and
+ * As with `event` and `workingGroup`, only the `_ar` string variants came
+ * forward, each with an English `_en` sibling (optional inside `blocks`, which
+ * older rows store without it). `blocks` is a small open repeatable list of heading/body pairs, and
  * `tagsAr` an open list of short labels — both store as JSON rather than
  * earning their own tables, same reasoning as `workingGroup`'s `stats`/`recs`.
  * `imageId` is a `media` row id like a singleton's image field, but this is a
@@ -138,17 +156,26 @@ export const article = sqliteTable(
   {
     slug: text('slug').primaryKey(),
     kindAr: text('kind_ar').notNull(),
+    kindEn: text('kind_en').notNull().default(''),
     dateAr: text('date_ar').notNull(),
+    dateEn: text('date_en').notNull().default(''),
     readAr: text('read_ar').notNull(),
+    readEn: text('read_en').notNull().default(''),
     imageId: text('image_id'),
     titleAr: text('title_ar').notNull(),
+    titleEn: text('title_en').notNull().default(''),
     ledeAr: text('lede_ar').notNull(),
+    ledeEn: text('lede_en').notNull().default(''),
     blocks: text('blocks', { mode: 'json' })
       .notNull()
-      .$type<{ headingAr: string; bodyAr: string }[]>(),
+      .$type<{ headingAr: string; headingEn?: string; bodyAr: string; bodyEn?: string }[]>(),
     quoteAr: text('quote_ar').notNull().default(''),
+    quoteEn: text('quote_en').notNull().default(''),
     quoteByAr: text('quote_by_ar').notNull().default(''),
+    quoteByEn: text('quote_by_en').notNull().default(''),
     tagsAr: text('tags_ar', { mode: 'json' }).notNull().$type<string[]>(),
+    /** Independent of `tagsAr`: an English list may be shorter or empty. */
+    tagsEn: text('tags_en', { mode: 'json' }).notNull().default([]).$type<string[]>(),
     /** Ordering within the list only — not layout. Lower sorts first. */
     order: integer('order').notNull().default(0),
     published: integer('published', { mode: 'boolean' }).notNull().default(true),
@@ -176,12 +203,18 @@ export const member = sqliteTable(
   {
     slug: text('slug').primaryKey(),
     categoryAr: text('category_ar').notNull(),
+    categoryEn: text('category_en').notNull().default(''),
     nameAr: text('name_ar').notNull(),
+    nameEn: text('name_en').notNull().default(''),
     logoId: text('logo_id'),
     roleAr: text('role_ar').notNull(),
+    roleEn: text('role_en').notNull().default(''),
     sectorAr: text('sector_ar').notNull(),
+    sectorEn: text('sector_en').notNull().default(''),
     sinceAr: text('since_ar').notNull(),
+    sinceEn: text('since_en').notNull().default(''),
     bioAr: text('bio_ar').notNull(),
+    bioEn: text('bio_en').notNull().default(''),
     /** Ordering within the list only — not layout. Lower sorts first. */
     order: integer('order').notNull().default(0),
     published: integer('published', { mode: 'boolean' }).notNull().default(true),

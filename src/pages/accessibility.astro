@@ -1,23 +1,6 @@
 ---
-// Ported from waterstrip/accessibility.html. See terms.astro for the shared
-// content-model note.
-import Layout from '../layouts/Layout.astro';
-import PageHero from '../components/PageHero.astro';
-import LegalProse from '../components/LegalProse.astro';
-import MembershipBanner from '../components/MembershipBanner.astro';
-import { getSingleton } from '../lib/content/cache.ts';
-
-const page = getSingleton('legal_accessibility');
-const banner = getSingleton('legal_banner');
+// waterstrip/accessibility.html — rendered by the shared legal view (docs/i18n.md).
+import Legal from '../views/Legal.astro';
 ---
 
-<Layout title={page.titleAr}>
-  <PageHero
-    title={page.titleAr}
-    crumbs={[{ label: 'الرئيسية', href: '/' }, { label: ` ${page.titleAr}` }]}
-  />
-
-  <LegalProse page={page} />
-
-  <MembershipBanner slot="after-main" banner={banner} />
-</Layout>
+<Legal surface="legal_accessibility" crumbSpace />

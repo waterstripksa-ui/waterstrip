@@ -133,6 +133,7 @@ export const media = sqliteTable('media', {
   width: integer('width').notNull(),
   height: integer('height').notNull(),
   altAr: text('alt_ar').notNull(),
+  altEn: text('alt_en').notNull().default(''), // optional; English falls back to altAr
   originalName: text('original_name'),    // display only; never a path
   updatedAt: updatedAt(),
   updatedBy: text('updated_by').references(() => user.id, { onDelete: 'set null' }),
@@ -446,6 +447,10 @@ This is the same family of constraint as the explicit-`.ts`-extension rule in
 5. Singletons reach the export envelope automatically through the registry. A new *collection*
    needs its own entry in [io.ts](../src/lib/content/io.ts) and in
    [content/seed.json](../content/seed.json).
+
+6. Give every Arabic copy field an optional English sibling (`xAr` + `xEn`), edit it with the
+   bilingual field components, and render it through `localizer`. See
+   [i18n.md](i18n.md#adding-a-field).
 
 When changing an existing singleton's shape, bump `version`, append a migration function, and
 leave the old ones in place — an export taken before the change must still import.

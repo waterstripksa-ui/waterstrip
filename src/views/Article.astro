@@ -1,0 +1,59 @@
+---
+// Markup is waterstrip/article.html verbatim, filled server-side as main.js §21
+// fills it from article-data.js (?id= becomes the [slug] route). Content: the
+// article row (/admin/media) and the media_banner singleton.
+// Deliberate deviation: §21 reads `a.body` but article-data.js stores sections
+// under `blocks`, so the mockup never shows an article body. The sections are
+// rendered here into #aSections with the exact markup §21 would have produced.
+// The route resolves the slug (and 404s), then passes the row in.
+import Layout from '../layouts/Layout.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton, type Article } from '../lib/content/cache.ts';
+import { imageFor, resolveImage } from '../lib/media-assets.ts';
+import { articleImages } from '../lib/article-assets.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { fallbackAttrs, localizer, pick, pickList } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+interface Props {
+  article: Article;
+}
+
+const { article } = Astro.props;
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+const tags = pickList(locale, article.tagsAr, article.tagsEn);
+const tagAttrs = tags.fallback ? ({ lang: 'ar', dir: 'rtl' } as const) : {};
+const banner = getSingleton('media_banner');
+---
+
+<Layout title={L.text(article, 'title')} description={L.text(article, 'lede')}>
+  <article class="art">
+    <header class="art__hero">
+      <img alt="" id="aImg" {...resolveImage(article.imageId, imageFor(articleImages, article.slug))} />
+      <div class="art__scrim"></div>
+      <div class="wrap">
+        <p class="crumbs"><a href={L.href('/')}>{t.nav.home}</a><span>/</span><a href={L.href('/media')}>{t.article.mediaCenter}</a><span>/</span><span id="aKind" {...L.attrs(article, 'kind')}>{L.text(article, 'kind') || '—'}</span></p>
+        <h1 id="aTitle" {...L.attrs(article, 'title')}>{L.text(article, 'title') || '—'}</h1>
+        <p class="art__meta"><span id="aDate" {...L.attrs(article, 'date')}>{L.text(article, 'date') || '—'}</span><i></i><span id="aRead" {...L.attrs(article, 'read')}>{L.text(article, 'read') || '—'}</span></p>
+      </div>
+    </header>
+    <div class="wrap">
+      <div class="art__body reveal">
+        <p class="art__lede" id="aLede" {...L.attrs(article, 'lede')}>{L.text(article, 'lede') || '—'}</p>
+        <div id="aSections">{article.blocks.map((b) => (<><h2 {...fallbackAttrs(locale, b.headingEn)}>{pick(locale, b.headingAr, b.headingEn)}</h2><p {...fallbackAttrs(locale, b.bodyEn)}>{pick(locale, b.bodyAr, b.bodyEn)}</p></>))}</div>
+        {article.quoteAr
+          ? <figure class="art__quote" id="aQuote"><blockquote id="aQuoteTxt" {...L.attrs(article, 'quote')}>{L.text(article, 'quote')}</blockquote><figcaption id="aQuoteBy" {...L.attrs(article, 'quoteBy')}>{L.text(article, 'quoteBy') || '—'}</figcaption></figure>
+          : <figure class="art__quote" hidden id="aQuote"><blockquote id="aQuoteTxt"></blockquote><figcaption id="aQuoteBy"></figcaption></figure>}
+        <div class="art__tags" id="aTags">{tags.items.map((tag) => (<span class="art__tag" {...tagAttrs}>{tag}</span>))}</div>
+      </div>
+      <div class="art__nav reveal">
+        <a class="btn-pill" href={L.href('/media')}>{t.article.back}</a>
+        <a class="btn-pill btn-pill--alt" href={L.href('/register-interest')}>{t.nav.register}</a>
+      </div>
+    </div>
+  </article>
+
+  <MembershipBanner slot="after-main" banner={banner} />
+</Layout>

@@ -11,7 +11,8 @@
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText, mediaId, siteHref } from './fields.ts';
+import { addEnFields } from './add-en-fields.ts';
+import { arText, enText, mediaId, siteHref } from './fields.ts';
 
 const v1 = z.object({
   eyebrowAr: arText(1, 40),
@@ -22,18 +23,30 @@ const v1 = z.object({
   imageId: mediaId.nullable(),
 });
 
-export type LegalBanner = z.infer<typeof v1>;
+/** English siblings of the copy fields, added in v2. */
+const v2 = v1.extend({
+  eyebrowEn: enText(40),
+  headingEn: enText(120),
+  ledeEn: enText(300),
+  ctaLabelEn: enText(40),
+});
+
+export type LegalBanner = z.infer<typeof v2>;
 
 export const legalBanner = defineSingleton<LegalBanner>({
   key: 'legal_banner',
-  version: 1,
-  schema: v1,
-  migrations: [],
+  version: 2,
+  schema: v2,
+  migrations: [addEnFields],
   initial: {
     eyebrowAr: 'العضوية',
+    eyebrowEn: '',
     headingAr: 'انضم إلى الشريط',
+    headingEn: '',
     ledeAr: 'شارك في تشكيل مستقبل قطاع المياه في المملكة.',
+    ledeEn: '',
     ctaLabelAr: 'سجّل اهتمامك',
+    ctaLabelEn: '',
     ctaHref: '/register-interest',
     imageId: null,
   },

@@ -1,0 +1,40 @@
+---
+// The legal/policy pages: terms, privacy, cookies and accessibility, ported
+// from the matching waterstrip/*.html. Sections are admin-managed at
+// /admin/legal — see src/lib/content/schemas/legal-shared.ts for why these
+// pages are the one deliberate exception to "admins edit content, never structure".
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import LegalProse from '../components/LegalProse.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+interface Props {
+  surface: 'legal_terms' | 'legal_privacy' | 'legal_cookies' | 'legal_accessibility';
+  /** accessibility.html writes its current crumb with a leading space (see PageHero). */
+  crumbSpace?: boolean;
+}
+
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+
+const page = getSingleton(Astro.props.surface);
+const banner = getSingleton('legal_banner');
+const title = L.text(page, 'title');
+---
+
+<Layout title={title}>
+  <PageHero
+    title={title}
+    titleAttrs={L.attrs(page, 'title')}
+    crumbs={[{ label: t.nav.home, href: L.href('/') }, { label: Astro.props.crumbSpace ? ` ${title}` : title }]}
+  />
+
+  <LegalProse page={page} />
+
+  <MembershipBanner slot="after-main" banner={banner} />
+</Layout>

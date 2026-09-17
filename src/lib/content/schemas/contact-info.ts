@@ -6,7 +6,8 @@
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
-import { arText } from './fields.ts';
+import { addEnFields } from './add-en-fields.ts';
+import { arText, enText } from './fields.ts';
 
 const v1 = z.object({
   headingAr: arText(1, 80),
@@ -19,21 +20,39 @@ const v1 = z.object({
   responseTextAr: arText(1, 120),
 });
 
-export type ContactInfo = z.infer<typeof v1>;
+/** v2 added the English siblings of the copy fields. */
+const v2 = v1.extend({
+  headingEn: enText(80),
+  ledeEn: enText(300),
+  supportLabelEn: enText(80),
+  membershipLabelEn: enText(80),
+  mediaLabelEn: enText(80),
+  responseLabelEn: enText(80),
+  responseTextEn: enText(120),
+});
+
+export type ContactInfo = z.infer<typeof v2>;
 
 export const contactInfo = defineSingleton<ContactInfo>({
   key: 'contact_info',
-  version: 1,
-  schema: v1,
-  migrations: [],
+  version: 2,
+  schema: v2,
+  migrations: [addEnFields],
   initial: {
     headingAr: 'التواصل المباشر',
+    headingEn: '',
     ledeAr: 'اختر القناة الأنسب لطلبك — أو استخدم النموذج وسنوجّهه للجهة الصحيحة.',
+    ledeEn: '',
     supportLabelAr: 'الاستفسارات العامة والدعم',
+    supportLabelEn: '',
     supportEmail: 'support@waterstrip.org',
     membershipLabelAr: 'سجّل اهتمامك بالانضمام',
+    membershipLabelEn: '',
     mediaLabelAr: 'المركز الإعلامي',
+    mediaLabelEn: '',
     responseLabelAr: 'مدة الرد',
+    responseLabelEn: '',
     responseTextAr: 'ثلاثة أيام عمل في المتوسط.',
+    responseTextEn: '',
   },
 });

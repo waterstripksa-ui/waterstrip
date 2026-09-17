@@ -35,6 +35,7 @@ export interface MediaView {
   width: number;
   height: number;
   altAr: string;
+  altEn: string;
 }
 
 const singletonCache = new Map<SingletonKey, unknown>();
@@ -188,6 +189,7 @@ export function getMedia(id: string): MediaView | null {
             width: row.width,
             height: row.height,
             altAr: row.altAr,
+            altEn: row.altEn,
           })
         : null,
     );

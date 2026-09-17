@@ -11,21 +11,28 @@
  * admin does here can swap a component or change the page's layout, and the
  * prose body itself is never raw HTML — it only ever produces the small,
  * fixed set of tags `src/lib/prose.ts` knows how to render.
+ *
+ * Version 2 of every legal page added the English (`xEn`) siblings; version 1
+ * had only the Arabic fields, and `addEnFields` upgrades it.
  */
 import { z } from 'zod';
-import { arText, itemId } from './fields.ts';
+import { arText, enText, itemId } from './fields.ts';
 
 export const legalSection = z.object({
   id: itemId,
   titleAr: arText(1, 120),
+  titleEn: enText(120),
   bodyAr: arText(1, 6000),
+  bodyEn: enText(6000),
 });
 
 export type LegalSection = z.infer<typeof legalSection>;
 
 export const legalPageSchema = z.object({
   titleAr: arText(1, 80),
+  titleEn: enText(80),
   updatedLabelAr: arText(1, 60),
+  updatedLabelEn: enText(60),
   sections: z.array(legalSection).min(1).max(20),
 });
 

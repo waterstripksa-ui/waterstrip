@@ -1,0 +1,25 @@
+ALTER TABLE `article` ADD `kind_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `article` ADD `date_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `article` ADD `read_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `article` ADD `title_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `article` ADD `lede_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `article` ADD `quote_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `article` ADD `quote_by_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `article` ADD `tags_en` text DEFAULT '[]' NOT NULL;--> statement-breakpoint
+ALTER TABLE `event` ADD `month_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `event` ADD `title_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `event` ADD `desc_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `media` ADD `alt_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `member` ADD `category_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `member` ADD `name_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `member` ADD `role_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `member` ADD `sector_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `member` ADD `since_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `member` ADD `bio_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `working_group` ADD `name_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `working_group` ADD `status_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `working_group` ADD `lead_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `working_group` ADD `head_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `working_group` ADD `orgs_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `working_group` ADD `scope_en` text DEFAULT '' NOT NULL;--> statement-breakpoint
+ALTER TABLE `working_group` ADD `note_en` text DEFAULT '' NOT NULL;
