@@ -4,30 +4,39 @@
   "exportedAt": "2026-09-12T16:47:30.718Z",
   "singletons": {
     "home_hero": {
-      "schemaVersion": 5,
+      "schemaVersion": 6,
       "data": {
         "panels": [
           {
             "id": "hero-1",
             "eyebrowAr": "رؤى الشريط",
+            "eyebrowEn": "Strip Insights",
             "headingAr": "معرفة تطبيقية تسرّع تبنّي تقنيات المياه في المملكة.",
+            "headingEn": "Applied knowledge accelerating the adoption of water technologies in the Kingdom.",
             "ctaLabelAr": "استعرض الرؤى",
+            "ctaLabelEn": "Browse insights",
             "ctaHref": "/media#news",
             "imageId": null
           },
           {
             "id": "hero-2",
             "eyebrowAr": "الشراكات",
+            "eyebrowEn": "Partnerships",
             "headingAr": "جهات حكومية ومؤسسات بحثية وقطاع خاص — شريط واحد للابتكار المائي.",
+            "headingEn": "Government bodies, research institutions and the private sector — one strip for water innovation.",
             "ctaLabelAr": "تعرّف على الأعضاء",
+            "ctaLabelEn": "Meet the members",
             "ctaHref": "/members",
             "imageId": null
           },
           {
             "id": "hero-3",
             "eyebrowAr": "الإعلانات",
+            "eyebrowEn": "Announcements",
             "headingAr": "وزارة البيئة والمياه والزراعة تُطلق شريط شراكات الابتكار المائي من جدة.",
+            "headingEn": "The Ministry of Environment, Water and Agriculture launches Water STRIP from Jeddah.",
             "ctaLabelAr": "اعرف المزيد",
+            "ctaLabelEn": "Learn more",
             "ctaHref": "/media#news",
             "imageId": null
           }
@@ -35,22 +44,28 @@
       }
     },
     "home_discover": {
-      "schemaVersion": 3,
+      "schemaVersion": 4,
       "data": {
         "eyebrowAr": "تعرّف على الشريط",
+        "eyebrowEn": "Discover the Strip",
         "headingAr": "شريط شراكات الابتكار المائي مبادرة وطنية تمتدّ على ساحل البحر الأحمر، تجمع الجهات الحكومية والمؤسسات البحثية والقطاع الخاص لتسريع تطوير تقنيات المياه وتبنّيها في المملكة.",
+        "headingEn": "Water STRIP is a national initiative along the Red Sea coast, bringing together government bodies, research institutions and the private sector to accelerate the development and adoption of water technologies in the Kingdom.",
         "tiles": [
           {
             "id": "tile-groups",
             "eyebrowAr": "مجموعات العمل",
+            "eyebrowEn": "Working Groups",
             "headingAr": "٨ مجموعات عمل تعالج تحديات قطاع المياه في المملكة",
+            "headingEn": "8 working groups tackling the Kingdom's water-sector challenges",
             "href": "/technologies",
             "imageId": null
           },
           {
             "id": "tile-whatwedo",
             "eyebrowAr": "ما نقوم به",
+            "eyebrowEn": "What We Do",
             "headingAr": "من التحلية وإعادة الاستخدام إلى الإدارة الذكية للمياه — الابتكار هو المفتاح",
+            "headingEn": "From desalination and reuse to smart water management — innovation is the key",
             "href": "/about",
             "imageId": null
           }
@@ -58,144 +73,184 @@
       }
     },
     "home_challenges": {
-      "schemaVersion": 1,
+      "schemaVersion": 3,
       "data": {
         "eyebrowAr": "التحديات",
+        "eyebrowEn": "Challenges",
         "headingAr": "يواجه قطاع المياه في المملكة تحديات مترابطة تؤثّر في كفاءة الموارد وتكلفة الخدمة واستدامة الإمداد.",
+        "headingEn": "The Kingdom's water sector faces interlinked challenges affecting resource efficiency, service cost and supply sustainability.",
         "items": [
           {
             "id": "ch-scarcity",
-            "labelAr": "ندرة الموارد المائية"
+            "labelAr": "ندرة الموارد المائية",
+            "labelEn": "Water resource scarcity",
+            "imageId": null
           },
           {
             "id": "ch-desal",
-            "labelAr": "ارتفاع تكاليف التحلية"
+            "labelAr": "ارتفاع تكاليف التحلية",
+            "labelEn": "High desalination costs",
+            "imageId": null
           },
           {
             "id": "ch-wastewater",
-            "labelAr": "ضعف كفاءة معالجة مياه الصرف الصحي"
+            "labelAr": "ضعف كفاءة معالجة مياه الصرف الصحي",
+            "labelEn": "Inefficient wastewater treatment",
+            "imageId": null
           },
           {
             "id": "ch-infra",
-            "labelAr": "تقادم البنية التحتية"
+            "labelAr": "تقادم البنية التحتية",
+            "labelEn": "Aging infrastructure",
+            "imageId": null
           },
           {
             "id": "ch-consumption",
-            "labelAr": "ارتفاع استهلاك الفرد من المياه"
+            "labelAr": "ارتفاع استهلاك الفرد من المياه",
+            "labelEn": "High per-capita water consumption",
+            "imageId": null
           },
           {
             "id": "ch-groundwater",
-            "labelAr": "الاعتماد على المياه الجوفية غير المتجددة"
+            "labelAr": "الاعتماد على المياه الجوفية غير المتجددة",
+            "labelEn": "Reliance on non-renewable groundwater",
+            "imageId": null
           },
           {
             "id": "ch-fragmentation",
-            "labelAr": "تشتّت الجهات والخبرات"
+            "labelAr": "تشتّت الجهات والخبرات",
+            "labelEn": "Fragmented entities and expertise",
+            "imageId": null
           }
         ]
       }
     },
     "home_awards": {
-      "schemaVersion": 3,
+      "schemaVersion": 4,
       "data": {
         "eyebrowAr": "التميّز",
+        "eyebrowEn": "Excellence",
         "headingAr": "الجوائز والتكريم",
+        "headingEn": "Awards & Recognition",
         "ledeAr": "تكريمات نالها الشريط وترشيحات دخلها خلال سنته الأولى، تعكس أثر العمل المشترك بين أعضائه في قطاع المياه.",
+        "ledeEn": "Honors received and nominations earned by the Strip during its founding year, reflecting the impact of joint work among its members in the water sector.",
         "ctaLabelAr": "انضم إلى الشريط",
+        "ctaLabelEn": "Join the Strip",
         "ctaHref": "/register-interest",
         "hidden": false,
         "items": [
           {
             "id": "aw-global-esg",
             "titleAr": "جائزة Global ESG",
-            "bodyAr": "تكريم حصل عليه الشريط في 2025."
+            "titleEn": "Global ESG Award",
+            "bodyAr": "تكريم حصل عليه الشريط في 2025.",
+            "bodyEn": "An honor received by the Strip in 2025."
           },
           {
             "id": "aw-steves",
             "titleAr": "جائزة Steve's Award",
-            "bodyAr": "تكريم حصل عليه الشريط في 2026."
+            "titleEn": "Steve's Award",
+            "bodyAr": "تكريم حصل عليه الشريط في 2026.",
+            "bodyEn": "An honor received by the Strip in 2026."
           },
           {
             "id": "aw-idra-ppp",
             "titleAr": "ترشيح — التميّز في الشراكات بين القطاعين العام والخاص",
-            "bodyAr": "ضمن جوائز IDRA للصناعة والاستدامة."
+            "titleEn": "Nomination — Excellence in Public-Private Partnerships",
+            "bodyAr": "ضمن جوائز IDRA للصناعة والاستدامة.",
+            "bodyEn": "Part of the IDRA Industry & Sustainability Awards."
           },
           {
             "id": "aw-idra-reuse",
             "titleAr": "ترشيح — القيادة الملهمة في سياسات إعادة استخدام المياه",
-            "bodyAr": "ضمن جوائز IDRA للصناعة والاستدامة."
+            "titleEn": "Nomination — Inspirational Leadership in Water Reuse Policy",
+            "bodyAr": "ضمن جوائز IDRA للصناعة والاستدامة.",
+            "bodyEn": "Part of the IDRA Industry & Sustainability Awards."
           }
         ]
       }
     },
     "home_map": {
-      "schemaVersion": 1,
+      "schemaVersion": 2,
       "data": {
         "eyebrowAr": "أصول الشريط",
+        "eyebrowEn": "Strip Assets",
         "headingAr": "ممر واحد، من رابغ إلى جدة.",
+        "headingEn": "One corridor, from Rabigh to Jeddah.",
         "ledeAr": "يمتد الشريط على طول ساحل البحر الأحمر، ليجمع أبرز أصول المياه في المنطقة — محطات المعالجة، والحرم الجامعي، ومرافق التحلية — ضمن ممر واحد متصل.",
+        "ledeEn": "The Strip extends along the Red Sea coast, bringing together the region's key water assets — treatment plants, the university campus and desalination facilities — within a single connected corridor.",
         "clusters": {
-          "rabigh": { "nameAr": "رابغ", "taglineAr": "أكوا باور · فيوليا · واحة هيئة المياه السعودية" },
-          "kaec": { "nameAr": "مدينة الملك عبدالله الاقتصادية", "taglineAr": "مجمع الأعمال · محطة معالجة شركة المياه الوطنية" },
-          "thuwal": { "nameAr": "ثول", "taglineAr": "كاوست · WTIIRA · محطة معالجة الصرف الصحي" },
-          "jeddah": { "nameAr": "جدة", "taglineAr": "✈ مطار الملك عبدالعزيز الدولي · قطار الحرمين السريع" }
+          "rabigh": { "nameAr": "رابغ", "nameEn": "Rabigh", "taglineAr": "أكوا باور · فيوليا · واحة هيئة المياه السعودية", "taglineEn": "ACWA Power · Veolia · Saudi Water Authority Oasis" },
+          "kaec": { "nameAr": "مدينة الملك عبدالله الاقتصادية", "nameEn": "King Abdullah Economic City (KAEC)", "taglineAr": "مجمع الأعمال · محطة معالجة شركة المياه الوطنية", "taglineEn": "Business park · National Water Company treatment plant" },
+          "thuwal": { "nameAr": "ثول", "nameEn": "Thuwal", "taglineAr": "كاوست · WTIIRA · محطة معالجة الصرف الصحي", "taglineEn": "KAUST · WTIIRA · wastewater treatment plant" },
+          "jeddah": { "nameAr": "جدة", "nameEn": "Jeddah", "taglineAr": "✈ مطار الملك عبدالعزيز الدولي · قطار الحرمين السريع", "taglineEn": "✈ King Abdulaziz International Airport · Haramain High Speed Railway" }
         },
         "hubs": [
-          { "id": "hub-thuwal-stp", "nameAr": "محطة معالجة الصرف الصحي بثول", "descriptionAr": "معالجة مياه الصرف الصحي التي تغذي مشاريع إعادة الاستخدام التجريبية" },
-          { "id": "hub-kaust", "nameAr": "حرم جامعة الملك عبدالله للعلوم والتقنية", "descriptionAr": "مرتكز بحثي ومختبر حي للتجارب" },
-          { "id": "hub-kaec-park", "nameAr": "مجمع أعمال مدينة الملك عبدالله الاقتصادية", "descriptionAr": "قاعدة التسويق التجاري والصناعة" },
-          { "id": "hub-acwa", "nameAr": "منشآت أكوا باور", "descriptionAr": "طاقة وقدرة تحلية" },
-          { "id": "hub-veolia", "nameAr": "فيوليا (رابغ 3)", "descriptionAr": "عمليات تحلية المياه" },
-          { "id": "hub-nwc-stp", "nameAr": "محطة معالجة الصرف الصحي التابعة لشركة المياه الوطنية", "descriptionAr": "معالجة تابعة لشركة المياه الوطنية" },
-          { "id": "hub-wtiira", "nameAr": "مركز أبحاث وتقنيات المياه (WTIIRA)", "descriptionAr": "ابتكار وأبحاث تقنيات المياه" },
-          { "id": "hub-swa-oasis", "nameAr": "واحة المياه برابغ", "descriptionAr": "منشأة تابعة لهيئة المياه السعودية" }
+          { "id": "hub-thuwal-stp", "nameAr": "محطة معالجة الصرف الصحي بثول", "nameEn": "Thuwal Wastewater Treatment Plant", "descriptionAr": "معالجة مياه الصرف الصحي التي تغذي مشاريع إعادة الاستخدام التجريبية", "descriptionEn": "Wastewater treatment feeding pilot water-reuse projects" },
+          { "id": "hub-kaust", "nameAr": "حرم جامعة الملك عبدالله للعلوم والتقنية", "nameEn": "King Abdullah University of Science and Technology (KAUST) Campus", "descriptionAr": "مرتكز بحثي ومختبر حي للتجارب", "descriptionEn": "A research hub and living lab for experimentation" },
+          { "id": "hub-kaec-park", "nameAr": "مجمع أعمال مدينة الملك عبدالله الاقتصادية", "nameEn": "King Abdullah Economic City Business Park", "descriptionAr": "قاعدة التسويق التجاري والصناعة", "descriptionEn": "Commercial and industrial marketing base" },
+          { "id": "hub-acwa", "nameAr": "منشآت أكوا باور", "nameEn": "ACWA Power Facilities", "descriptionAr": "طاقة وقدرة تحلية", "descriptionEn": "Power and desalination capacity" },
+          { "id": "hub-veolia", "nameAr": "فيوليا (رابغ 3)", "nameEn": "Veolia (Rabigh 3)", "descriptionAr": "عمليات تحلية المياه", "descriptionEn": "Water desalination operations" },
+          { "id": "hub-nwc-stp", "nameAr": "محطة معالجة الصرف الصحي التابعة لشركة المياه الوطنية", "nameEn": "National Water Company Wastewater Treatment Plant", "descriptionAr": "معالجة تابعة لشركة المياه الوطنية", "descriptionEn": "Treatment operated by the National Water Company" },
+          { "id": "hub-wtiira", "nameAr": "مركز أبحاث وتقنيات المياه (WTIIRA)", "nameEn": "Water Technologies & Innovation Research Institute (WTIIRA)", "descriptionAr": "ابتكار وأبحاث تقنيات المياه", "descriptionEn": "Water technology innovation and research" },
+          { "id": "hub-swa-oasis", "nameAr": "واحة المياه برابغ", "nameEn": "Rabigh Water Oasis", "descriptionAr": "منشأة تابعة لهيئة المياه السعودية", "descriptionEn": "A facility operated by the Saudi Water Authority" }
         ]
       }
     },
     "home_partners": {
-      "schemaVersion": 3,
+      "schemaVersion": 4,
       "data": {
         "labelAr": "الجهات الاستراتيجية",
+        "labelEn": "Strategic Partners",
         "noteAr": "جهات استراتيجية ضمن شريط شراكات الابتكار المائي.",
+        "noteEn": "Strategic partners within Water STRIP.",
         "items": [
           {
             "id": "pa-swa",
             "nameAr": "الهيئة السعودية للمياه",
+            "nameEn": "Saudi Water Authority",
             "href": "/members",
             "logoId": null
           },
           {
             "id": "pa-nwc",
             "nameAr": "الشركة الوطنية للمياه",
+            "nameEn": "National Water Company",
             "href": "/members",
             "logoId": null
           },
           {
             "id": "pa-kaust",
             "nameAr": "جامعة الملك عبدالله للعلوم والتقنية",
+            "nameEn": "King Abdullah University of Science and Technology (KAUST)",
             "href": "/members",
             "logoId": null
           },
           {
             "id": "pa-acwa",
             "nameAr": "أكوا باور",
+            "nameEn": "ACWA Power",
             "href": "/members",
             "logoId": null
           },
           {
             "id": "pa-veolia",
             "nameAr": "فيوليا",
+            "nameEn": "Veolia",
             "href": "/members",
             "logoId": null
           },
           {
             "id": "pa-enowa",
             "nameAr": "نيوم ENOWA",
+            "nameEn": "NEOM ENOWA",
             "href": "/members",
             "logoId": null
           },
           {
             "id": "pa-kaec",
             "nameAr": "مدينة الملك عبدالله الاقتصادية",
+            "nameEn": "King Abdullah Economic City (KAEC)",
             "href": "/members",
             "logoId": null
           }
@@ -203,12 +258,16 @@
       }
     },
     "home_about_banner": {
-      "schemaVersion": 3,
+      "schemaVersion": 4,
       "data": {
         "eyebrowAr": "العضوية",
+        "eyebrowEn": "Membership",
         "headingAr": "انضم إلى الشريط",
+        "headingEn": "Join the Strip",
         "ledeAr": "شارك في تشكيل مستقبل قطاع المياه في المملكة.",
+        "ledeEn": "Help shape the future of the Kingdom's water sector.",
         "ctaLabelAr": "سجّل اهتمامك",
+        "ctaLabelEn": "Register your interest",
         "ctaHref": "/register-interest",
         "imageId": null
       }
@@ -220,8 +279,11 @@
         "slug": "ev-saudi-water-week",
         "day": "27",
         "monthAr": "يونيو – يوليو",
+        "monthEn": "June – July",
         "titleAr": "أسبوع المياه السعودي — الاجتماع الربعي الأول",
+        "titleEn": "Saudi Water Week — First Quarterly Meeting",
         "descAr": "جدة · أُقيم الاجتماع الربعي الأول لأعضاء الشريط على هامش أسبوع المياه السعودي.",
+        "descEn": "Jeddah · The Strip's first quarterly members meeting was held on the sidelines of Saudi Water Week.",
         "href": "/register-interest",
         "order": 10,
         "published": true
@@ -230,8 +292,11 @@
         "slug": "ev-kaust",
         "day": "29",
         "monthAr": "سبتمبر",
+        "monthEn": "September",
         "titleAr": "مجتمع المياه في كاوست — الاجتماع الربعي الثاني",
+        "titleEn": "KAUST Water Community — Second Quarterly Meeting",
         "descAr": "ثول · يُقام الاجتماع الربعي الثاني لأعضاء الشريط على هامش ملتقى مجتمع المياه في كاوست.",
+        "descEn": "Thuwal · The Strip's second quarterly members meeting is held on the sidelines of the KAUST Water Community forum.",
         "href": "/register-interest",
         "order": 20,
         "published": true
@@ -240,8 +305,11 @@
         "slug": "ev-idws",
         "day": "14",
         "monthAr": "ديسمبر",
+        "monthEn": "December",
         "titleAr": "مؤتمر IDWS — الاجتماع الربعي الثالث",
+        "titleEn": "IDWS Conference — Third Quarterly Meeting",
         "descAr": "يُقام الاجتماع الربعي الثالث لأعضاء الشريط على هامش مؤتمر IDWS، ويشمل جلسة حوارية وتسليم جوائز.",
+        "descEn": "The Strip's third quarterly members meeting is held on the sidelines of the IDWS conference, and includes a panel discussion and an awards presentation.",
         "href": "/register-interest",
         "order": 30,
         "published": true
@@ -250,8 +318,11 @@
         "slug": "ev-idra",
         "day": "01",
         "monthAr": "نوفمبر 2026",
+        "monthEn": "November 2026",
         "titleAr": "المؤتمر العالمي لتحلية المياه وإعادة استخدامها",
+        "titleEn": "World Congress on Desalination and Water Reuse",
         "descAr": "المملكة · ينظّمه الاتحاد الدولي لتحلية المياه وإعادة استخدامها (IDRA) في 1–5 نوفمبر 2026.",
+        "descEn": "The Kingdom · Organized by the International Desalination and Reuse Association (IDRA), 1–5 November 2026.",
         "href": "/register-interest",
         "order": 40,
         "published": true
@@ -263,14 +334,21 @@
         "no": "01",
         "challenge": "smart",
         "nameAr": "منصة التنبؤ بالفيضانات ومخاطر السيول",
+        "nameEn": "Flood and Flash-Flood Risk Forecasting Platform",
         "statusAr": "",
+        "statusEn": "",
         "leadAr": "وزارة البيئة والمياه والزراعة",
+        "leadEn": "Ministry of Environment, Water and Agriculture",
         "headAr": "غير متوفر",
+        "headEn": "Not available",
         "orgsAr": "غير متوفر",
+        "orgsEn": "Not available",
         "scopeAr": "تطوير منصة للتنبؤ بالفيضانات ومخاطر السيول ضمن مبادرات الشريط في مجال إدارة المخاطر المائية.",
+        "scopeEn": "Developing a platform to forecast floods and flash-flood risk as part of the Strip's initiatives in water risk management.",
         "stats": [],
         "recs": [],
         "noteAr": "",
+        "noteEn": "",
         "src": "الموجز التنفيذي لسنة التأسيس — شريط شراكات الابتكار المائي",
         "order": 0,
         "published": true
@@ -280,14 +358,21 @@
         "no": "02",
         "challenge": "reuse",
         "nameAr": "نقل محطة نيوم لتعدين الرجيع الملحي",
+        "nameEn": "Relocation of NEOM's Brine Mining Plant",
         "statusAr": "",
+        "statusEn": "",
         "leadAr": "وزارة البيئة والمياه والزراعة",
+        "leadEn": "Ministry of Environment, Water and Agriculture",
         "headAr": "غير متوفر",
+        "headEn": "Not available",
         "orgsAr": "نيوم",
+        "orgsEn": "NEOM",
         "scopeAr": "العمل على نقل محطة تعدين الرجيع الملحي التابعة لنيوم، ضمن مسار الاستفادة من نواتج التحلية.",
+        "scopeEn": "Working on relocating NEOM's brine mining plant, as part of the effort to make use of desalination byproducts.",
         "stats": [],
         "recs": [],
         "noteAr": "",
+        "noteEn": "",
         "src": "الموجز التنفيذي لسنة التأسيس — شريط شراكات الابتكار المائي",
         "order": 10,
         "published": true
@@ -297,14 +382,21 @@
         "no": "03",
         "challenge": "treat",
         "nameAr": "منشأة معالجة الحمأة",
+        "nameEn": "Sludge Treatment Facility",
         "statusAr": "",
+        "statusEn": "",
         "leadAr": "وزارة البيئة والمياه والزراعة",
+        "leadEn": "Ministry of Environment, Water and Agriculture",
         "headAr": "غير متوفر",
+        "headEn": "Not available",
         "orgsAr": "غير متوفر",
+        "orgsEn": "Not available",
         "scopeAr": "العمل على منشأة لمعالجة الحمأة الناتجة عن محطات معالجة مياه الصرف الصحي.",
+        "scopeEn": "Working on a facility to treat sludge produced by wastewater treatment plants.",
         "stats": [],
         "recs": [],
         "noteAr": "",
+        "noteEn": "",
         "src": "الموجز التنفيذي لسنة التأسيس — شريط شراكات الابتكار المائي",
         "order": 20,
         "published": true
@@ -314,14 +406,21 @@
         "no": "04",
         "challenge": "treat",
         "nameAr": "منصة إدارة صهاريج معالجة المياه",
+        "nameEn": "Water Treatment Tank Management Platform",
         "statusAr": "",
+        "statusEn": "",
         "leadAr": "وزارة البيئة والمياه والزراعة",
+        "leadEn": "Ministry of Environment, Water and Agriculture",
         "headAr": "غير متوفر",
+        "headEn": "Not available",
         "orgsAr": "غير متوفر",
+        "orgsEn": "Not available",
         "scopeAr": "تطوير منصة لإدارة صهاريج معالجة المياه ورفع كفاءة تشغيلها ومتابعتها.",
+        "scopeEn": "Developing a platform to manage water treatment tanks and improve their operating efficiency and monitoring.",
         "stats": [],
         "recs": [],
         "noteAr": "",
+        "noteEn": "",
         "src": "الموجز التنفيذي لسنة التأسيس — شريط شراكات الابتكار المائي",
         "order": 30,
         "published": true
@@ -331,14 +430,21 @@
         "no": "05",
         "challenge": "supply",
         "nameAr": "منصة خزن المياه الجوفية والحقن الاستراتيجي",
+        "nameEn": "Groundwater Storage and Strategic Injection Platform",
         "statusAr": "",
+        "statusEn": "",
         "leadAr": "وزارة البيئة والمياه والزراعة",
+        "leadEn": "Ministry of Environment, Water and Agriculture",
         "headAr": "غير متوفر",
+        "headEn": "Not available",
         "orgsAr": "غير متوفر",
+        "orgsEn": "Not available",
         "scopeAr": "تطوير منصة لخزن المياه الجوفية والحقن الاستراتيجي ضمن جهود تأمين الإمداد المائي.",
+        "scopeEn": "Developing a platform for groundwater storage and strategic injection as part of efforts to secure water supply.",
         "stats": [],
         "recs": [],
         "noteAr": "",
+        "noteEn": "",
         "src": "الموجز التنفيذي لسنة التأسيس — شريط شراكات الابتكار المائي",
         "order": 40,
         "published": true
@@ -348,14 +454,21 @@
         "no": "06",
         "challenge": "supply",
         "nameAr": "ترشيد استهلاك مياه الري عبر مادة الزيوليت",
+        "nameEn": "Reducing Irrigation Water Consumption Using Zeolite",
         "statusAr": "",
+        "statusEn": "",
         "leadAr": "وزارة البيئة والمياه والزراعة",
+        "leadEn": "Ministry of Environment, Water and Agriculture",
         "headAr": "غير متوفر",
+        "headEn": "Not available",
         "orgsAr": "غير متوفر",
+        "orgsEn": "Not available",
         "scopeAr": "العمل على ترشيد استهلاك مياه الري من خلال استخدام مادة الزيوليت.",
+        "scopeEn": "Working to reduce irrigation water consumption through the use of zeolite material.",
         "stats": [],
         "recs": [],
         "noteAr": "",
+        "noteEn": "",
         "src": "الموجز التنفيذي لسنة التأسيس — شريط شراكات الابتكار المائي",
         "order": 50,
         "published": true
@@ -365,14 +478,21 @@
         "no": "07",
         "challenge": "treat",
         "nameAr": "توطين تقنية مضاد التكلّس بمحطات التحلية",
+        "nameEn": "Localizing Anti-Scalant Technology at Desalination Plants",
         "statusAr": "",
+        "statusEn": "",
         "leadAr": "وزارة البيئة والمياه والزراعة",
+        "leadEn": "Ministry of Environment, Water and Agriculture",
         "headAr": "غير متوفر",
+        "headEn": "Not available",
         "orgsAr": "شركة داو",
+        "orgsEn": "Dow",
         "scopeAr": "توطين تقنية مضاد التكلّس من شركة «داو» في محطات التحلية.",
+        "scopeEn": "Localizing Dow's anti-scalant technology at desalination plants.",
         "stats": [],
         "recs": [],
         "noteAr": "",
+        "noteEn": "",
         "src": "الموجز التنفيذي لسنة التأسيس — شريط شراكات الابتكار المائي",
         "order": 60,
         "published": true
@@ -382,14 +502,21 @@
         "no": "08",
         "challenge": "smart",
         "nameAr": "ربط مزوّدي الحلول بمالكي التحديات",
+        "nameEn": "Connecting Solution Providers with Challenge Owners",
         "statusAr": "",
+        "statusEn": "",
         "leadAr": "وزارة البيئة والمياه والزراعة",
+        "leadEn": "Ministry of Environment, Water and Agriculture",
         "headAr": "غير متوفر",
+        "headEn": "Not available",
         "orgsAr": "وزارة الاتصالات وتقنية المعلومات",
+        "orgsEn": "Ministry of Communications and Information Technology",
         "scopeAr": "التعاون مع وزارة الاتصالات وتقنية المعلومات لربط مزوّدي الحلول بمالكي التحديات في قطاع المياه.",
+        "scopeEn": "Collaborating with the Ministry of Communications and Information Technology to connect solution providers with challenge owners in the water sector.",
         "stats": [],
         "recs": [],
         "noteAr": "",
+        "noteEn": "",
         "src": "الموجز التنفيذي لسنة التأسيس — شريط شراكات الابتكار المائي",
         "order": 70,
         "published": true
@@ -399,27 +526,43 @@
       {
         "slug": "launch",
         "kindAr": "أخبار",
+        "kindEn": "News",
         "dateAr": "8 ديسمبر 2025",
+        "dateEn": "December 8, 2025",
         "readAr": "قراءة دقيقتان",
+        "readEn": "2 min read",
         "imageId": null,
         "titleAr": "إطلاق شريط شراكات الابتكار المائي في جدة",
+        "titleEn": "Water STRIP Launches in Jeddah",
         "ledeAr": "أطلقت وزارة البيئة والمياه والزراعة مبادرة شريط شراكات الابتكار المائي خلال مؤتمر الابتكار في استدامة المياه الذي نظّمته الهيئة السعودية للمياه في جدة.",
+        "ledeEn": "The Ministry of Environment, Water and Agriculture launched the Water STRIP initiative during the Water Sustainability Innovation Conference organized by the Saudi Water Authority in Jeddah.",
         "blocks": [
           {
             "headingAr": "الحدث",
-            "bodyAr": "أُطلقت المبادرة في 8 ديسمبر 2025 خلال مؤتمر الابتكار في استدامة المياه الذي نظّمته الهيئة السعودية للمياه في جدة، وجمع الحدث أصحاب المصلحة من القطاعين العام والخاص لمواجهة تحديات المياه عبر تعزيز التعاون والابتكار وتبادل المعرفة."
+            "headingEn": "The Event",
+            "bodyAr": "أُطلقت المبادرة في 8 ديسمبر 2025 خلال مؤتمر الابتكار في استدامة المياه الذي نظّمته الهيئة السعودية للمياه في جدة، وجمع الحدث أصحاب المصلحة من القطاعين العام والخاص لمواجهة تحديات المياه عبر تعزيز التعاون والابتكار وتبادل المعرفة.",
+            "bodyEn": "The initiative was launched on December 8, 2025 during the Water Sustainability Innovation Conference organized by the Saudi Water Authority in Jeddah. The event brought together public- and private-sector stakeholders to address water challenges by strengthening collaboration, innovation and knowledge-sharing."
           },
           {
             "headingAr": "الهدف الرئيس",
-            "bodyAr": "مظلة لبناء مجتمع حيوي من خلال نشر الابتكار وبرامج بناء القدرات وتعزيز الشراكات لتسهيل التحديات التشريعية والتنظيمية."
+            "headingEn": "Main Objective",
+            "bodyAr": "مظلة لبناء مجتمع حيوي من خلال نشر الابتكار وبرامج بناء القدرات وتعزيز الشراكات لتسهيل التحديات التشريعية والتنظيمية.",
+            "bodyEn": "An umbrella for building a vibrant community by spreading innovation, capacity-building programs and stronger partnerships to help ease legislative and regulatory challenges."
           }
         ],
         "quoteAr": "",
+        "quoteEn": "",
         "quoteByAr": "",
+        "quoteByEn": "",
         "tagsAr": [
           "الإطلاق",
           "جدة",
           "وزارة البيئة والمياه والزراعة"
+        ],
+        "tagsEn": [
+          "Launch",
+          "Jeddah",
+          "MEWA"
         ],
         "order": 0,
         "published": true
@@ -427,25 +570,39 @@
       {
         "slug": "esg-award",
         "kindAr": "أخبار",
+        "kindEn": "News",
         "dateAr": "2025",
+        "dateEn": "2025",
         "readAr": "قراءة دقيقة",
+        "readEn": "1 min read",
         "imageId": null,
         "titleAr": "الشريط يحصل على جائزة Global ESG",
+        "titleEn": "The Strip Wins the Global ESG Award",
         "ledeAr": "حصل شريط شراكات الابتكار المائي على جائزة Global ESG لعام 2025.",
+        "ledeEn": "Water STRIP received the Global ESG Award for 2025.",
         "blocks": [
           {
             "headingAr": "التكريم",
-            "bodyAr": "حصول الشريط على جائزة Global ESG ضمن إنجازات سنة التأسيس."
+            "headingEn": "The Honor",
+            "bodyAr": "حصول الشريط على جائزة Global ESG ضمن إنجازات سنة التأسيس.",
+            "bodyEn": "The Strip's receipt of the Global ESG Award, among the achievements of its founding year."
           },
           {
             "headingAr": "تفاصيل إضافية",
-            "bodyAr": "غير متوفر"
+            "headingEn": "Additional Details",
+            "bodyAr": "غير متوفر",
+            "bodyEn": "Not available"
           }
         ],
         "quoteAr": "",
+        "quoteEn": "",
         "quoteByAr": "",
+        "quoteByEn": "",
         "tagsAr": [
           "جوائز"
+        ],
+        "tagsEn": [
+          "Awards"
         ],
         "order": 10,
         "published": true
@@ -453,25 +610,39 @@
       {
         "slug": "steves-award",
         "kindAr": "أخبار",
+        "kindEn": "News",
         "dateAr": "2026",
+        "dateEn": "2026",
         "readAr": "قراءة دقيقة",
+        "readEn": "1 min read",
         "imageId": null,
         "titleAr": "الشريط يحصل على جائزة Steve's Award",
+        "titleEn": "The Strip Wins Steve's Award",
         "ledeAr": "حصل شريط شراكات الابتكار المائي على جائزة Steve's Award لعام 2026.",
+        "ledeEn": "Water STRIP received Steve's Award for 2026.",
         "blocks": [
           {
             "headingAr": "التكريم",
-            "bodyAr": "حصول الشريط على جائزة Steve's Award ضمن إنجازات سنة التأسيس."
+            "headingEn": "The Honor",
+            "bodyAr": "حصول الشريط على جائزة Steve's Award ضمن إنجازات سنة التأسيس.",
+            "bodyEn": "The Strip's receipt of Steve's Award, among the achievements of its founding year."
           },
           {
             "headingAr": "تفاصيل إضافية",
-            "bodyAr": "غير متوفر"
+            "headingEn": "Additional Details",
+            "bodyAr": "غير متوفر",
+            "bodyEn": "Not available"
           }
         ],
         "quoteAr": "",
+        "quoteEn": "",
         "quoteByAr": "",
+        "quoteByEn": "",
         "tagsAr": [
           "جوائز"
+        ],
+        "tagsEn": [
+          "Awards"
         ],
         "order": 20,
         "published": true
@@ -479,26 +650,42 @@
       {
         "slug": "idra-host",
         "kindAr": "أخبار",
+        "kindEn": "News",
         "dateAr": "2026",
+        "dateEn": "2026",
         "readAr": "قراءة دقيقتان",
+        "readEn": "2 min read",
         "imageId": null,
         "titleAr": "المملكة تفوز باستضافة المؤتمر العالمي لتحلية المياه وإعادة استخدامها",
+        "titleEn": "The Kingdom Wins Bid to Host the World Congress on Desalination and Water Reuse",
         "ledeAr": "فازت المملكة باستضافة المؤتمر العالمي لتحلية المياه وإعادة استخدامها، الذي تنظّمه الرابطة الدولية لتحلية المياه وإعادة استخدامها (IDRA) في 1–5 نوفمبر 2026.",
+        "ledeEn": "The Kingdom won the bid to host the World Congress on Desalination and Water Reuse, organized by the International Desalination and Reuse Association (IDRA), taking place 1–5 November 2026.",
         "blocks": [
           {
             "headingAr": "عن الرابطة",
-            "bodyAr": "الرابطة الدولية لتحلية المياه وإعادة استخدامها منظمة عالمية رائدة تجمع مجتمع المياه الدولي، وتهدف إلى تعزيز ودعم الابتكارات والحلول المتعلقة بتحلية المياه وإعادة استخدامها لضمان استدامة الموارد المائية عالميًا."
+            "headingEn": "About the Association",
+            "bodyAr": "الرابطة الدولية لتحلية المياه وإعادة استخدامها منظمة عالمية رائدة تجمع مجتمع المياه الدولي، وتهدف إلى تعزيز ودعم الابتكارات والحلول المتعلقة بتحلية المياه وإعادة استخدامها لضمان استدامة الموارد المائية عالميًا.",
+            "bodyEn": "The International Desalination and Reuse Association is a leading global organization that brings together the international water community, aiming to promote and support innovations and solutions in desalination and water reuse to ensure the sustainability of water resources worldwide."
           },
           {
             "headingAr": "ترشيحات الشريط",
-            "bodyAr": "رُشِّح الشريط لمسارين ضمن جوائز الصناعة والاستدامة IDRA: التميّز في الشراكات بين القطاعين العام والخاص، والقيادة الملهمة لأكثر سياسة تحوّلية في إعادة استخدام المياه."
+            "headingEn": "The Strip's Nominations",
+            "bodyAr": "رُشِّح الشريط لمسارين ضمن جوائز الصناعة والاستدامة IDRA: التميّز في الشراكات بين القطاعين العام والخاص، والقيادة الملهمة لأكثر سياسة تحوّلية في إعادة استخدام المياه.",
+            "bodyEn": "The Strip was nominated in two categories of the IDRA Industry & Sustainability Awards: Excellence in Public-Private Partnerships, and Inspirational Leadership for the Most Transformative Water Reuse Policy."
           }
         ],
         "quoteAr": "",
+        "quoteEn": "",
         "quoteByAr": "",
+        "quoteByEn": "",
         "tagsAr": [
           "IDRA",
           "مؤتمرات",
+          "2026"
+        ],
+        "tagsEn": [
+          "IDRA",
+          "Conferences",
           "2026"
         ],
         "order": 30,
@@ -509,240 +696,360 @@
       {
         "slug": "water-agency",
         "categoryAr": "حكومي",
+        "categoryEn": "Government",
         "nameAr": "وكالة المياه — وزارة البيئة والمياه والزراعة",
+        "nameEn": "Water Agency — Ministry of Environment, Water and Agriculture",
         "logoId": null,
         "roleAr": "عضو مؤسس وشريك استراتيجي",
+        "roleEn": "Founding member and strategic partner",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 0,
         "published": true
       },
       {
         "slug": "swa",
         "categoryAr": "حكومي",
+        "categoryEn": "Government",
         "nameAr": "الهيئة السعودية للمياه",
+        "nameEn": "Saudi Water Authority",
         "logoId": null,
         "roleAr": "شريك استراتيجي",
+        "roleEn": "Strategic partner",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 10,
         "published": true
       },
       {
         "slug": "nwc",
         "categoryAr": "قطاع عام",
+        "categoryEn": "Public sector",
         "nameAr": "الشركة الوطنية للمياه",
+        "nameEn": "National Water Company",
         "logoId": null,
         "roleAr": "عضو مؤسس",
+        "roleEn": "Founding member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 20,
         "published": true
       },
       {
         "slug": "swpc",
         "categoryAr": "قطاع عام",
+        "categoryEn": "Public sector",
         "nameAr": "الشركة السعودية لشراكات المياه",
+        "nameEn": "Saudi Water Partnership Company",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 30,
         "published": true
       },
       {
         "slug": "maee",
         "categoryAr": "حكومي",
+        "categoryEn": "Government",
         "nameAr": "مركز مائي",
+        "nameEn": "Water Center",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 40,
         "published": true
       },
       {
         "slug": "sio",
         "categoryAr": "حكومي",
+        "categoryEn": "Government",
         "nameAr": "المؤسسة العامة للري",
+        "nameEn": "General Authority for Irrigation",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 50,
         "published": true
       },
       {
         "slug": "kaust",
         "categoryAr": "أكاديمي",
+        "categoryEn": "Academic",
         "nameAr": "جامعة الملك عبدالله للعلوم والتقنية",
+        "nameEn": "King Abdullah University of Science and Technology (KAUST)",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 60,
         "published": true
       },
       {
         "slug": "acwa",
         "categoryAr": "قطاع خاص",
+        "categoryEn": "Private sector",
         "nameAr": "أكوا باور",
+        "nameEn": "ACWA Power",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 70,
         "published": true
       },
       {
         "slug": "veolia",
         "categoryAr": "قطاع خاص",
+        "categoryEn": "Private sector",
         "nameAr": "فيوليا",
+        "nameEn": "Veolia",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 80,
         "published": true
       },
       {
         "slug": "enowa",
         "categoryAr": "قطاع خاص",
+        "categoryEn": "Private sector",
         "nameAr": "نيوم — ENOWA",
+        "nameEn": "NEOM — ENOWA",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 90,
         "published": true
       },
       {
         "slug": "metito",
         "categoryAr": "قطاع خاص",
+        "categoryEn": "Private sector",
         "nameAr": "ميتيتو لمعالجة المياه",
+        "nameEn": "Metito Water Treatment",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 100,
         "published": true
       },
       {
         "slug": "rdia",
         "categoryAr": "حكومي",
+        "categoryEn": "Government",
         "nameAr": "هيئة تنمية البحث والتطوير والابتكار",
+        "nameEn": "Research, Development and Innovation Authority (RDIA)",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 110,
         "published": true
       },
       {
         "slug": "kaec",
         "categoryAr": "قطاع خاص",
+        "categoryEn": "Private sector",
         "nameAr": "مدينة الملك عبدالله الاقتصادية",
+        "nameEn": "King Abdullah Economic City (KAEC)",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 120,
         "published": true
       },
       {
         "slug": "kacst",
         "categoryAr": "أكاديمي",
+        "categoryEn": "Academic",
         "nameAr": "مدينة الملك عبدالعزيز للعلوم والتقنية",
+        "nameEn": "King Abdulaziz City for Science and Technology (KACST)",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 130,
         "published": true
       },
       {
         "slug": "wtco",
         "categoryAr": "قطاع خاص",
+        "categoryEn": "Private sector",
         "nameAr": "شركة نقل المياه",
+        "nameEn": "Water Transmission Company",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 140,
         "published": true
       },
       {
         "slug": "kau",
         "categoryAr": "أكاديمي",
+        "categoryEn": "Academic",
         "nameAr": "جامعة الملك عبدالعزيز",
+        "nameEn": "King Abdulaziz University",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 150,
         "published": true
       },
       {
         "slug": "dow",
         "categoryAr": "قطاع خاص",
+        "categoryEn": "Private sector",
         "nameAr": "شركة داو",
+        "nameEn": "Dow",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 160,
         "published": true
       },
       {
         "slug": "misa",
         "categoryAr": "حكومي",
+        "categoryEn": "Government",
         "nameAr": "وزارة الاستثمار",
+        "nameEn": "Ministry of Investment",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 170,
         "published": true
       },
       {
         "slug": "wema",
         "categoryAr": "دولي",
+        "categoryEn": "International",
         "nameAr": "تحالف كفاءة المياه في الشرق الأوسط (WEMA)",
+        "nameEn": "Middle East Water Efficiency Alliance (WEMA)",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 180,
         "published": true
       },
       {
         "slug": "moaj",
         "categoryAr": "قطاع خاص",
+        "categoryEn": "Private sector",
         "nameAr": "شركة موج القابضة",
+        "nameEn": "Mawj Holding Company",
         "logoId": null,
         "roleAr": "عضو",
+        "roleEn": "Member",
         "sectorAr": "غير متوفر",
+        "sectorEn": "Not available",
         "sinceAr": "غير متوفر",
+        "sinceEn": "Not available",
         "bioAr": "غير متوفر",
+        "bioEn": "Not available",
         "order": 190,
         "published": true
       }

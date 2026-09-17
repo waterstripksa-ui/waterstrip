@@ -55,54 +55,60 @@ export const aboutChallenges = defineSingleton<AboutChallenges>({
   migrations: [v1_to_v2, addEnFields],
   initial: {
     eyebrowAr: 'السياق الوطني',
-    eyebrowEn: '',
+    eyebrowEn: 'National context',
     headingAr: 'تحديات تجعل الابتكار ضرورة',
-    headingEn: '',
+    headingEn: 'Challenges that make innovation essential',
     ledeAr:
       'يواجه قطاع المياه في المملكة تحديات كبيرة تخلق مجتمعةً دافعًا واضحًا لتبنّي التقنيات المتقدمة — بما يوازن بين تأمين الاحتياج المائي واستدامة الموارد.',
-    ledeEn: '',
+    ledeEn:
+      'The Kingdom’s water sector faces major challenges that, together, create a clear case for adopting advanced technologies — balancing water security with resource sustainability.',
     ctaLabelAr: 'استعرض مجموعات العمل',
-    ctaLabelEn: '',
+    ctaLabelEn: 'Explore the working groups',
     ctaHref: '/technologies',
     items: [
       {
         id: 'nc-scarcity',
         titleAr: 'ندرة الموارد المائية',
-        titleEn: '',
+        titleEn: 'Water resource scarcity',
         bodyAr: 'محدودية الموارد المتجددة واعتماد أكثر من 80% من الإمداد على مصادر جوفية غير متجددة.',
-        bodyEn: '',
+        bodyEn:
+          'Limited renewable resources, with more than 80% of supply dependent on non-renewable groundwater sources.',
         imageId: null,
       },
       {
         id: 'nc-desal',
         titleAr: 'ارتفاع تكاليف التحلية',
-        titleEn: '',
+        titleEn: 'High desalination costs',
         bodyAr: 'كلفة إنتاج المياه المحلّاة تضغط على اقتصاديات القطاع وتستدعي حلولًا أكفأ.',
-        bodyEn: '',
+        bodyEn:
+          'The cost of producing desalinated water strains the sector’s economics and calls for more efficient solutions.',
         imageId: null,
       },
       {
         id: 'nc-wastewater',
         titleAr: 'ضعف كفاءة معالجة الصرف',
-        titleEn: '',
+        titleEn: 'Inefficient wastewater treatment',
         bodyAr: 'فجوات في كفاءة معالجة مياه الصرف الصحي تحدّ من فرص إعادة الاستخدام.',
-        bodyEn: '',
+        bodyEn:
+          'Gaps in wastewater treatment efficiency limit opportunities for water reuse.',
         imageId: null,
       },
       {
         id: 'nc-infra',
         titleAr: 'تقادم البنية التحتية',
-        titleEn: '',
+        titleEn: 'Aging infrastructure',
         bodyAr: 'أصول قائمة تحتاج تحديثًا لرفع الكفاءة وخفض الفاقد.',
-        bodyEn: '',
+        bodyEn:
+          'Existing assets need upgrading to raise efficiency and reduce water loss.',
         imageId: null,
       },
       {
         id: 'nc-fragmentation',
         titleAr: 'تشتّت الجهود والخبرات',
-        titleEn: '',
+        titleEn: 'Fragmented efforts and expertise',
         bodyAr: 'غياب مجتمع متكامل يربط أصحاب المصلحة يحدّ من تطوير الحلول وتبادلها.',
-        bodyEn: '',
+        bodyEn:
+          'The absence of an integrated community linking stakeholders limits the development and exchange of solutions.',
         imageId: null,
       },
     ],

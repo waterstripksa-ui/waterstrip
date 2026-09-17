@@ -57,33 +57,34 @@ export const homeChallenges = defineSingleton<HomeChallenges>({
   migrations: [v1_to_v2, addEnFields],
   initial: {
     eyebrowAr: 'التحديات',
-    eyebrowEn: '',
+    eyebrowEn: 'Challenges',
     headingAr:
       'يواجه قطاع المياه في المملكة تحديات مترابطة تؤثّر في كفاءة الموارد وتكلفة الخدمة واستدامة الإمداد.',
-    headingEn: '',
+    headingEn:
+      "The Kingdom's water sector faces interlinked challenges affecting resource efficiency, service cost and supply sustainability.",
     items: [
-      { id: 'ch-scarcity', labelAr: 'ندرة الموارد المائية', labelEn: '', imageId: null },
-      { id: 'ch-desal', labelAr: 'ارتفاع تكاليف التحلية', labelEn: '', imageId: null },
+      { id: 'ch-scarcity', labelAr: 'ندرة الموارد المائية', labelEn: 'Water resource scarcity', imageId: null },
+      { id: 'ch-desal', labelAr: 'ارتفاع تكاليف التحلية', labelEn: 'High desalination costs', imageId: null },
       {
         id: 'ch-wastewater',
         labelAr: 'ضعف كفاءة معالجة مياه الصرف الصحي',
-        labelEn: '',
+        labelEn: 'Inefficient wastewater treatment',
         imageId: null,
       },
-      { id: 'ch-infra', labelAr: 'تقادم البنية التحتية', labelEn: '', imageId: null },
+      { id: 'ch-infra', labelAr: 'تقادم البنية التحتية', labelEn: 'Aging infrastructure', imageId: null },
       {
         id: 'ch-consumption',
         labelAr: 'ارتفاع استهلاك الفرد من المياه',
-        labelEn: '',
+        labelEn: 'High per-capita water consumption',
         imageId: null,
       },
       {
         id: 'ch-groundwater',
         labelAr: 'الاعتماد على المياه الجوفية غير المتجددة',
-        labelEn: '',
+        labelEn: 'Reliance on non-renewable groundwater',
         imageId: null,
       },
-      { id: 'ch-fragmentation', labelAr: 'تشتّت الجهات والخبرات', labelEn: '', imageId: null },
+      { id: 'ch-fragmentation', labelAr: 'تشتّت الجهات والخبرات', labelEn: 'Fragmented entities and expertise', imageId: null },
     ],
   },
 });

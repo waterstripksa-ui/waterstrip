@@ -73,26 +73,27 @@ export const homeDiscover = defineSingleton<HomeDiscover>({
   migrations: [v1_to_v2, v2_to_v3, addEnFields],
   initial: {
     eyebrowAr: 'تعرّف على الشريط',
-    eyebrowEn: '',
+    eyebrowEn: 'Discover the Strip',
     headingAr:
       'شريط شراكات الابتكار المائي مبادرة وطنية تمتدّ على ساحل البحر الأحمر، تجمع الجهات الحكومية والمؤسسات البحثية والقطاع الخاص لتسريع تطوير تقنيات المياه وتبنّيها في المملكة.',
-    headingEn: '',
+    headingEn:
+      'Water STRIP is a national initiative along the Red Sea coast, bringing together government bodies, research institutions and the private sector to accelerate the development and adoption of water technologies in the Kingdom.',
     tiles: [
       {
         id: 'tile-groups',
         eyebrowAr: 'مجموعات العمل',
-        eyebrowEn: '',
+        eyebrowEn: 'Working Groups',
         headingAr: '٨ مجموعات عمل تعالج تحديات قطاع المياه في المملكة',
-        headingEn: '',
+        headingEn: "8 working groups tackling the Kingdom's water-sector challenges",
         href: '/technologies',
         imageId: null,
       },
       {
         id: 'tile-whatwedo',
         eyebrowAr: 'ما نقوم به',
-        eyebrowEn: '',
+        eyebrowEn: 'What We Do',
         headingAr: 'من التحلية وإعادة الاستخدام إلى الإدارة الذكية للمياه — الابتكار هو المفتاح',
-        headingEn: '',
+        headingEn: 'From desalination and reuse to smart water management — innovation is the key',
         href: '/about',
         imageId: null,
       },

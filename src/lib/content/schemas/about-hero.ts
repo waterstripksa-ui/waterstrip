@@ -27,9 +27,10 @@ export const aboutHero = defineSingleton<AboutHero>({
   migrations: [addEnFields],
   initial: {
     titleAr: 'عن الشريط',
-    titleEn: '',
+    titleEn: 'About the Strip',
     ledeAr:
       'مبادرة وطنية للتعاون والتنسيق وتبادل المعرفة في ابتكار تقنيات المياه، دعمًا لرؤية السعودية 2030.',
-    ledeEn: '',
+    ledeEn:
+      'A national initiative for collaboration, coordination and knowledge-sharing in water innovation, in support of Saudi Vision 2030.',
   },
 });

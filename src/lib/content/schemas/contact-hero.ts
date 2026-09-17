@@ -27,8 +27,8 @@ export const contactHero = defineSingleton<ContactHero>({
   migrations: [addEnFields],
   initial: {
     titleAr: 'تواصل معنا',
-    titleEn: '',
+    titleEn: 'Contact Us',
     ledeAr: 'للاستفسارات وفرص الشراكة وطلبات الدعم، تواصل معنا.',
-    ledeEn: '',
+    ledeEn: 'Get in touch for inquiries, partnership opportunities, and support requests.',
   },
 });

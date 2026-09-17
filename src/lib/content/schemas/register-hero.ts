@@ -28,8 +28,8 @@ export const registerHero = defineSingleton<RegisterHero>({
   migrations: [addEnFields],
   initial: {
     titleAr: 'سجّل اهتمامك',
-    titleEn: '',
+    titleEn: 'Register Interest',
     ledeAr: 'عرّفنا بجهتك والتحدي الذي ترغب بالعمل عليه، وسنتواصل معك بحزمة العضوية.',
-    ledeEn: '',
+    ledeEn: "Tell us about your organization and the challenge you'd like to work on, and we'll follow up with a membership package.",
   },
 });

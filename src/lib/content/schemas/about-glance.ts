@@ -42,12 +42,12 @@ export const aboutGlance = defineSingleton<AboutGlance>({
   initial: {
     hidden: false,
     headingAr: 'نظرة عامة',
-    headingEn: '',
+    headingEn: 'At a glance',
     stats: [
-      { id: 'gl-members', value: 29, labelAr: 'عضوًا في الشريط', labelEn: '' },
-      { id: 'gl-countries', value: 7, labelAr: 'دول ممثَّلة', labelEn: '' },
-      { id: 'gl-groups', value: 8, labelAr: 'مجموعات عمل', labelEn: '' },
-      { id: 'gl-assets', value: 8, labelAr: 'أصول وجهات على الشريط', labelEn: '' },
+      { id: 'gl-members', value: 29, labelAr: 'عضوًا في الشريط', labelEn: 'members of the Strip' },
+      { id: 'gl-countries', value: 7, labelAr: 'دول ممثَّلة', labelEn: 'countries represented' },
+      { id: 'gl-groups', value: 8, labelAr: 'مجموعات عمل', labelEn: 'working groups' },
+      { id: 'gl-assets', value: 8, labelAr: 'أصول وجهات على الشريط', labelEn: 'assets and sites on the Strip' },
     ],
   },
 });

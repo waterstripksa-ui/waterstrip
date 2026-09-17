@@ -45,40 +45,45 @@ export const aboutGoals = defineSingleton<AboutGoals>({
   migrations: [addEnFields],
   initial: {
     eyebrowAr: 'الأهداف',
-    eyebrowEn: '',
+    eyebrowEn: 'Goals',
     headingAr: 'أربعة أهداف توجّه عمل الشريط',
-    headingEn: '',
+    headingEn: 'Four goals that guide the Strip’s work',
     ledeAr:
       'يقوم شريط شراكات الابتكار المائي على أربعة أهداف رئيسية تحدّد تدخلاته في منظومة قطاع المياه، وتجمع بين تيسير التعاون وتطوير الحلول وتمكين التمويل والتجريب وتبادل المعرفة.',
-    ledeEn: '',
+    ledeEn:
+      'Water STRIP is built on four core goals that define its role within the water sector — spanning collaboration, solution development, funding and piloting, and knowledge exchange.',
     items: [
       {
         id: 'ag-collaboration',
         titleAr: 'تيسير التعاون',
-        titleEn: '',
+        titleEn: 'Facilitating collaboration',
         bodyAr: 'تيسير التعاون بين الأعضاء من المؤسسات البحثية والقطاع الخاص والجهات الحكومية لدفع التقدّم في تقنيات المياه.',
-        bodyEn: '',
+        bodyEn:
+          'Facilitating collaboration among members from research institutions, the private sector and government bodies to advance water technology.',
       },
       {
         id: 'ag-solutions',
         titleAr: 'حلول مستدامة للموارد',
-        titleEn: '',
+        titleEn: 'Sustainable resource solutions',
         bodyAr: 'تطوير وتنفيذ حلول مستدامة لإدارة الموارد المائية مع دعم صنع السياسات والأنظمة ذات العلاقة.',
-        bodyEn: '',
+        bodyEn:
+          'Developing and implementing sustainable water resource management solutions, while supporting related policy and regulatory development.',
       },
       {
         id: 'ag-funding',
         titleAr: 'التمويل والتجريب',
-        titleEn: '',
+        titleEn: 'Funding and piloting',
         bodyAr: 'تيسير الوصول إلى التمويل ومرافق الاختبار والبرامج التجريبية لتسريع تحويل الحلول المبتكرة إلى واقع تجاري.',
-        bodyEn: '',
+        bodyEn:
+          'Facilitating access to funding, testing facilities and pilot programs to accelerate turning innovative solutions into commercial reality.',
       },
       {
         id: 'ag-knowledge',
         titleAr: 'بيئة تعاونية للمعرفة',
-        titleEn: '',
+        titleEn: 'A collaborative knowledge environment',
         bodyAr: 'توفير بيئة تعاونية تجمع الجامعات ومراكز الأبحاث ورواد الصناعة لتسريع تبادل المعرفة وتطوير تقنيات مائية مبتكرة.',
-        bodyEn: '',
+        bodyEn:
+          'Providing a collaborative environment that brings together universities, research centers and industry leaders to accelerate knowledge exchange and the development of innovative water technologies.',
       },
     ],
   },

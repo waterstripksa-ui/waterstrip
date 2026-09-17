@@ -40,14 +40,15 @@ export const aboutFoundingStatement = defineSingleton<AboutFoundingStatement>({
   migrations: [v1_to_v2, addEnFields],
   initial: {
     eyebrowAr: 'البيان التأسيسي',
-    eyebrowEn: '',
+    eyebrowEn: 'Founding statement',
     quoteAr:
       'تمثّل المبادرة فرصة تحوّلية لتشكيل مستقبل قطاع المياه في المملكة العربية السعودية، ونتطلّع إلى انضمام أصحاب المصلحة الرئيسيين في دفع هذه الرؤية للأمام.',
-    quoteEn: '',
+    quoteEn:
+      'This initiative represents a transformative opportunity to shape the future of the water sector in the Kingdom of Saudi Arabia, and we look forward to key stakeholders joining us in driving this vision forward.',
     attributionAr: 'وكالة البحث والابتكار — وزارة البيئة والمياه والزراعة',
-    attributionEn: '',
+    attributionEn: 'Research and Innovation Agency — Ministry of Environment, Water and Agriculture',
     ctaLabelAr: 'تعرّف على الأعضاء',
-    ctaLabelEn: '',
+    ctaLabelEn: 'Meet the members',
     ctaHref: '/members',
     imageId: null,
   },
