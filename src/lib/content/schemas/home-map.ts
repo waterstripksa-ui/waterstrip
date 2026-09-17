@@ -6,10 +6,10 @@
  * a named field per cluster rather than a list an admin could reorder or extend.
  *
  * `hubs` is a repeatable list, but its dot on the map is placed by list
- * position (`src/pages/index.astro`'s `MAP_HUB_SLOTS`), the same way an award's
+ * position (`src/views/Home.astro`'s `MAP_HUB_SLOTS`), the same way an award's
  * 01–04 ordinal is derived from position rather than stored. Reordering the list
  * moves a dot to a different fixed slot; it cannot invent a new one, since the
- * slot table only has eight entries.
+ * slot table only has twelve entries.
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
@@ -37,7 +37,7 @@ const v1 = z.object({
     thuwal: cluster,
     jeddah: cluster,
   }),
-  hubs: z.array(hub).min(1).max(8),
+  hubs: z.array(hub).min(1).max(12),
 });
 
 /** v2 added the English siblings of the copy fields. */
@@ -61,7 +61,7 @@ const v2 = v1.extend({
     thuwal: clusterV2,
     jeddah: clusterV2,
   }),
-  hubs: z.array(hubV2).min(1).max(8),
+  hubs: z.array(hubV2).min(1).max(12),
 });
 
 export type HomeMapCluster = z.infer<typeof clusterV2>;

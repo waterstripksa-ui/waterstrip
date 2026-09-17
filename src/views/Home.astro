@@ -31,8 +31,8 @@ const ordinal = (i: number) => String(i + 1).padStart(2, '0');
 /**
  * Where the map draws a hub's numbered dot. Real-world geometry, not content —
  * a hub's *position in the list* (not anything stored on it) picks its slot, the
- * same way its ordinal is derived. Only the first eight hubs get a dot; the
- * schema caps the list at eight for exactly this reason.
+ * same way its ordinal is derived. Only the first twelve hubs get a dot; the
+ * schema caps the list at twelve for exactly this reason.
  */
 const MAP_HUB_SLOTS: ReadonlyArray<{ clusterId: 'rabigh' | 'kaec' | 'thuwal'; cx: number; cy: number }> = [
   { clusterId: 'thuwal', cx: 120, cy: 264 },
@@ -43,6 +43,10 @@ const MAP_HUB_SLOTS: ReadonlyArray<{ clusterId: 'rabigh' | 'kaec' | 'thuwal'; cx
   { clusterId: 'kaec', cx: 120, cy: 194 },
   { clusterId: 'thuwal', cx: 120, cy: 292 },
   { clusterId: 'rabigh', cx: 98, cy: 86 },
+  { clusterId: 'rabigh', cx: 98, cy: 58 },
+  { clusterId: 'kaec', cx: 98, cy: 142 },
+  { clusterId: 'kaec', cx: 98, cy: 220 },
+  { clusterId: 'thuwal', cx: 98, cy: 250 },
 ];
 
 /** The four fixed points the corridor runs through, north to south. */

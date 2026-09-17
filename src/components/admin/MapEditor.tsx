@@ -2,8 +2,9 @@
  * Edits `home_map`. The four clusters are fixed, named fields — their position
  * on the coastline is real geography, not something an admin can reorder — while
  * `hubs` is a repeatable list whose dot on the map comes from its position in
- * the list (`MAP_HUB_SLOTS` in `src/pages/index.astro`), the same way an award's
- * ordinal is derived rather than stored.
+ * the list (`MAP_HUB_SLOTS` in `src/views/Home.astro`), the same way an award's
+ * ordinal is derived rather than stored. The slot table has twelve entries, so
+ * a 13th hub would still list in the legend but get no dot on the map.
  */
 import type { HomeMap, HomeMapHub } from '../../lib/content/schemas/home-map.ts';
 import { useSingletonEditor } from './useSingletonEditor.ts';
@@ -113,7 +114,7 @@ export default function MapEditor({ initial }: { initial: HomeMap }) {
         makeItem={(id) => ({ id, nameAr: 'اسم الأصل', nameEn: '', descriptionAr: 'وصف الأصل.', descriptionEn: '' })}
         idPrefix="hub"
         min={1}
-        max={8}
+        max={12}
         labelFor={(_, i) => `الأصل ${i + 1}`}
         addLabel="إضافة أصل"
       >
