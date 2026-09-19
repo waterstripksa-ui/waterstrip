@@ -1,12 +1,13 @@
 /**
- * Edits `about_goals` — the "أربعة أهداف" panel. Always exactly four goals
- * (see src/lib/content/schemas/about-goals.ts), so rows are fixed: no
- * add/remove, unlike ItemList-backed sections. The 01–04 ordinals the public
- * panel prints are derived from list position, so there is no number field.
+ * Edits `about_goals` — the goals panel. Goals can be added, removed and
+ * reordered within the limits in src/lib/content/schemas/about-goals.ts. The
+ * ordinals the public panel prints are derived from list position, so there is
+ * no number field.
  */
-import type { AboutGoals } from '../../../lib/content/schemas/about-goals.ts';
+import type { AboutGoal, AboutGoals } from '../../../lib/content/schemas/about-goals.ts';
 import { useSingletonEditor } from '../useSingletonEditor.ts';
 import { SectionForm } from '../SectionForm.tsx';
+import { ItemList } from '../ItemList.tsx';
 import { BilingualTextField, BilingualTextAreaField } from '../fields/BilingualFields.tsx';
 
 export default function AboutGoalsEditor({ initial }: { initial: AboutGoals }) {
@@ -17,17 +18,10 @@ export default function AboutGoalsEditor({ initial }: { initial: AboutGoals }) {
     title,
   );
 
-  function patchGoal(i: number, fields: Partial<AboutGoals['items'][number]>) {
-    update({
-      ...draft,
-      items: draft.items.map((goal, n) => (n === i ? { ...goal, ...fields } : goal)),
-    });
-  }
-
   return (
     <SectionForm
       title={title}
-      lede="ترقيم الأهداف (٠١–٠٤) يُحسب تلقائيًا من ترتيب القائمة."
+      lede="يمكن إضافة الأهداف وحذفها وترتيبها. الترقيم يُحسب تلقائيًا من ترتيب القائمة. إذا ذكر العنوان عددًا (مثل «أربعة أهداف») فحدّثه عند تغيير العدد."
       dirty={dirty}
       status={status}
       message={message}
@@ -66,32 +60,42 @@ export default function AboutGoalsEditor({ initial }: { initial: AboutGoals }) {
         errorEn={errors.ledeEn}
       />
 
-      {draft.items.map((goal, i) => (
-        <fieldset className="form" key={goal.id}>
-          <legend className="form__label">الهدف {i + 1}</legend>
-          <BilingualTextField
-            label="العنوان"
-            value={goal.titleAr}
-            onChange={(v) => patchGoal(i, { titleAr: v })}
-            name={`items.${i}.titleAr`}
-            error={errors[`items.${i}.titleAr`]}
-            valueEn={goal.titleEn}
-            onChangeEn={(v) => patchGoal(i, { titleEn: v })}
-            errorEn={errors[`items.${i}.titleEn`]}
-          />
-          <BilingualTextAreaField
-            label="الوصف"
-            value={goal.bodyAr}
-            onChange={(v) => patchGoal(i, { bodyAr: v })}
-            name={`items.${i}.bodyAr`}
-            error={errors[`items.${i}.bodyAr`]}
-            rows={2}
-            valueEn={goal.bodyEn}
-            onChangeEn={(v) => patchGoal(i, { bodyEn: v })}
-            errorEn={errors[`items.${i}.bodyEn`]}
-          />
-        </fieldset>
-      ))}
+      <ItemList<AboutGoal>
+        items={draft.items}
+        onChange={(items) => update({ ...draft, items })}
+        makeItem={(id) => ({ id, titleAr: 'هدف جديد', titleEn: '', bodyAr: 'وصف الهدف', bodyEn: '' })}
+        idPrefix="ag"
+        min={1}
+        max={8}
+        labelFor={(_, i) => `الهدف ${i + 1}`}
+        addLabel="إضافة هدف"
+      >
+        {(goal, i, patch) => (
+          <>
+            <BilingualTextField
+              label="العنوان"
+              value={goal.titleAr}
+              onChange={(v) => patch({ titleAr: v })}
+              name={`items.${i}.titleAr`}
+              error={errors[`items.${i}.titleAr`]}
+              valueEn={goal.titleEn}
+              onChangeEn={(v) => patch({ titleEn: v })}
+              errorEn={errors[`items.${i}.titleEn`]}
+            />
+            <BilingualTextAreaField
+              label="الوصف"
+              value={goal.bodyAr}
+              onChange={(v) => patch({ bodyAr: v })}
+              name={`items.${i}.bodyAr`}
+              error={errors[`items.${i}.bodyAr`]}
+              rows={2}
+              valueEn={goal.bodyEn}
+              onChangeEn={(v) => patch({ bodyEn: v })}
+              errorEn={errors[`items.${i}.bodyEn`]}
+            />
+          </>
+        )}
+      </ItemList>
     </SectionForm>
   );
 }

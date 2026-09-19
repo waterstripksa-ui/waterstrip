@@ -1,8 +1,12 @@
 /**
- * The about page "أربعة أهداف" panel: exactly four goals — the heading itself
- * says "four", so this is a fixed-length tuple rather than an open list. The
- * 01–04 ordinals the panel prints are derived from position at render time,
- * never stored.
+ * The about page goals panel: a list of goals an admin can add to, remove and
+ * reorder (1–8, so the 4-column grid always ends on a full row at most). The
+ * 01–08 ordinals the panel prints are derived from position at render time,
+ * never stored. The heading is free text, so it is the admin's job to keep any
+ * count it names ("four goals") in step with the list.
+ *
+ * Loosening the list from exactly four to 1–8 changes no stored shape, so no
+ * version bump or migration is needed.
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
@@ -19,7 +23,7 @@ const v1 = z.object({
   eyebrowAr: arText(1, 40),
   headingAr: arText(1, 120),
   ledeAr: arText(1, 400),
-  items: z.array(goal).length(4),
+  items: z.array(goal).min(1).max(8),
 });
 
 /** v2 added the English siblings of the copy fields. */
@@ -32,7 +36,7 @@ const v2 = v1.extend({
   eyebrowEn: enText(40),
   headingEn: enText(120),
   ledeEn: enText(400),
-  items: z.array(goalV2).length(4),
+  items: z.array(goalV2).min(1).max(8),
 });
 
 export type AboutGoal = z.infer<typeof goalV2>;
