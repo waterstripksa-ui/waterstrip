@@ -1,6 +1,6 @@
 ---
-// Markup is waterstrip/index-v2.html verbatim (the Discover section's tile cards sit in
-// their own ribbon after Challenges; both halves are one CMS singleton); only the copy, imagery and links are
+// Markup is waterstrip/index-v2.html verbatim, except that the Discover section's tile
+// cards are dropped; only the copy, imagery and links are
 // swapped for CMS content (editable at /admin/home). An image slot with no upload
 // shows its placeholder artwork (src/lib/home-assets.ts). Behaviour (hero
 // autoplay, partner marquee, reveals) is the vendored main.js; the corridor map
@@ -8,7 +8,7 @@
 // Copy is picked per locale (src/lib/i18n/pick.ts); English falls back to Arabic.
 import Layout from '../layouts/Layout.astro';
 import { getSingleton } from '../lib/content/cache.ts';
-import { discoverTileImages, heroSlideImages, WORKING_GROUPS_IMG } from '../lib/home-assets.ts';
+import { heroSlideImages, WORKING_GROUPS_IMG } from '../lib/home-assets.ts';
 import MembershipBanner from '../components/MembershipBanner.astro';
 import PartnersStrip from '../components/PartnersStrip.astro';
 import CorridorSection from '../components/CorridorSection.astro';
@@ -146,23 +146,6 @@ const stages = STAGE_IDS.map((id) => ({ id, ...challenges.chain.stages[id] }));
           <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-width="1.9" viewBox="0 0 24 24" width="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
         </button>
         <div class="vcbox__scroll"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="ribbon ribbon--grey discover discover--tiles">
-    <div class="wrap">
-      <div class="card-row bleed reveal">
-        {discover.tiles.map((tile) => (
-          <a class="tile" href={L.href(tile.href)}>
-            <img alt="" {...resolveImage(tile.imageId, imageFor(discoverTileImages, tile.id))} />
-            <div class="tile__txt">
-              <p class="eyebrow eyebrow--light" {...L.attrs(tile, 'eyebrow')}>{L.text(tile, 'eyebrow')}</p>
-              <h3 {...L.attrs(tile, 'heading')}>{L.text(tile, 'heading')}</h3>
-            </div>
-            <span class="tile__arrow"><svg fill="none" height="14" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="14" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span>
-          </a>
-        ))}
       </div>
     </div>
   </section>

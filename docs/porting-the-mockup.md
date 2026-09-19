@@ -117,8 +117,8 @@ The mockup gained a new brand asset set, a corridor map, and a second home page.
 ported and where the port deliberately differs:
 
 - **Home page follows `index-v2.html`**, not `index.html`: Discover, corridor map,
-  working-group panel, value-chain "Challenges", Awards. (The Discover tiles still sit in
-  their own ribbon after Challenges, as before this revision.) The old slider of illustrated
+  working-group panel, value-chain "Challenges", Awards. The Discover tile cards are
+  dropped; `home_discover` v5 removes them, leaving the intro. The old slider of illustrated
   challenges and the retired SVG coast map are gone; `home_challenges` v4 and `home_map` v3 migrate
   existing payloads, keeping any copy an admin edited.
 - **`/corridor`** ([Corridor.astro](../src/views/Corridor.astro)) is the mockup's `corridor.html`

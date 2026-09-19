@@ -1,8 +1,6 @@
 /**
- * The home page "تعرّف على الشريط" section: an intro plus the tile cards under it.
- *
- * A tile's image is a `media` id; with none set, the tile shows the placeholder
- * artwork keyed by its `id` in src/lib/home-assets.ts.
+ * The home page "تعرّف على الشريط" intro. (Up to v4 it also carried two tile cards
+ * under the intro, `tiles`; they are no longer part of the design and v5 drops them.)
  */
 import { z } from 'zod';
 import { defineSingleton } from './types.ts';
@@ -43,8 +41,14 @@ const v4 = v2.extend({
   tiles: z.array(tileV4).min(1).max(4),
 });
 
-export type HomeDiscoverTile = z.infer<typeof tileV4>;
-export type HomeDiscover = z.infer<typeof v4>;
+const v5 = z.object({
+  eyebrowAr: arText(1, 40),
+  eyebrowEn: enText(40),
+  headingAr: arText(1, 400),
+  headingEn: enText(400),
+});
+
+export type HomeDiscover = z.infer<typeof v5>;
 
 /** v2 made each tile's image uploadable. Existing tiles start with none. */
 function v1_to_v2(data: unknown): unknown {
@@ -66,11 +70,17 @@ function v2_to_v3(data: unknown): unknown {
   };
 }
 
+/** The tile cards are gone from the home page. */
+function v4_to_v5(data: unknown): unknown {
+  const { tiles: _tiles, ...rest } = data as z.infer<typeof v4>;
+  return rest;
+}
+
 export const homeDiscover = defineSingleton<HomeDiscover>({
   key: 'home_discover',
-  version: 4,
-  schema: v4,
-  migrations: [v1_to_v2, v2_to_v3, addEnFields],
+  version: 5,
+  schema: v5,
+  migrations: [v1_to_v2, v2_to_v3, addEnFields, v4_to_v5],
   initial: {
     eyebrowAr: 'تعرّف على الشريط',
     eyebrowEn: 'Discover the Strip',
@@ -78,25 +88,5 @@ export const homeDiscover = defineSingleton<HomeDiscover>({
       'شريط شراكات الابتكار المائي مبادرة وطنية تمتدّ على ساحل البحر الأحمر، تجمع الجهات الحكومية والمؤسسات البحثية والقطاع الخاص لتسريع تطوير تقنيات المياه وتبنّيها في المملكة.',
     headingEn:
       'Water STRIP is a national initiative along the Red Sea coast, bringing together government bodies, research institutions and the private sector to accelerate the development and adoption of water technologies in the Kingdom.',
-    tiles: [
-      {
-        id: 'tile-groups',
-        eyebrowAr: 'مجموعات العمل',
-        eyebrowEn: 'Working Groups',
-        headingAr: '٨ مجموعات عمل تعالج تحديات قطاع المياه في المملكة',
-        headingEn: "8 working groups tackling the Kingdom's water-sector challenges",
-        href: '/technologies',
-        imageId: null,
-      },
-      {
-        id: 'tile-whatwedo',
-        eyebrowAr: 'ما نقوم به',
-        eyebrowEn: 'What We Do',
-        headingAr: 'من التحلية وإعادة الاستخدام إلى الإدارة الذكية للمياه — الابتكار هو المفتاح',
-        headingEn: 'From desalination and reuse to smart water management — innovation is the key',
-        href: '/about',
-        imageId: null,
-      },
-    ],
   },
 });

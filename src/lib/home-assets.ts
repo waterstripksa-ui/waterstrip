@@ -13,11 +13,6 @@ export const heroSlideImages: Record<string, string> = {
   'hero-3': '/img/hero/hero-3.svg',
 };
 
-export const discoverTileImages: Record<string, string> = {
-  'tile-groups': '/img/ph/ph-group.svg',
-  'tile-whatwedo': '/img/ph/ph-whatwedo.svg',
-};
-
 /** The working-group panel's photo until one is uploaded. */
 export const WORKING_GROUPS_IMG = '/img/drip-irrigation.jpg';
 

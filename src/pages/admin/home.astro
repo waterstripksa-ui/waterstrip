@@ -31,7 +31,6 @@ const aboutBanner = structuredClone(getSingleton('home_about_banner'));
 const media: Record<string, MediaView> = {};
 const surfaces: Array<[SingletonKey, unknown]> = [
   ['home_hero', hero],
-  ['home_discover', discover],
   ['home_working_groups', workingGroups],
   ['home_partners', partners],
   ['home_about_banner', aboutBanner],
@@ -49,7 +48,7 @@ for (const [key, data] of surfaces) {
   lede="تحرير نصوص الصفحة الرئيسية وصورها. كل قسم يُحفظ على حدة، ويظهر التغيير في الموقع مباشرة بعد الحفظ."
 >
   <HeroEditor initial={hero} media={media} client:load />
-  <DiscoverEditor initial={discover} media={media} client:load />
+  <DiscoverEditor initial={discover} client:load />
   <MapEditor initial={map} client:load />
   <WorkingGroupsPanelEditor initial={workingGroups} media={media} client:load />
   <ChallengesEditor initial={challenges} client:load />
