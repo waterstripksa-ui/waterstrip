@@ -1,5 +1,6 @@
 ---
-// Markup is waterstrip/index.html verbatim; only the copy, imagery and links are
+// Markup is waterstrip/index.html verbatim (the Discover section's tile cards sit in
+// their own ribbon after Challenges; both halves are one CMS singleton); only the copy, imagery and links are
 // swapped for CMS content (editable at /admin/home). An image slot with no upload
 // shows its placeholder artwork (src/lib/home-assets.ts). Behaviour (hero
 // autoplay, challenges slider, partner marquee, reveals) is the vendored main.js.
@@ -103,18 +104,6 @@ const MAP_CLUSTERS: ReadonlyArray<{
       <div class="discover__intro reveal">
         <p class="eyebrow" {...L.attrs(discover, 'eyebrow')}>{L.text(discover, 'eyebrow')}</p>
         <h2 class="h-intro" {...L.attrs(discover, 'heading')}>{L.text(discover, 'heading')}</h2>
-      </div>
-      <div class="card-row bleed reveal" style="margin-top:66px">
-        {discover.tiles.map((tile) => (
-          <a class="tile" href={L.href(tile.href)}>
-            <img alt="" {...resolveImage(tile.imageId, imageFor(discoverTileImages, tile.id))} />
-            <div class="tile__txt">
-              <p class="eyebrow eyebrow--light" {...L.attrs(tile, 'eyebrow')}>{L.text(tile, 'eyebrow')}</p>
-              <h3 {...L.attrs(tile, 'heading')}>{L.text(tile, 'heading')}</h3>
-            </div>
-            <span class="tile__arrow"><svg fill="none" height="14" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="14" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span>
-          </a>
-        ))}
       </div>
     </div>
   </section>
@@ -223,6 +212,23 @@ const MAP_CLUSTERS: ReadonlyArray<{
         </div>
       </div>
       <div class="scrollbar" id="believeBar"><i></i></div>
+    </div>
+  </section>
+
+  <section class="ribbon ribbon--grey discover discover--tiles">
+    <div class="wrap">
+      <div class="card-row bleed reveal">
+        {discover.tiles.map((tile) => (
+          <a class="tile" href={L.href(tile.href)}>
+            <img alt="" {...resolveImage(tile.imageId, imageFor(discoverTileImages, tile.id))} />
+            <div class="tile__txt">
+              <p class="eyebrow eyebrow--light" {...L.attrs(tile, 'eyebrow')}>{L.text(tile, 'eyebrow')}</p>
+              <h3 {...L.attrs(tile, 'heading')}>{L.text(tile, 'heading')}</h3>
+            </div>
+            <span class="tile__arrow"><svg fill="none" height="14" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" width="14" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span>
+          </a>
+        ))}
+      </div>
     </div>
   </section>
 

@@ -206,6 +206,27 @@
   }
 }
 
+/* A lone "Discover the Strip" tile fills the row. style.css pins these tiles to a
+   fixed width (and 80% on mobile); the :only-child selector outranks those
+   !important rules. The wider ratio stops a full-width tile from becoming huge. */
+.discover .tile:only-child {
+  flex: 1 1 100% !important;
+  width: 100%;
+  max-width: none;
+}
+
+@media (min-width: 901px) {
+  .discover .tile:only-child {
+    aspect-ratio: 21 / 9;
+  }
+}
+
+/* The Discover tiles sit in their own ribbon (after Challenges), with no intro
+   above them, so drop the gap style.css puts between an intro and its row. */
+.discover.discover--tiles .card-row {
+  margin-top: 0 !important;
+}
+
 /* English pages (dir="ltr") can hold Arabic copy that has no translation yet;
    those elements carry lang="ar" dir="rtl" (src/lib/i18n/pick.ts). style.css
    only relaxes its Latin tracking and uppercase for a whole-page [lang="ar"],
