@@ -26,6 +26,7 @@ const user = Astro.locals.user!;
 const sections = [
   { label: 'نظرة عامة', href: '/admin' },
   { label: 'الصفحة الرئيسية', href: '/admin/home' },
+  { label: 'صفحة الممر', href: '/admin/corridor' },
   { label: 'عن الشريط', href: '/admin/about' },
   { label: 'تواصل معنا', href: '/admin/contact' },
   { label: 'سجّل اهتمامك', href: '/admin/register-interest' },
@@ -47,7 +48,7 @@ const currentPath = Astro.url.pathname;
     <meta name="theme-color" content="#154A91" />
     {/* The dashboard is never indexable, launched or not. */}
     <meta name="robots" content="noindex, nofollow" />
-    <link rel="icon" type="image/png" href="/img/favicon-192.png" />
+    <link rel="icon" type="image/png" href="/img/logo-mark.png" />
   </head>
 
   <body>

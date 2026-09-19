@@ -14,7 +14,7 @@
 import { getMedia } from './content/cache.ts';
 
 /** Shown for any list item without an entry in its page's placeholder map. */
-export const PLACEHOLDER_IMG = '/img/mark-waterstrip.svg';
+export const PLACEHOLDER_IMG = '/img/mark-ws-color.svg';
 
 /** The closing membership banner's placeholder. Shared by every page that ends with it. */
 export const MEMBERSHIP_BANNER_IMG = '/img/hero/banner.svg';

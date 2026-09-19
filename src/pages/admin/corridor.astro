@@ -1,0 +1,19 @@
+---
+// The /corridor page's title band. Its map and asset table are the home page's
+// `home_map` surface, edited once at /admin/home. Each panel is a React island that
+// PUTs to /admin/api/content/<key>; reads go through the content cache.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getSingleton } from '../../lib/content/cache.ts';
+import CorridorHeroEditor from '../../components/admin/CorridorHeroEditor.tsx';
+
+// The cache deep-freezes what it returns, and React needs to build new objects
+// from these, so each island gets a structural clone as its initial draft.
+const hero = structuredClone(getSingleton('corridor_hero'));
+---
+
+<AdminLayout
+  title="صفحة الممر"
+  lede="تحرير العنوان الرئيسي لصفحة الممر. الخريطة وجدول الأصول تُحرَّران من قسم «الصفحة الرئيسية» لأنهما يظهران في الصفحتين."
+>
+  <CorridorHeroEditor initial={hero} client:load />
+</AdminLayout>

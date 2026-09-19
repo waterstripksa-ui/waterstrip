@@ -50,10 +50,31 @@ const ar = {
     next: 'التالي',
     close: 'إغلاق',
     sourceLabel: 'المصدر:',
-    redSea: 'البحر الأحمر',
   },
   home: {
     title: 'الرئيسية',
+  },
+  corridor: {
+    title: 'ممر ووتر ستريب — خريطة تفاعلية',
+    description:
+      'خريطة تفاعلية لممر ووتر ستريب من رابغ إلى جدة، مع جدول الأصول والجهات المائية الموزّعة على مناطق الممر الأربع.',
+    pageLedeSuffix: ' الخريطة تفاعلية: كبّر وصغّر وتنقّل بين المناطق الأربع.',
+    mapLabel: 'خريطة تفاعلية للممر من رابغ إلى جدة — يمكن التكبير والتصغير والتنقل',
+    tableCaption: 'الأصول والجهات المائية الموزّعة على مناطق الممر الأربع',
+    colAsset: 'الأصل أو الجهة',
+    colArea: 'المنطقة',
+    tableHint: 'اضغط اسم المنطقة لعرضها على الخريطة.',
+    countLabel: (area: string) => `تفاصيل الجهات المشاركة في ${area}`,
+    popHeading: (area: string, n: number) =>
+      `${area} — ${n === 1 ? 'جهة مشاركة' : n === 2 ? 'جهتان مشاركتان' : n <= 10 ? `${n} جهات مشاركة` : `${n} جهة مشاركة`}`,
+    attribution: 'صور جوية: Esri · Maxar · Earthstar Geographics',
+    hintZoom: 'اضغط Ctrl مع التمرير للتكبير · أو انقر نقرتين',
+    hintTouch: 'استخدم إصبعين لتحريك الخريطة',
+  },
+  chain: {
+    figureLabel: (stages: string[]) =>
+      `نظرة عامة على التحديات والفرص لقطاع المياه موزّعة على خمس مراحل: ${stages.join('، و')}`,
+    zoom: 'تكبير المخطط',
   },
   about: {
     missionImageAlt: 'شريط شراكات الابتكار المائي',
@@ -246,10 +267,30 @@ const en: UI = {
     next: 'Next',
     close: 'Close',
     sourceLabel: 'Source:',
-    redSea: 'Red Sea',
   },
   home: {
     title: 'Home',
+  },
+  corridor: {
+    title: 'The Water STRIP Corridor — Interactive Map',
+    description:
+      'An interactive map of the Water STRIP corridor from Rabigh to Jeddah, with a table of the water assets and entities across its four areas.',
+    pageLedeSuffix: ' The map is interactive: zoom in and out and move between the four areas.',
+    mapLabel: 'Interactive map of the corridor from Rabigh to Jeddah — zoom and pan',
+    tableCaption: 'Water assets and entities across the corridor’s four areas',
+    colAsset: 'Asset or entity',
+    colArea: 'Area',
+    tableHint: 'Select an area name to show it on the map.',
+    countLabel: (area: string) => `Participating entities in ${area}`,
+    popHeading: (area: string, n: number) => `${area} — ${n} participating ${n === 1 ? 'entity' : 'entities'}`,
+    attribution: 'Aerial imagery: Esri · Maxar · Earthstar Geographics',
+    hintZoom: 'Hold Ctrl and scroll to zoom · or double-click',
+    hintTouch: 'Use two fingers to move the map',
+  },
+  chain: {
+    figureLabel: (stages: string[]) =>
+      `Overview of the water sector’s challenges and opportunities across five stages: ${stages.join(', ')}`,
+    zoom: 'Enlarge diagram',
   },
   about: {
     missionImageAlt: 'Water STRIP',

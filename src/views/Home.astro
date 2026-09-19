@@ -1,14 +1,19 @@
 ---
-// Markup is waterstrip/index.html verbatim (the Discover section's tile cards sit in
+// Markup is waterstrip/index-v2.html verbatim (the Discover section's tile cards sit in
 // their own ribbon after Challenges; both halves are one CMS singleton); only the copy, imagery and links are
 // swapped for CMS content (editable at /admin/home). An image slot with no upload
 // shows its placeholder artwork (src/lib/home-assets.ts). Behaviour (hero
-// autoplay, challenges slider, partner marquee, reveals) is the vendored main.js.
+// autoplay, partner marquee, reveals) is the vendored main.js; the corridor map
+// and value-chain diagram are src/scripts/corridor-map.js and vchain.js.
 // Copy is picked per locale (src/lib/i18n/pick.ts); English falls back to Arabic.
 import Layout from '../layouts/Layout.astro';
 import { getSingleton } from '../lib/content/cache.ts';
-import { challengeImages, discoverTileImages, heroSlideImages, partnerLogos } from '../lib/home-assets.ts';
+import { discoverTileImages, heroSlideImages, WORKING_GROUPS_IMG } from '../lib/home-assets.ts';
 import MembershipBanner from '../components/MembershipBanner.astro';
+import PartnersStrip from '../components/PartnersStrip.astro';
+import CorridorSection from '../components/CorridorSection.astro';
+import ChainIcon from '../components/ChainIcon.astro';
+import { STAGE_IDS } from '../lib/content/schemas/home-challenges.ts';
 import { imageFor, resolveImage } from '../lib/media-assets.ts';
 import { localeOfPath } from '../lib/i18n/locale.ts';
 import { localizer } from '../lib/i18n/pick.ts';
@@ -22,46 +27,13 @@ const hero = getSingleton('home_hero');
 const discover = getSingleton('home_discover');
 const challenges = getSingleton('home_challenges');
 const awards = getSingleton('home_awards');
-const map = getSingleton('home_map');
-const partners = getSingleton('home_partners');
+const workingGroups = getSingleton('home_working_groups');
 const aboutBanner = getSingleton('home_about_banner');
 
 /** The panel's 01, 02, … ordinal — derived from position, never stored. */
 const ordinal = (i: number) => String(i + 1).padStart(2, '0');
 
-/**
- * Where the map draws a hub's numbered dot. Real-world geometry, not content —
- * a hub's *position in the list* (not anything stored on it) picks its slot, the
- * same way its ordinal is derived. Only the first twelve hubs get a dot; the
- * schema caps the list at twelve for exactly this reason.
- */
-const MAP_HUB_SLOTS: ReadonlyArray<{ clusterId: 'rabigh' | 'kaec' | 'thuwal'; cx: number; cy: number }> = [
-  { clusterId: 'thuwal', cx: 120, cy: 264 },
-  { clusterId: 'thuwal', cx: 98, cy: 278 },
-  { clusterId: 'kaec', cx: 120, cy: 168 },
-  { clusterId: 'rabigh', cx: 120, cy: 72 },
-  { clusterId: 'rabigh', cx: 120, cy: 100 },
-  { clusterId: 'kaec', cx: 120, cy: 194 },
-  { clusterId: 'thuwal', cx: 120, cy: 292 },
-  { clusterId: 'rabigh', cx: 98, cy: 86 },
-  { clusterId: 'rabigh', cx: 98, cy: 58 },
-  { clusterId: 'kaec', cx: 98, cy: 142 },
-  { clusterId: 'kaec', cx: 98, cy: 220 },
-  { clusterId: 'thuwal', cx: 98, cy: 250 },
-];
-
-/** The four fixed points the corridor runs through, north to south. */
-const MAP_CLUSTERS: ReadonlyArray<{
-  id: 'rabigh' | 'kaec' | 'thuwal' | 'jeddah';
-  cy: number;
-  color: string;
-  pulseDelay: number | null;
-}> = [
-  { id: 'rabigh', cy: 86, color: '#2FB2DC', pulseDelay: 0 },
-  { id: 'kaec', cy: 180, color: '#2B8CCC', pulseDelay: 0.7 },
-  { id: 'thuwal', cy: 278, color: '#1A77BC', pulseDelay: 1.4 },
-  { id: 'jeddah', cy: 392, color: '#154A91', pulseDelay: null },
-];
+const stages = STAGE_IDS.map((id) => ({ id, ...challenges.chain.stages[id] }));
 ---
 
 <Layout title={t.home.title}>
@@ -108,110 +80,73 @@ const MAP_CLUSTERS: ReadonlyArray<{
     </div>
   </section>
 
-  <section class="ribbon map" id="map">
+  <CorridorSection />
+
+  <section class="ribbon ribbon--grey bizgroup" id="bizgroup">
     <div class="wrap">
-      <div class="map__panel">
-        <div class="map__head reveal">
-          <p class="eyebrow eyebrow--light" {...L.attrs(map, 'eyebrow')}>{L.text(map, 'eyebrow')}</p>
-          <h2 class="h-section" {...L.attrs(map, 'heading')}>{L.text(map, 'heading')}</h2>
-          <p class="lede" {...L.attrs(map, 'lede')}>{L.text(map, 'lede')}</p>
+      <div class="bizgroup__card reveal">
+        <div class="bizgroup__copy">
+          <h2 class="bizgroup__title" {...L.attrs(workingGroups, 'title')}>{L.text(workingGroups, 'title')}</h2>
+          <p class="bizgroup__lede" {...L.attrs(workingGroups, 'lede')}>{L.text(workingGroups, 'lede')}</p>
+          <p class="bizgroup__text" {...L.attrs(workingGroups, 'text')}>{L.text(workingGroups, 'text')}</p>
+          <a class="btn-brand" href={L.href(workingGroups.ctaHref)}>
+            <span {...L.attrs(workingGroups, 'ctaLabel')}>{L.text(workingGroups, 'ctaLabel')}</span>
+            <svg fill="none" height="15" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24" width="15" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+          </a>
         </div>
-        <div class="map__grid">
-          <div class="map__viz reveal">
-            <svg aria-hidden="true" focusable="false" viewBox="0 0 420 470">
-              <defs>
-                <linearGradient id="mapSea" x1="0" x2="1" y1="0" y2="0">
-                  <stop offset="0" stop-color="#154A91" stop-opacity=".45" />
-                  <stop offset="1" stop-color="#61CBF1" stop-opacity=".08" />
-                </linearGradient>
-              </defs>
-              <rect fill="url(#mapSea)" height="470" width="150" x="0" y="0" />
-              <text class="map__svg-sea" transform="rotate(-90 34 240)" x="34" y="240">{t.common.redSea}</text>
-              <path
-                d="M150 0 Q135 60 152 120 Q168 180 150 240 Q134 300 154 360 Q170 420 150 470"
-                fill="none"
-                stroke="rgba(43,140,204,.5)"
-                stroke-width="1.5"
-              />
-              <rect
-                fill="rgba(47,178,220,.10)"
-                height="384"
-                rx="18"
-                stroke="rgba(47,178,220,.35)"
-                stroke-width="1"
-                width="36"
-                x="138"
-                y="46"
-              />
-              <line stroke="rgba(47,178,220,.5)" stroke-dasharray="2 5" stroke-width="1.5" x1="156" x2="156" y1="70" y2="406" />
-
-              {MAP_CLUSTERS.map((c) => (
-                <g>
-                  <circle cx="156" cy={c.cy} fill={c.color} r="7" />
-                  {c.pulseDelay !== null && (
-                    <circle cx="156" cy={c.cy} fill="none" r="7" stroke={c.color} stroke-width="1.5">
-                      <animate attributeName="r" begin={`${c.pulseDelay}s`} dur="3s" repeatCount="indefinite" values="7;24;7" />
-                      <animate attributeName="opacity" begin={`${c.pulseDelay}s`} dur="3s" repeatCount="indefinite" values=".9;0;.9" />
-                    </circle>
-                  )}
-                  <text class="map__svg-name" x="176" y={c.cy - 4}>{L.text(map.clusters[c.id], 'name')}</text>
-                  <text class="map__svg-tag" x="176" y={c.cy + 12}>{L.text(map.clusters[c.id], 'tagline')}</text>
-                </g>
-              ))}
-
-              {map.hubs.map((_, i) => {
-                const slot = MAP_HUB_SLOTS[i];
-                if (!slot) return null;
-                return (
-                  <g class:list={['map__svg-dot', `map__svg-dot--${slot.clusterId}`]}>
-                    <circle cx={slot.cx} cy={slot.cy} r="9" />
-                    <text text-anchor="middle" x={slot.cx} y={slot.cy + 3.5}>{i + 1}</text>
-                  </g>
-                );
-              })}
-            </svg>
-          </div>
-          <ol class="map__legend reveal">
-            {map.hubs.map((hub, i) => {
-              const slot = MAP_HUB_SLOTS[i];
-              return (
-                <li class="map__hub">
-                  <span aria-hidden="true" class="map__hub-no">{ordinal(i)}</span>
-                  <div>
-                    <h3 {...L.attrs(hub, 'name')}>{L.text(hub, 'name')}</h3>
-                    <p {...L.attrs(hub, 'description')}>{L.text(hub, 'description')}</p>
-                  </div>
-                  {slot && <span class="map__hub-loc" {...L.attrs(map.clusters[slot.clusterId], 'name')}>{L.text(map.clusters[slot.clusterId], 'name')}</span>}
-                </li>
-              );
-            })}
-          </ol>
+        <div class="bizgroup__media">
+          <img alt={L.text(workingGroups, 'imageAlt')} height="1400" loading="lazy" width="1400" {...resolveImage(workingGroups.imageId, WORKING_GROUPS_IMG)} />
         </div>
       </div>
     </div>
   </section>
 
-  <section class="ribbon believe challenges" id="challenges">
+  <section class="ribbon challenges" id="challenges">
     <div class="wrap">
-      <div class="believe__intro reveal">
-        <p class="eyebrow" {...L.attrs(challenges, 'eyebrow')}>{L.text(challenges, 'eyebrow')}</p>
-        <h2 class="h-intro" {...L.attrs(challenges, 'heading')}>{L.text(challenges, 'heading')}</h2>
-        <div class="slider-nav" id="believeNav">
-          <button aria-label={t.common.prev} class="slider-nav__btn" data-dir="prev" type="button"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M19 12H6M13 6l-6 6 6 6"></path></svg></button>
-          <button aria-label={t.common.next} class="slider-nav__btn" data-dir="next" type="button"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></button>
+      <div class="bizgroup__card vchain__card reveal">
+        <div class="bizgroup__copy">
+          <h2 class="bizgroup__title" {...L.attrs(challenges, 'title')}>{L.text(challenges, 'title')}</h2>
+          <p class="bizgroup__lede" {...L.attrs(challenges, 'lede')}>{L.text(challenges, 'lede')}</p>
+          <p class="bizgroup__text" {...L.attrs(challenges, 'text')}>{L.text(challenges, 'text')}</p>
+          <a class="btn-brand btn-brand--lg" href={L.href(challenges.ctaHref)}>
+            <span {...L.attrs(challenges, 'ctaLabel')}>{L.text(challenges, 'ctaLabel')}</span>
+            <svg fill="none" height="16" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+          </a>
+        </div>
+        <div class="vchain-col">
+          <div class="vchain-frame" id="vchainFrame">
+            <div class="vchain" id="vchainFig" role="img" aria-label={t.chain.figureLabel(stages.map((stage) => L.text(stage, 'name')))}>
+              {stages.map((stage, i) => (
+                <div class={`vchain__head s${i + 1}`}>
+                  <ChainIcon stage={stage.id} />
+                  <span {...L.attrs(stage, 'name')}>{L.text(stage, 'name')}</span>
+                </div>
+              ))}
+              <p class="vchain__band" {...L.attrs(challenges.chain, 'band')}>{L.text(challenges.chain, 'band')}</p>
+              {stages.map((stage, i) => (
+                <div class={`vchain__col s${i + 1}`}>
+                  {stage.items.map((item) => (
+                    <span class="vchain__item" {...L.attrs(item, 'text')}>{L.text(item, 'text')}</span>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="vchain__foot">
+            <button class="vchain__zoom" id="vchainZoom" type="button">
+              <svg fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" viewBox="0 0 24 24" width="18" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="M15.4 15.4 20 20M10.5 7.8v5.4M7.8 10.5h5.4"></path></svg>
+              <span>{t.chain.zoom}</span>
+            </button>
+            <p class="vchain__src" {...L.attrs(challenges.chain, 'source')}>{L.text(challenges.chain, 'source')}</p>
+          </div>
         </div>
       </div>
-      <div class="slider bleed reveal" id="believeSlider" role="group" style="margin-top:64px" tabindex="0">
-        <div class="slider__track">
-          {challenges.items.map((c) => (
-            <article class="slide">
-              <figure><img alt={L.text(c, 'label')} {...resolveImage(c.imageId, imageFor(challengeImages, c.id))} /></figure>
-              <h4 {...L.attrs(c, 'label')}>{L.text(c, 'label')}</h4>
-            </article>
-          ))}
-        </div>
+      <div class="vcbox" id="vchainBox" hidden>
+        <button aria-label={t.common.close} class="vcbox__close" id="vchainClose" type="button">
+          <svg fill="none" height="20" stroke="currentColor" stroke-linecap="round" stroke-width="1.9" viewBox="0 0 24 24" width="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+        </button>
+        <div class="vcbox__scroll"></div>
       </div>
-      <div class="scrollbar" id="believeBar"><i></i></div>
     </div>
   </section>
 
@@ -261,22 +196,12 @@ const MAP_CLUSTERS: ReadonlyArray<{
   )}
 
   <Fragment slot="after-main">
-    <section aria-label={L.text(partners, 'label')} class="partners">
-      <div class="wrap">
-        <p class="partners__label" {...L.attrs(partners, 'label')}>{L.text(partners, 'label')}</p>
-        <div class="partners__viewport">
-          <div class="partners__track">
-            {/* Not lazy (unlike the mockup): the marquee moves logos into view by
-                transform, which does not reliably trigger lazy loading. */}
-            {partners.items.map((partner) => (
-              <a class="partner" href={L.href(partner.href)} title={L.text(partner, 'name')}><img alt={L.text(partner, 'name')} {...resolveImage(partner.logoId, imageFor(partnerLogos, partner.id))} /></a>
-            ))}
-          </div>
-        </div>
-        <p class="partners__note" {...L.attrs(partners, 'note')}>{L.text(partners, 'note')}</p>
-      </div>
-    </section>
+    <PartnersStrip />
 
     <MembershipBanner banner={aboutBanner} />
   </Fragment>
 </Layout>
+
+<script>
+  import '../scripts/vchain.js';
+</script>

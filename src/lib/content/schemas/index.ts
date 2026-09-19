@@ -8,6 +8,8 @@ import { homeDiscover } from './home-discover.ts';
 import { homeChallenges } from './home-challenges.ts';
 import { homeAwards } from './home-awards.ts';
 import { homeMap } from './home-map.ts';
+import { homeWorkingGroups } from './home-working-groups.ts';
+import { corridorHero } from './corridor-hero.ts';
 import { homePartners } from './home-partners.ts';
 import { homeAboutBanner } from './home-about-banner.ts';
 import { aboutHero } from './about-hero.ts';
@@ -43,6 +45,8 @@ export const singletons = {
   home_challenges: homeChallenges,
   home_awards: homeAwards,
   home_map: homeMap,
+  home_working_groups: homeWorkingGroups,
+  corridor_hero: corridorHero,
   home_partners: homePartners,
   home_about_banner: homeAboutBanner,
   about_hero: aboutHero,
@@ -84,6 +88,8 @@ export {
   homeChallenges,
   homeAwards,
   homeMap,
+  homeWorkingGroups,
+  corridorHero,
   homePartners,
   homeAboutBanner,
   aboutHero,

@@ -1,0 +1,112 @@
+---
+// Markup is the corridor section of waterstrip/index.html (and corridor.html, which
+// adds `corridor--page`): head, an interactive aerial map, and the asset table. Copy
+// comes from the `home_map` singleton (/admin/home); interface strings from ui.ts.
+//
+// The map's markers are rendered here, not built by script, so names and popups are
+// per-locale and escaped by Astro. src/scripts/corridor-map.js only positions them
+// from real-world coordinates (geography, not content). An area's popup is the
+// table's assets that name it, so the table and the map cannot disagree.
+import { getSingleton } from '../lib/content/cache.ts';
+import { CLUSTER_IDS } from '../lib/content/schemas/home-map.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+interface Props {
+  /** `page` is /corridor: no CTA to itself, and a lede that explains the map. */
+  variant?: 'home' | 'page';
+}
+
+const { variant = 'home' } = Astro.props;
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+
+const map = getSingleton('home_map');
+
+/** The table's 01, 02, … ordinal — derived from position, never stored. */
+const ordinal = (i: number) => String(i + 1).padStart(2, '0');
+
+const areas = CLUSTER_IDS.map((id) => ({
+  id,
+  cluster: map.clusters[id],
+  hubs: map.hubs.filter((hub) => hub.clusterId === id),
+}));
+---
+
+<section class:list={['ribbon', 'corridor', variant === 'page' && 'corridor--page']} id="corridor">
+  <div class="wrap">
+    <div class="corridor__head reveal">
+      <p class="eyebrow" {...L.attrs(map, 'eyebrow')}>{L.text(map, 'eyebrow')}</p>
+      <h2 class="h-section" {...L.attrs(map, 'heading')}>{L.text(map, 'heading')}</h2>
+      <p class="lede" {...L.attrs(map, 'lede')}>{L.text(map, 'lede')}{variant === 'page' && t.corridor.pageLedeSuffix}</p>
+      {variant === 'home' && (
+        <p class="corridor__cta"><a class="btn-brand" href={L.href('/corridor')}>
+          <span {...L.attrs(map, 'ctaLabel')}>{L.text(map, 'ctaLabel')}</span>
+          <svg fill="none" height="15" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24" width="15" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg>
+        </a></p>
+      )}
+    </div>
+    <div class="corridor__body">
+      <div class="corridor__mapcol reveal">
+        <div
+          aria-label={t.corridor.mapLabel}
+          class="wsmap"
+          data-hint-touch={t.corridor.hintTouch}
+          data-hint-zoom={t.corridor.hintZoom}
+          id="wsMap"
+          role="application"
+          tabindex="0"
+        >
+          <div class="wsmap__markers">
+            {areas.map(({ id, cluster, hubs }) => (
+              <div class="wsmap__hub" data-hub={id}>
+                <span class="wsmap__hub-in">
+                  <i aria-hidden="true" class="wsmap__dot"></i>
+                  <span class="wsmap__name" {...L.attrs(cluster, 'name')}>{L.text(cluster, 'name')}</span>
+                  {hubs.length > 0 && (
+                    <span class="wsmap__cw">
+                      <button aria-describedby={`wspop-${id}`} aria-label={t.corridor.countLabel(L.text(cluster, 'name'))} class="wsmap__count" type="button">{hubs.length}</button>
+                      <span class="wsmap__pop" id={`wspop-${id}`} role="tooltip">
+                        <b class="wsmap__pop-h">{t.corridor.popHeading(L.text(cluster, 'name'), hubs.length)}</b>
+                        <ul>
+                          {hubs.map((hub) => (
+                            <li><b {...L.attrs(hub, 'name')}>{L.text(hub, 'name')}</b><span {...L.attrs(hub, 'description')}>{L.text(hub, 'description')}</span></li>
+                          ))}
+                        </ul>
+                      </span>
+                    </span>
+                  )}
+                </span>
+              </div>
+            ))}
+          </div>
+          <div class="wsmap__attrib">{t.corridor.attribution}</div>
+        </div>
+      </div>
+      <div class="corridor__table reveal">
+        <table class="asset-table">
+          <caption class="u-sr-only">{t.corridor.tableCaption}</caption>
+          <thead>
+            <tr><th scope="col">#</th><th scope="col">{t.corridor.colAsset}</th><th scope="col">{t.corridor.colArea}</th></tr>
+          </thead>
+          <tbody>
+            {map.hubs.map((hub, i) => (
+              <tr>
+                <td class="at__no">{ordinal(i)}</td>
+                <td class="at__name"><b {...L.attrs(hub, 'name')}>{L.text(hub, 'name')}</b><span {...L.attrs(hub, 'description')}>{L.text(hub, 'description')}</span></td>
+                <td class="at__area"><button class="at__go" data-hub={hub.clusterId} type="button" {...L.attrs(map.clusters[hub.clusterId], 'name')}>{L.text(map.clusters[hub.clusterId], 'name')}</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="asset-table__hint">{t.corridor.tableHint}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import '../scripts/corridor-map.js';
+</script>

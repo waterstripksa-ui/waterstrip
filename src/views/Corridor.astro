@@ -1,0 +1,39 @@
+---
+// Markup is waterstrip/corridor.html: a plain page hero over the corridor map and
+// asset table (src/components/CorridorSection.astro), then the shared partner strip
+// and membership banner. The mockup's copy of that page also repeats the home page's
+// Discover, Challenges and Awards bands under the map; those are left out here.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import CorridorSection from '../components/CorridorSection.astro';
+import PartnersStrip from '../components/PartnersStrip.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+
+const hero = getSingleton('corridor_hero');
+const aboutBanner = getSingleton('home_about_banner');
+---
+
+<Layout title={t.corridor.title} description={t.corridor.description}>
+  <PageHero
+    title={L.text(hero, 'title')}
+    titleAttrs={L.attrs(hero, 'title')}
+    lede={L.text(hero, 'lede')}
+    ledeAttrs={L.attrs(hero, 'lede')}
+    crumbs={[{ label: t.nav.home, href: L.href('/') }, { label: ` ${L.text(hero, 'crumb')}` }]}
+  />
+
+  <CorridorSection variant="page" />
+
+  <Fragment slot="after-main">
+    <PartnersStrip />
+    <MembershipBanner banner={aboutBanner} />
+  </Fragment>
+</Layout>

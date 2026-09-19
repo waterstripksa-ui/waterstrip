@@ -18,11 +18,12 @@ checklist.
 | `assets/js/events-data.js` | 4 events |
 | `assets/img/` | Official logos + `ph/` and `hero/` placeholder SVGs |
 
-Pages: `index`, `about`, `technologies`, `working-group`, `members`, `member`, `media`,
-`article`, `contact`, `register-interest`, `login`, `forgot-password`, `terms`, `privacy`,
-`cookies`, `accessibility`, `sitemap`, `404`.
+Pages: `index`, `corridor`, `about`, `technologies`, `working-group`, `members`, `member`,
+`media`, `article`, `contact`, `register-interest`, `login`, `forgot-password`, `terms`,
+`privacy`, `cookies`, `accessibility`, `sitemap`, `404`. (`index-v2.html` is the home page the
+site follows; see [Mockup revision of 2026-09-19](#mockup-revision-of-2026-09-19).)
 
-Ported so far: all 18 pages — `index`, `about`, `contact`, `register-interest`, `terms`,
+Ported so far: all 19 pages — `index`, `corridor`, `about`, `contact`, `register-interest`, `terms`,
 `privacy`, `cookies`, `accessibility`, `sitemap`, `404`, `login`, `forgot-password`,
 `technologies`, `working-group`, `media`, `article`, `members`, `member`.
 
@@ -109,6 +110,36 @@ Port markup faithfully. The design is signed off; this is a migration, not a red
 mockup's own markup and stylesheet now in place, "faithfully" means literally — copy the
 `.html` file's structure, class names and inline styles, and substitute CMS content for its
 hardcoded text/images/links, rather than reinterpreting the design into new class names.
+
+## Mockup revision of 2026-09-19
+
+The mockup gained a new brand asset set, a corridor map, and a second home page. What was
+ported and where the port deliberately differs:
+
+- **Home page follows `index-v2.html`**, not `index.html`: Discover, corridor map,
+  working-group panel, value-chain "Challenges", Awards. (The Discover tiles still sit in
+  their own ribbon after Challenges, as before this revision.) The old slider of illustrated
+  challenges and the retired SVG coast map are gone; `home_challenges` v4 and `home_map` v3 migrate
+  existing payloads, keeping any copy an admin edited.
+- **`/corridor`** ([Corridor.astro](../src/views/Corridor.astro)) is the mockup's `corridor.html`
+  minus the copy of the home page's Discover, Challenges and Awards bands it carries under the map.
+  The map and asset table are one component, [CorridorSection.astro](../src/components/CorridorSection.astro),
+  fed by `home_map`, so the home page and `/corridor` are edited together at `/admin/home`.
+- **The map engine** is [corridor-map.js](../src/scripts/corridor-map.js). Geography (coordinates,
+  route) stays in the script; names and popups are server-rendered so they are per-locale and escaped.
+  Aerial tiles load from `services.arcgisonline.com`, so the reverse proxy's CSP needs
+  `img-src ... https://services.arcgisonline.com https://server.arcgisonline.com` (the mockup's
+  `netlify.toml` already has it).
+- **The value-chain diagram** keeps its five stages, icons and order fixed
+  ([ChainIcon.astro](../src/components/ChainIcon.astro)); only wording and the cards under each stage
+  are editable. Its zoom view is a scaled clone of the live diagram ([vchain.js](../src/scripts/vchain.js)),
+  not the mockup's static `water-value-chain.png`, which is Arabic-only and would go stale on the first edit.
+- **Brand assets** (`logo-waterstrip-light/dark.png`, `mark-ws-*.svg`, `logo-mark.png`) replaced the old
+  `*-waterstrip*.svg` set in `public/img/`. The mockup's `aria-label="SAFTA — …"` on the brand link and
+  its `SAFTA` HTML comments look like a stray find-and-replace from the template this site was derived
+  from and were not ported; the label stays `Water STRIP — …`.
+- English (LTR) needed mirrored stage arrows and a left-anchored diagram scale, in
+  [overrides.css](../src/styles/mockup/overrides.css).
 
 ## Pre-launch checklist inherited from the mockup
 

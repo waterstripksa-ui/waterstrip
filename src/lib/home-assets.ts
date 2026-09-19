@@ -18,15 +18,8 @@ export const discoverTileImages: Record<string, string> = {
   'tile-whatwedo': '/img/ph/ph-whatwedo.svg',
 };
 
-export const challengeImages: Record<string, string> = {
-  'ch-scarcity': '/img/ph/ph-scarcity.svg',
-  'ch-desal': '/img/ph/ph-desal.svg',
-  'ch-wastewater': '/img/ph/ph-wastewater.svg',
-  'ch-infra': '/img/ph/ph-infra.svg',
-  'ch-consumption': '/img/ph/ph-consumption.svg',
-  'ch-groundwater': '/img/ph/ph-groundwater.svg',
-  'ch-fragmentation': '/img/ph/ph-fragmentation.svg',
-};
+/** The working-group panel's photo until one is uploaded. */
+export const WORKING_GROUPS_IMG = '/img/drip-irrigation.jpg';
 
 /** Every partner shows the shared mark until a logo is uploaded. */
 export const partnerLogos: Record<string, string> = {};

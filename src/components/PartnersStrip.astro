@@ -1,0 +1,29 @@
+---
+// The partner-logo marquee that closes the home page (and /corridor). Markup is the
+// mockup's `.partners` band; the marquee itself is the vendored main.js. Copy and
+// logos come from the `home_partners` singleton, editable at /admin/home.
+import { getSingleton } from '../lib/content/cache.ts';
+import { partnerLogos } from '../lib/home-assets.ts';
+import { imageFor, resolveImage } from '../lib/media-assets.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+
+const L = localizer(localeOfPath(Astro.url.pathname));
+const partners = getSingleton('home_partners');
+---
+
+<section aria-label={L.text(partners, 'label')} class="partners">
+  <div class="wrap">
+    <p class="partners__label" {...L.attrs(partners, 'label')}>{L.text(partners, 'label')}</p>
+    <div class="partners__viewport">
+      <div class="partners__track">
+        {/* Not lazy (unlike the mockup): the marquee moves logos into view by
+            transform, which does not reliably trigger lazy loading. */}
+        {partners.items.map((partner) => (
+          <a class="partner" href={L.href(partner.href)} title={L.text(partner, 'name')}><img alt={L.text(partner, 'name')} {...resolveImage(partner.logoId, imageFor(partnerLogos, partner.id))} /></a>
+        ))}
+      </div>
+    </div>
+    <p class="partners__note" {...L.attrs(partners, 'note')}>{L.text(partners, 'note')}</p>
+  </div>
+</section>
