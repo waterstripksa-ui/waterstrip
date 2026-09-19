@@ -6,8 +6,8 @@ import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import MembershipBanner from '../components/MembershipBanner.astro';
 import { getSingleton } from '../lib/content/cache.ts';
-import { FOUNDING_STATEMENT_IMG, MISSION_IMG, nationalChallengeImages } from '../lib/about-assets.ts';
-import { imageFor, resolveImage } from '../lib/media-assets.ts';
+import { FOUNDING_STATEMENT_IMG, MISSION_IMG } from '../lib/about-assets.ts';
+import { resolveImage } from '../lib/media-assets.ts';
 import { localeOfPath } from '../lib/i18n/locale.ts';
 import { fallbackAttrs, localizer, pick } from '../lib/i18n/pick.ts';
 import { ui } from '../lib/i18n/ui.ts';
@@ -19,7 +19,6 @@ const L = localizer(locale);
 const hero = getSingleton('about_hero');
 const mission = getSingleton('about_mission');
 const glance = getSingleton('about_glance');
-const challenges = getSingleton('about_challenges');
 const goals = getSingleton('about_goals');
 const founding = getSingleton('about_founding_statement');
 const banner = getSingleton('about_banner');
@@ -104,27 +103,6 @@ const [quoteOpen, quoteClose] = locale === 'ar' || quoteFallback ? ['«', '»'] 
       </div>
     </section>
   )}
-
-  <section class="ribbon">
-    <div class="wrap">
-      <div class="sec-head reveal">
-        <div class="sec-head__txt">
-          <p class="eyebrow" {...L.attrs(challenges, 'eyebrow')}>{L.text(challenges, 'eyebrow')}</p>
-          <h2 class="h-section" {...L.attrs(challenges, 'heading')}>{L.text(challenges, 'heading')}</h2>
-          <p class="lede" {...L.attrs(challenges, 'lede')}>{L.text(challenges, 'lede')}</p>
-        </div>
-        <a class="cta-circle" href={L.href(challenges.ctaHref)}><span {...L.attrs(challenges, 'ctaLabel')}>{L.text(challenges, 'ctaLabel')}</span><span class="circ"><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></span></a>
-      </div>
-      <div class="grid-3 reveal">
-        {challenges.items.map((item) => (
-          <article class="tri__card">
-            <figure><img alt={L.text(item, 'title')} {...resolveImage(item.imageId, imageFor(nationalChallengeImages, item.id))} /></figure>
-            <h3 {...L.attrs(item, 'title')}>{L.text(item, 'title')}</h3><p {...L.attrs(item, 'body')}>{L.text(item, 'body')}</p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
 
   <MembershipBanner slot="after-main" banner={banner} />
 </Layout>

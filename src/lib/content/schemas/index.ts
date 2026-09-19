@@ -15,7 +15,6 @@ import { homeAboutBanner } from './home-about-banner.ts';
 import { aboutHero } from './about-hero.ts';
 import { aboutMission } from './about-mission.ts';
 import { aboutGlance } from './about-glance.ts';
-import { aboutChallenges } from './about-challenges.ts';
 import { aboutGoals } from './about-goals.ts';
 import { aboutFoundingStatement } from './about-founding-statement.ts';
 import { aboutBanner } from './about-banner.ts';
@@ -52,7 +51,6 @@ export const singletons = {
   about_hero: aboutHero,
   about_mission: aboutMission,
   about_glance: aboutGlance,
-  about_challenges: aboutChallenges,
   about_goals: aboutGoals,
   about_founding_statement: aboutFoundingStatement,
   about_banner: aboutBanner,
@@ -95,7 +93,6 @@ export {
   aboutHero,
   aboutMission,
   aboutGlance,
-  aboutChallenges,
   aboutGoals,
   aboutFoundingStatement,
   aboutBanner,

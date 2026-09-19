@@ -9,7 +9,6 @@ import { singletons, type SingletonKey } from '../../lib/content/schemas/index.t
 import AboutHeroEditor from '../../components/admin/about/AboutHeroEditor.tsx';
 import AboutMissionEditor from '../../components/admin/about/AboutMissionEditor.tsx';
 import AboutGlanceEditor from '../../components/admin/about/AboutGlanceEditor.tsx';
-import AboutChallengesEditor from '../../components/admin/about/AboutChallengesEditor.tsx';
 import AboutGoalsEditor from '../../components/admin/about/AboutGoalsEditor.tsx';
 import AboutFoundingStatementEditor from '../../components/admin/about/AboutFoundingStatementEditor.tsx';
 import AboutBannerEditor from '../../components/admin/about/AboutBannerEditor.tsx';
@@ -19,7 +18,6 @@ import AboutBannerEditor from '../../components/admin/about/AboutBannerEditor.ts
 const hero = structuredClone(getSingleton('about_hero'));
 const mission = structuredClone(getSingleton('about_mission'));
 const glance = structuredClone(getSingleton('about_glance'));
-const challenges = structuredClone(getSingleton('about_challenges'));
 const goals = structuredClone(getSingleton('about_goals'));
 const founding = structuredClone(getSingleton('about_founding_statement'));
 const banner = structuredClone(getSingleton('about_banner'));
@@ -29,7 +27,6 @@ const banner = structuredClone(getSingleton('about_banner'));
 const media: Record<string, MediaView> = {};
 const surfaces: Array<[SingletonKey, unknown]> = [
   ['about_mission', mission],
-  ['about_challenges', challenges],
   ['about_founding_statement', founding],
   ['about_banner', banner],
 ];
@@ -50,6 +47,5 @@ for (const [key, data] of surfaces) {
   <AboutMissionEditor initial={mission} media={media} client:load />
   <AboutGoalsEditor initial={goals} client:load />
   <AboutGlanceEditor initial={glance} client:load />
-  <AboutChallengesEditor initial={challenges} media={media} client:load />
   <AboutBannerEditor initial={banner} media={media} client:load />
 </AdminLayout>
