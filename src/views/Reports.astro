@@ -1,8 +1,9 @@
 ---
 // No waterstrip/*.html counterpart: the mockup has no reports page. Built from
-// its own inner-page pieces (.page-hero, .sec-head, .docs/.doc rows). The
-// report links and copy are fixed interface copy in ui.ts (t.reports), one URL
-// per language; the row matching the page language is listed first.
+// its own inner-page pieces (.page-hero, .sec-head, .docs/.doc rows). The page
+// copy is fixed interface copy in ui.ts (t.reports); the reports themselves are
+// the `reports_list` CMS surface. Each report carries an Arabic and an English
+// link list, and the page shows only the list for its own language — no fallback.
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
 import MembershipBanner from '../components/MembershipBanner.astro';
@@ -16,13 +17,16 @@ const t = ui(locale);
 const L = localizer(locale);
 
 const banner = getSingleton('legal_banner');
+const { items: reports } = getSingleton('reports_list');
 
-const versions = [
-  { lang: 'ar', label: t.reports.arLabel, href: t.reports.arHref },
-  { lang: 'en', label: t.reports.enLabel, href: t.reports.enHref },
-];
-// Same-language version first; sort is stable, so the other keeps its place.
-versions.sort((a, b) => Number(b.lang === locale) - Number(a.lang === locale));
+/** The host shown beside each link, so a reader knows where it leads. */
+function hostOf(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch {
+    return '';
+  }
+}
 ---
 
 <Layout title={t.reports.title} description={t.reports.description}>
@@ -41,12 +45,19 @@ versions.sort((a, b) => Number(b.lang === locale) - Number(a.lang === locale));
           <p class="lede">{t.reports.intro}</p>
         </div>
       </div>
-      <div class="docs reveal">
-        <h3>{t.reports.listTitle}</h3>
-        {versions.map((v) => (
-          <div class="doc"><div class="doc__row"><a href={v.href} hreflang={v.lang} rel="noopener" target="_blank" title={t.reports.external}>{v.label}</a><span class="doc__info">{v.lang.toUpperCase()}</span><a aria-label={`${v.label} — ${t.reports.external}`} class="doc__btn" href={v.href} hreflang={v.lang} rel="noopener" target="_blank" tabindex="-1"><svg fill="none" height="18" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="18" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg></a></div></div>
-        ))}
-      </div>
+      {reports.length === 0 && <p class="lede reveal">{t.reports.empty}</p>}
+      {reports.map((report) => {
+        const links = locale === 'en' ? report.linksEn : report.linksAr;
+        return (
+          <div class="docs reveal">
+            <h3 {...L.attrs(report, 'title')}>{L.text(report, 'title')}</h3>
+            <p class="docs__desc" {...L.attrs(report, 'description')}>{L.text(report, 'description')}</p>
+            {links.map((link) => (
+              <div class="doc"><div class="doc__row"><a href={link.url} rel="noopener" target="_blank" title={t.reports.external}>{link.label}</a><span class="doc__info">{hostOf(link.url)}</span><a aria-label={`${link.label} — ${t.reports.external}`} class="doc__btn" href={link.url} rel="noopener" target="_blank" tabindex="-1"><svg fill="none" height="18" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="18" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg></a></div></div>
+            ))}
+          </div>
+        );
+      })}
     </div>
   </section>
 

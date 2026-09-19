@@ -32,6 +32,7 @@ import { technologiesBanner } from './technologies-banner.ts';
 import { mediaBanner } from './media-banner.ts';
 import { membersBanner } from './members-banner.ts';
 import { footerSocial } from './footer-social.ts';
+import { reportsList } from './reports-list.ts';
 import type { SingletonDefinition } from './types.ts';
 
 /** Iteration type. The payload generic is erased because the surfaces differ. */
@@ -68,6 +69,7 @@ export const singletons = {
   media_banner: mediaBanner,
   members_banner: membersBanner,
   footer_social: footerSocial,
+  reports_list: reportsList,
 } as const;
 
 export type SingletonKey = keyof typeof singletons;
@@ -110,5 +112,6 @@ export {
   mediaBanner,
   membersBanner,
   footerSocial,
+  reportsList,
 };
 export type { SingletonDefinition };

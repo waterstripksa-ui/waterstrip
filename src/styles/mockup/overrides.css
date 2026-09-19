@@ -79,3 +79,20 @@
   text-align: -webkit-match-parent;
   text-align: match-parent;
 }
+
+/* Reports page (src/views/Reports.astro): the mockup's .docs block has no
+   description line and only ever appears once per section, so the lede under
+   each report title and the gap between stacked reports are designed here,
+   matching .docs > h3's inset and .doc__panel p's type. */
+.docs__desc {
+  padding-inline: 10px;
+  margin-bottom: 12px;
+  max-width: 780px;
+  font-size: 15px;
+  line-height: 24px;
+  color: var(--c-text-soft);
+}
+
+.docs + .docs {
+  margin-top: 24px;
+}

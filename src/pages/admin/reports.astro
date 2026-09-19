@@ -1,0 +1,18 @@
+---
+// The reports page's editable surface: the list of reports and their per-language
+// links. The page's heading and intro are interface copy in ui.ts, and its closing
+// banner is the legal pages' shared banner, edited under /admin/legal.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import { getSingleton } from '../../lib/content/cache.ts';
+import ReportsListEditor from '../../components/admin/reports/ReportsListEditor.tsx';
+
+// The cache deep-freezes what it returns; the island needs a mutable draft.
+const reports = structuredClone(getSingleton('reports_list'));
+---
+
+<AdminLayout
+  title="التقارير"
+  lede="تحرير التقارير المعروضة في صفحة «التقارير». البانر الختامي للصفحة مشترك مع صفحات الشؤون النظامية ويُحرَّر من هناك."
+>
+  <ReportsListEditor initial={reports} client:load />
+</AdminLayout>

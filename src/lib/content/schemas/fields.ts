@@ -60,6 +60,18 @@ export const socialUrl = z
   );
 
 /**
+ * A required external link, e.g. a report hosted on another site. Same rule as
+ * `socialUrl` — an absolute https URL — but empty is not allowed: a link row
+ * with no target has nothing to render.
+ */
+export const externalUrl = z
+  .string()
+  .trim()
+  .min(1, 'هذا الحقل مطلوب.')
+  .max(500, 'الحد الأقصى 500 حرف.')
+  .refine((v) => /^https:\/\/[^\s/]+/i.test(v), 'يجب أن يكون رابطًا كاملاً يبدأ بـ https://‎.');
+
+/**
  * A list item's stable identity. Generated when an admin adds an item and never
  * re-keyed afterwards, so reordering and removal cannot shuffle the placeholder
  * artwork map in src/lib/home-assets.ts.
