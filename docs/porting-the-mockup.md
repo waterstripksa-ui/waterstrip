@@ -141,6 +141,14 @@ ported and where the port deliberately differs:
 - English (LTR) needed mirrored stage arrows and a left-anchored diagram scale, in
   [overrides.css](../src/styles/mockup/overrides.css).
 
+## Pages with no mockup counterpart
+
+- **`/reports`** ([Reports.astro](../src/views/Reports.astro)) has no `.html` in the mockup. It is built from the
+  mockup's own `.page-hero`, `.sec-head` and `.docs`/`.doc` rows, and sits between Working Groups and Members in the
+  header, drawer, footer, sitemap and 404 lists. Its copy and the two report URLs (Arabic and English, on
+  mewa.gov.sa) are fixed interface copy in `t.reports` in [ui.ts](../src/lib/i18n/ui.ts), not CMS content; the
+  version matching the page language is listed first.
+
 ## Pre-launch checklist inherited from the mockup
 
 From [waterstrip/README.md](../waterstrip/README.md) — these still apply to the Astro site:

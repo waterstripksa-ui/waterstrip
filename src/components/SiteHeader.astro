@@ -22,13 +22,14 @@ const otherLocale: Locale = locale === 'ar' ? 'en' : 'ar';
 const switchHref = switchLocalePath(Astro.url.pathname, otherLocale);
 // The mockup only highlights the current link on these pages (media and the
 // inner/legal pages show no current link), so is-current is limited to them.
-const HIGHLIGHTED = new Set(['/', '/about', '/technologies', '/members', '/contact']);
+const HIGHLIGHTED = new Set(['/', '/about', '/technologies', '/reports', '/members', '/contact']);
 const current = HIGHLIGHTED.has(path) ? path : null;
 
 const navLinks = [
   { label: t.nav.home, href: '/' },
   { label: t.nav.about, href: '/about' },
   { label: t.nav.groups, href: '/technologies' },
+  { label: t.nav.reports, href: '/reports' },
   { label: t.nav.members, href: '/members' },
   { label: t.nav.media, href: '/media' },
   { label: t.nav.contact, href: '/contact' },
@@ -51,7 +52,7 @@ const navLinks = [
 <div aria-hidden="true" class="drawer" id="drawer">
   <button aria-label={t.nav.close} class="drawer__close" id="drawerClose" type="button">×</button>
   <nav class="drawer__nav">
-    {navLinks.slice(0, 4).map((link) => (
+    {navLinks.slice(0, 5).map((link) => (
       <a class:list={[link.href === current && 'is-current']} href={href(link.href)}>{link.label}</a>
     ))}
     {/* The mockup marks this link "coming soon" on every page except the home
@@ -60,7 +61,7 @@ const navLinks = [
       ? <a aria-disabled="true" class="" href={href('/#awards')} tabindex="-1"><span>{t.nav.awards}</span></a>
       : <a aria-disabled="true" class="is-soon" href="#" tabindex="-1"><span>{t.nav.awards}</span><em class="soon-tag">{t.nav.soon}</em></a>
     )}
-    {navLinks.slice(4).map((link) => (
+    {navLinks.slice(5).map((link) => (
       <a class:list={[link.href === current && 'is-current']} href={href(link.href)}>{link.label}</a>
     ))}
   </nav>

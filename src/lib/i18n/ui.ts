@@ -22,6 +22,7 @@ const ar = {
     home: 'الرئيسية',
     about: 'عن الشريط',
     groups: 'مجموعات العمل',
+    reports: 'التقارير',
     members: 'الأعضاء',
     media: 'الأخبار والفعاليات',
     contact: 'تواصل معنا',
@@ -88,6 +89,21 @@ const ar = {
     intro:
       'ثماني مجموعات عمل خبراء تُعنى بتطوير الحلول والمبادرات التقنية التي تسرّع تبنّي تقنيات المياه في منظومة القطاع.',
     source: 'الموجز التنفيذي لسنة التأسيس — شريط شراكات الابتكار المائي. تفاصيل كل مجموعة غير منشورة بعد.',
+  },
+  reports: {
+    title: 'التقارير',
+    description: 'تقارير شريط شراكات الابتكار المائي، ومنها تقرير خارطة تبني التقنيات في قطاع المياه.',
+    lede: 'التقارير والدراسات المرتبطة بالابتكار وتبنّي التقنيات في قطاع المياه.',
+    eyebrow: 'المنشورات',
+    heading: 'خارطة تبني التقنيات',
+    intro:
+      'اطّلع على تقرير خارطة تبني التقنيات في قطاع المياه، المتاح على موقع وزارة البيئة والمياه والزراعة.',
+    listTitle: 'تقرير خارطة تبني التقنيات',
+    arLabel: 'النسخة العربية',
+    enLabel: 'النسخة الإنجليزية',
+    arHref: 'https://www.mewa.gov.sa/ar/Ministry/Agencies/AgencyForInnovation/Topics/Pages/InnovationintheWatersector.aspx',
+    enHref: 'https://www.mewa.gov.sa/en/Ministry/Agencies/AgencyLivestock/Topics/Pages/InnovationintheWatersector.aspx',
+    external: 'يفتح في موقع وزارة البيئة والمياه والزراعة',
   },
   group: {
     crumb: 'تفاصيل المجموعة',
@@ -239,6 +255,7 @@ const en: UI = {
     home: 'Home',
     about: 'About',
     groups: 'Working Groups',
+    reports: 'Reports',
     members: 'Members',
     media: 'News & Events',
     contact: 'Contact Us',
@@ -304,6 +321,21 @@ const en: UI = {
     intro:
       'Expert working groups developing the technical solutions and initiatives that speed up the adoption of water technologies across the sector.',
     source: 'Founding-year executive summary — Water STRIP. Details for each group are not yet published.',
+  },
+  reports: {
+    title: 'Reports',
+    description: 'Water STRIP reports, including the Technology Adoption Roadmap for the water sector.',
+    lede: 'Reports and studies on innovation and technology adoption in the water sector.',
+    eyebrow: 'Publications',
+    heading: 'Technology Adoption Roadmap',
+    intro:
+      'Read the Technology Adoption Roadmap report for the water sector, available on the Ministry of Environment, Water and Agriculture website.',
+    listTitle: 'Technology Adoption Roadmap report',
+    arLabel: 'Arabic version',
+    enLabel: 'English version',
+    arHref: 'https://www.mewa.gov.sa/ar/Ministry/Agencies/AgencyForInnovation/Topics/Pages/InnovationintheWatersector.aspx',
+    enHref: 'https://www.mewa.gov.sa/en/Ministry/Agencies/AgencyLivestock/Topics/Pages/InnovationintheWatersector.aspx',
+    external: 'Opens on the Ministry of Environment, Water and Agriculture website',
   },
   group: {
     crumb: 'Group details',

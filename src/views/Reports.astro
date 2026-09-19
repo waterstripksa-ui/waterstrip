@@ -1,0 +1,54 @@
+---
+// No waterstrip/*.html counterpart: the mockup has no reports page. Built from
+// its own inner-page pieces (.page-hero, .sec-head, .docs/.doc rows). The
+// report links and copy are fixed interface copy in ui.ts (t.reports), one URL
+// per language; the row matching the page language is listed first.
+import Layout from '../layouts/Layout.astro';
+import PageHero from '../components/PageHero.astro';
+import MembershipBanner from '../components/MembershipBanner.astro';
+import { getSingleton } from '../lib/content/cache.ts';
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { localizer } from '../lib/i18n/pick.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+const locale = localeOfPath(Astro.url.pathname);
+const t = ui(locale);
+const L = localizer(locale);
+
+const banner = getSingleton('legal_banner');
+
+const versions = [
+  { lang: 'ar', label: t.reports.arLabel, href: t.reports.arHref },
+  { lang: 'en', label: t.reports.enLabel, href: t.reports.enHref },
+];
+// Same-language version first; sort is stable, so the other keeps its place.
+versions.sort((a, b) => Number(b.lang === locale) - Number(a.lang === locale));
+---
+
+<Layout title={t.reports.title} description={t.reports.description}>
+  <PageHero
+    title={t.reports.title}
+    lede={t.reports.lede}
+    crumbs={[{ label: t.nav.home, href: L.href('/') }, { label: ` ${t.reports.title}` }]}
+  />
+
+  <section class="ribbon">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-head__txt">
+          <p class="eyebrow">{t.reports.eyebrow}</p>
+          <h2 class="h-section">{t.reports.heading}</h2>
+          <p class="lede">{t.reports.intro}</p>
+        </div>
+      </div>
+      <div class="docs reveal">
+        <h3>{t.reports.listTitle}</h3>
+        {versions.map((v) => (
+          <div class="doc"><div class="doc__row"><a href={v.href} hreflang={v.lang} rel="noopener" target="_blank" title={t.reports.external}>{v.label}</a><span class="doc__info">{v.lang.toUpperCase()}</span><a aria-label={`${v.label} — ${t.reports.external}`} class="doc__btn" href={v.href} hreflang={v.lang} rel="noopener" target="_blank" tabindex="-1"><svg fill="none" height="18" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24" width="18" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9"></path></svg></a></div></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <MembershipBanner slot="after-main" banner={banner} />
+</Layout>
