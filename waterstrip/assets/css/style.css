@@ -576,6 +576,335 @@ ul { margin: 0; padding: 0; list-style: none; }
 /* only hidden when JS is running, so the page never stays blank */
 .js .reveal { opacity: 0; transform: translateY(34px); }
 
+
+/* ---------- 20b. خريطة الممر التفاعلية (رابغ → جدة) --------------------
+   خريطة صور جوية حقيقية بتكبير/تصغير وسحب، مبنية داخليًا بلا مكتبات خارجية
+   (assets/js/corridor-map.js). المناطق الأربع معلّمة بدوائر وأسماء وأرقام
+   الجهات، وتفاصيل كل منطقة تظهر في نافذة صغيرة عند المرور على الرقم. */
+.corridor__head { max-width: 760px; }
+.corridor__head .eyebrow { margin-bottom: 16px; }
+.corridor__head .h-section { margin: 0 0 18px; }
+.corridor__head .lede { color: var(--c-text-soft); margin: 0; max-width: 60ch; }
+
+.corridor__meta {
+  display: flex; gap: 56px; flex-wrap: wrap;
+  border-top: 1px solid var(--c-grey-line); margin-top: 34px; padding-top: 24px;
+}
+.corridor__meta b {
+  display: block; font-family: var(--f-head); font-size: 32px; line-height: 1;
+  font-weight: 700; color: var(--c-blue-deep); margin-bottom: 6px;
+}
+.corridor__meta span { font-size: 13px; line-height: 19px; color: var(--c-text-soft); }
+.corridor__maphint { margin-top: 12px; font-size: 12.5px; line-height: 20px; color: var(--c-text-soft); }
+
+/* ---- إطار الخريطة ---- */
+.corridor__map { margin-top: 30px; }
+.wsmap {
+  position: relative; width: 100%; height: 560px; overflow: hidden;
+  background: #0B2540; border: 1px solid var(--c-grey-line); border-radius: 4px;
+  cursor: grab; touch-action: pan-y; outline: none;
+}
+.wsmap.is-dragging { cursor: grabbing; }
+.wsmap:focus-visible { box-shadow: 0 0 0 3px rgba(47,178,220,.45); }
+.wsmap__tiles { position: absolute; inset: 0; }
+.wsmap__tile {
+  position: absolute; top: 0; left: 0; width: 256px; height: 256px;
+  user-select: none; -webkit-user-drag: none; pointer-events: none;
+}
+.wsmap__tile.is-failed { visibility: hidden; }
+.wsmap__overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.wsmap__route-glow { stroke: #0B2540; stroke-width: 7; stroke-opacity: .5; stroke-linecap: round; stroke-linejoin: round; }
+.wsmap__route { stroke: #61CBF1; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.wsmap__ring { fill: rgba(47,178,220,.14); stroke: #8FE0FA; stroke-width: 1.6; stroke-dasharray: 6 5; }
+/* عند أقصى تقريب يُخفى خط الممر: هندسته بمقياس الممر لا بمقياس الشارع */
+.wsmap[data-z="13"] .wsmap__route, .wsmap[data-z="13"] .wsmap__route-glow { opacity: 0; }
+.wsmap__route, .wsmap__route-glow { transition: opacity .3s; }
+
+
+/* ---- علامات المناطق ---- */
+.wsmap__markers { position: absolute; inset: 0; pointer-events: none; }
+.wsmap__hub { position: absolute; top: 0; left: 0; width: 0; height: 0; }
+.wsmap__hub-in {
+  position: absolute; top: 0; left: 0;          /* الأصل هنا نقطة الإحداثي نفسها */
+  display: flex; direction: ltr; align-items: center; gap: 7px;
+  transform: translate(-6.5px, -50%); white-space: nowrap; pointer-events: auto;
+}
+.wsmap__hub:hover, .wsmap__hub:focus-within { z-index: 9; }
+.wsmap__dot {
+  box-sizing: border-box; width: 13px; height: 13px; border-radius: 50%; flex: none;
+  background: var(--c-blue-deep); border: 2.5px solid #fff; box-shadow: 0 1px 6px rgba(0,0,0,.55);
+}
+.wsmap__name {
+  font-size: 12.5px; line-height: 17px; font-weight: 700; color: var(--c-text);
+  padding: 3px 8px; border-radius: 3px; background: rgba(255,255,255,.92);
+  box-shadow: 0 2px 8px rgba(0,0,0,.28);
+}
+.wsmap__cw { position: relative; display: inline-flex; }
+.wsmap__count {
+  width: 23px; height: 23px; border-radius: 50%; border: 0; cursor: pointer; padding: 0;
+  background: var(--g-brand); color: #fff;
+  font-family: var(--f-head); font-size: 12.5px; font-weight: 700; line-height: 1;
+  display: grid; place-items: center; box-shadow: 0 2px 10px rgba(0,0,0,.45);
+  transition: transform .25s cubic-bezier(.22,1,.36,1);
+}
+.wsmap__count:hover, .wsmap__count:focus-visible { transform: scale(1.14); }
+.wsmap__pop {
+  position: absolute; top: calc(100% + 11px); left: 50%; transform: translate(-50%, 6px);
+  width: max-content; max-width: 250px; background: #fff;
+  border: 1px solid var(--c-grey-line); border-radius: 4px;
+  box-shadow: 0 22px 46px -18px rgba(0,0,0,.6);
+  padding: 14px 16px; direction: rtl; text-align: right;
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity .28s ease, transform .28s cubic-bezier(.22,1,.36,1), visibility .28s;
+}
+.wsmap__pop::before {
+  content: ''; position: absolute; top: -5px; left: 50%; margin-left: -5px;
+  width: 9px; height: 9px; background: #fff; transform: rotate(45deg);
+  border-inline-start: 1px solid var(--c-grey-line); border-block-start: 1px solid var(--c-grey-line);
+}
+.wsmap__cw:hover .wsmap__pop, .wsmap__cw:focus-within .wsmap__pop,
+.wsmap__cw.is-open .wsmap__pop {
+  opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, 0);
+}
+.wsmap__pop-h {
+  display: block; font-size: 13px; line-height: 20px; font-weight: 700; color: var(--c-blue-deep);
+  padding-bottom: 9px; margin-bottom: 9px; border-bottom: 1px solid var(--c-grey-line);
+}
+.wsmap__pop ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.wsmap__pop li b { display: block; font-size: 12.5px; line-height: 19px; font-weight: 700; color: var(--c-text); }
+.wsmap__pop li span { display: block; font-size: 11.5px; line-height: 17px; color: var(--c-text-soft); }
+
+/* ---- الأزرار والتنبيه والإسناد ---- */
+.wsmap__hint {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
+  background: rgba(11,37,64,.88); color: #fff; font-size: 13px; line-height: 20px;
+  padding: 11px 18px; border-radius: 3px; text-align: center; max-width: 78%;
+  opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s;
+  z-index: 7; pointer-events: none;
+}
+.wsmap__hint.is-on { opacity: 1; visibility: visible; }
+.wsmap__attrib {
+  position: absolute; bottom: 0; inset-inline-end: 0; z-index: 5; direction: ltr;
+  background: rgba(255,255,255,.84); color: var(--c-text-soft);
+  font-size: 10.5px; line-height: 15px; padding: 3px 8px;
+}
+
+@media (max-width: 1200px) {
+  .corridor__meta { gap: 34px; }
+  .wsmap { height: 480px; }
+}
+@media (max-width: 900px) {
+  .wsmap { height: 420px; }
+  .wsmap__name { font-size: 11.5px; padding: 2px 6px; }
+  .wsmap__count { width: 21px; height: 21px; font-size: 11.5px; }
+  .wsmap__pop { max-width: 210px; padding: 12px 13px; }
+}
+@media (max-width: 600px) {
+  .corridor__meta { gap: 24px; }
+  .corridor__meta b { font-size: 26px; }
+  .wsmap { height: 360px; }
+    .wsmap__pop { max-width: 190px; }
+}
+
+/* ---------- 20c. تخطيط الخريطة + جدول الأصول ---------------------------
+   عمودان في شبكة واحدة: الخريطة والجدول. ارتفاع الخريطة = ارتفاع الجدول
+   تمامًا لأن الصف يتمدّد (align-items: stretch) والخريطة height:100% —
+   فكلما زادت صفوف الجدول طالت الخريطة معه. الحد الأقصى المعتمد للصفوف: 12. */
+.u-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.corridor__head { max-width: 760px; }
+.corridor__head .eyebrow { margin-bottom: 16px; }
+.corridor__head .h-section { margin: 0 0 18px; }
+.corridor__head .lede { color: var(--c-text-soft); margin: 0; max-width: 60ch; }
+.corridor__cta { margin-top: 26px; }
+
+.corridor__body {
+  display: grid; grid-template-columns: 350px minmax(0, 1fr); gap: 56px;
+  align-items: stretch; margin-top: 44px;
+}
+.corridor__mapcol { display: flex; min-height: 0; }
+.corridor__table { min-width: 0; }
+.wsmap { width: 100%; height: 100%; }
+
+.asset-table { width: 100%; border-collapse: collapse; }
+.asset-table thead th {
+  font-size: 11.5px; font-weight: 400; letter-spacing: 1.2px; text-transform: uppercase;
+  color: var(--c-text-soft); text-align: start; padding: 0 0 12px; border-bottom: 1px solid var(--c-grey-line);
+}
+[lang="ar"] .asset-table thead th { letter-spacing: 0; text-transform: none; font-size: 12.5px; }
+.asset-table thead th:first-child { width: 46px; }
+.asset-table thead th:last-child  { text-align: end; }
+.asset-table tbody tr { border-bottom: 1px solid var(--c-grey-line); transition: background .3s; }
+.asset-table tbody tr:hover { background: var(--c-grey-bg); }
+.asset-table td { padding: 16px 0; vertical-align: top; }
+.at__no {
+  font-family: var(--f-head); font-size: 13px; font-weight: 700; line-height: 22px;
+  color: var(--c-blue-light); padding-inline-end: 14px !important;
+}
+.at__name b { display: block; font-size: 15px; line-height: 23px; font-weight: 700; color: var(--c-text); }
+.at__name span { display: block; font-size: 12.5px; line-height: 20px; color: var(--c-text-soft); margin-top: 3px; }
+.at__area { text-align: end; white-space: nowrap; padding-inline-start: 14px !important; }
+.at__go {
+  position: relative; cursor: pointer; background: none; border: 0; padding: 0;
+  font-family: var(--f-body); font-size: 13px; font-weight: 700; color: var(--c-blue-deep); line-height: 22px;
+}
+[lang="ar"] .at__go { font-size: 13.5px; }
+.at__go::after {
+  content: ''; position: absolute; inset-inline-start: 0; bottom: -2px; height: 1.5px; width: 100%;
+  background: var(--g-brand); transform: scaleX(0); transform-origin: 100% 50%;
+  transition: transform .4s cubic-bezier(.22,1,.36,1);
+}
+.asset-table tbody tr:hover .at__go::after, .at__go:focus-visible::after { transform: scaleX(1); }
+.asset-table__hint { margin-top: 16px; font-size: 12.5px; line-height: 20px; color: var(--c-text-soft); }
+
+@media (max-width: 1200px) {
+  .corridor__body { grid-template-columns: 300px minmax(0, 1fr); gap: 36px; }
+}
+@media (max-width: 900px) {
+  /* مكدّس: الخريطة تحتاج ارتفاعًا صريحًا لأنها لم تعد بجانب الجدول */
+  .corridor__body { grid-template-columns: 1fr; gap: 34px; margin-top: 32px; }
+  .wsmap { height: 430px; }
+}
+@media (max-width: 700px) {
+  .asset-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .asset-table tbody tr { display: grid; grid-template-columns: 34px 1fr; padding: 14px 0; }
+  .asset-table td { padding: 0; }
+  .at__area { grid-column: 2; text-align: start; padding-inline-start: 0 !important; margin-top: 8px; }
+  .at__name b { font-size: 14.5px; line-height: 22px; }
+}
+/* ---------- 20d. قسم «مجموعة العمل» -------------------------------------
+   بلا بطاقة خارجية: لوحة صورة المياه على جهة، والعنوان الكبير والوصف وزر
+   الانتقال على الجهة الأخرى — مباشرة على خلفية الشريط الرمادية. */
+.bizgroup__card {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 620px); gap: 80px; align-items: center;
+}
+.bizgroup__media {
+  position: relative; border-radius: 22px; overflow: hidden; aspect-ratio: 1 / 1;
+  background: var(--c-blue-deep);
+  box-shadow: 0 24px 60px -28px rgba(11, 37, 64, .45);
+}
+.bizgroup__media img {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; display: block;
+}
+/* مسحة زرقاء خفيفة تُلبس الصورة بلون الهوية دون أن تطمس تفاصيلها */
+.bizgroup__media::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(21, 74, 145, .16) 0%, rgba(21, 74, 145, .04) 46%, rgba(11, 37, 64, .18) 100%);
+}
+
+.bizgroup__title {
+  font-family: var(--f-head); font-weight: 700; color: var(--c-text);
+  font-size: clamp(36px, 4.6vw, 64px); line-height: 1.16; letter-spacing: -.4px;
+  margin: 0 0 22px;
+}
+[lang="ar"] .bizgroup__title { letter-spacing: 0; line-height: 1.26; }
+.bizgroup__lede { font-size: 18px; line-height: 30px; color: var(--c-text); margin: 0 0 14px; max-width: 54ch; }
+.bizgroup__text { font-size: 15.5px; line-height: 28px; color: var(--c-text-soft); margin: 0 0 32px; max-width: 56ch; }
+
+@media (max-width: 1200px) {
+  .bizgroup__card { grid-template-columns: minmax(0, 1fr) minmax(0, 430px); gap: 56px; }
+}
+@media (max-width: 900px) {
+  .bizgroup__card { grid-template-columns: 1fr; gap: 30px; }
+  .bizgroup__media { aspect-ratio: 4 / 5; border-radius: 18px; }   /* نسبة أطول تُبقي خط التنقيط والشتلة واليدين داخل الكادر */
+  .bizgroup__lede { font-size: 16px; line-height: 27px; }
+  .bizgroup__text { font-size: 14.5px; line-height: 26px; margin-bottom: 24px; }
+}
+
+/* ---------- 20e. مخطط سلسلة قيمة المياه (قسم التحديات) -----------------
+   خمس مراحل بأسهم متتابعة من الإمداد إلى الطلب، يتوسّطها شريط الهدف العام،
+   وتحت كل مرحلة بطاقات التحديات/الفرص الخاصة بها.
+   المصدر: شكل ٢ من خارطة طريق تبنّي التقنيات — أُعيد بناؤه هنا بـHTML/CSS. */
+.vchain__card { grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 64px; align-items: start; }
+.vchain__card .bizgroup__copy { padding-block-start: 4px; }
+
+/* إطار يتعامل مع المخطط كصورة واحدة: يُصغَّر أو يُكبَّر بنسبة واحدة عبر
+   transform فلا يتغيّر شكله ولا ترتيبه على أي مقاس شاشة (assets/js/vchain.js). */
+.vchain-frame { position: relative; width: 100%; min-width: 0; overflow: hidden; cursor: zoom-in; }
+.vchain__card > * { min-width: 0; }
+.vchain-col { min-width: 0; }
+.vchain {
+  position: absolute; inset-block-start: 0; inset-inline-start: 0;
+  width: 900px; transform-origin: top right;
+  display: grid; grid-template-columns: repeat(5, minmax(0, 1fr));
+  column-gap: 6px; row-gap: 10px; align-items: stretch;
+}
+.vchain__foot {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  gap: 14px; margin-top: 18px;
+}
+.vchain__zoom {
+  display: inline-flex; align-items: center; gap: 8px; cursor: zoom-in;
+  padding: 10px 18px; border: 1px solid var(--c-grey-line); border-radius: 100px;
+  background: #fff; color: var(--c-blue-deep);
+  font-family: var(--f-body); font-size: 13px; font-weight: 600; line-height: 1;
+  transition: background .2s ease, color .2s ease, border-color .2s ease;
+}
+.vchain__zoom:hover { background: var(--c-blue-deep); color: #fff; border-color: var(--c-blue-deep); }
+.vchain__head {
+  grid-row: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; min-height: 116px; padding: 18px 26px; text-align: center;
+  background: var(--c-blue-deep); color: #fff;
+  font-family: var(--f-body); font-size: 13px; line-height: 19px; font-weight: 600;
+  /* سهم يتّجه يسارًا: رأس على اليسار وتجويف على اليمين يستقبل رأس المرحلة التالية */
+  clip-path: polygon(0 50%, 20px 0, 100% 0, calc(100% - 20px) 50%, 100% 100%, 20px 100%);
+}
+.vchain__head.s1 { clip-path: polygon(0 50%, 20px 0, 100% 0, 100% 100%, 20px 100%); }
+.vchain__head.s5 { clip-path: polygon(0 0, 100% 0, calc(100% - 20px) 50%, 100% 100%, 0 100%); }
+/* الأيقونات مستخرجة كما هي من شكل ٢ في الملف الأصلي (مسارات متجهة) */
+.vchain__head svg { flex: none; width: 40px; height: 40px; }
+
+.vchain__band {
+  grid-column: 1 / -1; grid-row: 2; margin: 0; padding: 18px 22px; text-align: center;
+  background: #E9F2FB; color: var(--c-blue-deep);
+  font-size: 14px; line-height: 22px; font-weight: 600;
+}
+.vchain__col { grid-row: 3; align-self: start; display: flex; flex-direction: column; gap: 10px; }
+.vchain__item {
+  background: #E9F2FB; border-inline-start: 4px solid var(--c-blue-light);
+  padding: 14px 13px; text-align: center; color: var(--c-text);
+  font-size: 12.5px; line-height: 21px;
+}
+.vchain__src { margin: 0; font-size: 12.5px; line-height: 20px; color: var(--c-text-soft); }
+
+/* نافذة التكبير: المخطط نفسه كصورة يمكن تمريرها لقراءة كل بطاقة */
+.vcbox {
+  position: fixed; inset: 0; z-index: 1000; background: rgba(8, 26, 48, .9);
+  display: flex; align-items: center; justify-content: center; padding: 24px;
+}
+.vcbox[hidden] { display: none; }
+.vcbox__scroll {
+  max-width: 100%; max-height: 100%; overflow: auto; -webkit-overflow-scrolling: touch;
+  border-radius: 14px; background: #fff;
+}
+.vcbox__scroll img { display: block; width: 980px; max-width: none; height: auto; }
+.vcbox__close {
+  position: absolute; inset-block-start: 18px; inset-inline-end: 18px;
+  width: 44px; height: 44px; display: grid; place-items: center; cursor: pointer;
+  border: 0; border-radius: 50%; background: rgba(255, 255, 255, .16); color: #fff;
+  transition: background .2s ease;
+}
+.vcbox__close:hover { background: rgba(255, 255, 255, .3); }
+@media (min-width: 1100px) { .vcbox__scroll img { width: 1280px; } }
+
+@media (max-width: 1200px) {
+  .vchain__card { grid-template-columns: 1fr; gap: 36px; }
+  .vchain__head { font-size: 12.5px; padding-inline: 22px; }
+}
+@media (max-width: 760px) {
+  /* المخطط يُصغَّر كصورة واحدة بنفس شكله، وزر التكبير يفتحه كصورة قابلة للتمرير */
+  .vchain__foot { gap: 10px; margin-top: 14px; }
+  .vcbox { padding: 12px; }
+  .vcbox__scroll img { width: 900px; }
+  .btn-brand--lg { padding: 16px 32px; font-size: 15px; }
+}
+
+.btn-brand--lg { padding: 18px 40px; font-size: 16px; margin-top: 6px; }
+.btn-brand--lg svg { width: 16px; height: 16px; }
+
 /* ---------- 21. RESPONSIVE --------------------------------------------- */
 @media (max-width: 1500px) {
   :root { --wrap-pad: 64px; --bleed: 32px; }
