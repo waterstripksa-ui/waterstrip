@@ -105,6 +105,7 @@ Copy [.env.example](.env.example) to `.env` before anything else. `.env` and `da
 - [docs/better-auth.md](docs/better-auth.md) — version-specific auth API, seeding, session access
 - [docs/css-architecture.md](docs/css-architecture.md) — style layers, BEM, breakpoints, RTL rules
 - [docs/porting-the-mockup.md](docs/porting-the-mockup.md) — mockup inventory, porting order, CMS content model
+- [docs/safta-port.md](docs/safta-port.md) — porting this CMS into the separate SAFTA project (`../safta`): differences, decisions, work plan
 
 ## Astro docs
 
