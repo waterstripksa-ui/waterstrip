@@ -103,8 +103,8 @@ Its label and note are hardcoded today and stay that way until [After cutover](s
 | `about_mission.paragraphs[0..1]` | `about:t006` `t007` | A list, min 1 and max 4. |
 | `about_mission.youtubeUrl` | `about:t008` (en) | Optional. The `ar` value must be empty or `=` the `en` one. Validated as a YouTube URL. |
 | `about_glance.hidden` | (new) | `true`, replacing the hardcoded `hidden` attribute. |
-| `about_glance.soon` | `about:t011` | The tape reads "قريبًا · Soon · قريبًا · Soon" in both languages. |
-| dropped | `about:t012` `t013` `t014` | `t013` `=` `t011`. `t012` and `t014` are `t011` with the languages swapped, which is how the tape mixes both, and is not a bug. The markup renders the tape from `soon` alone. |
+| `about_glance.soon` | `about:t011` | The tape mixes both languages and mirrors on the switch: "Soon · قريبًا · …" in English, "قريبًا · Soon · …" in Arabic. |
+| dropped | `about:t012` `t013` `t014` | `t013` `=` `t011`. `t012` and `t014` are `t011` with the languages swapped, which is how the tape mixes both, and is not a bug. The markup renders the tape from `soon` alone, swapping it for the 2nd and 4th words. |
 | `about_glance.heading` | `about:t015` | |
 | `about_glance.stats[0..3].label` | `about:t016`…`t019` | |
 | `about_glance.stats[0..3].value` | (new) | `24`, `4`, `4`, `3`, from `data-count` in the markup. |
@@ -425,6 +425,8 @@ These are outside the "public site doesn't change" scope, so they are only noted
   them in English. The cheapest fix is to render each page's own title field there.
 - **Links in the consent text have no locale prefix** (`/terms` instead of `/en/terms`). They are
   fixed by the `mapHref` noted above.
+- **Event links had no locale prefix either** (`/register-interest`). Phase 3 localizes on-site
+  event hrefs.
 - **Inconsistent counts.** About's "At a glance" says 24 working groups, while the home page and the
   working groups page say 9. The section is hidden, but the count is wrong when it is shown again.
 

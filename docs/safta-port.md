@@ -7,8 +7,8 @@ today, the decisions already made, and the work plan.
 The SAFTA project is at `../safta` (`/home/hazel/projects/safta`). Work is planned from this repo,
 but the code changes land in SAFTA's repo.
 
-> **Status (2026-10-01):** Phases 1 and 2 done in SAFTA; the legacy key map is written
-> ([safta-key-map.md](safta-key-map.md)). Next: Phase 3. Update the
+> **Status (2026-10-01):** Phases 1–3 done in SAFTA; the legacy key map is written
+> ([safta-key-map.md](safta-key-map.md)). Next: Phase 4 (the legacy import). Update the
 > [progress log](#progress-log) at the end as phases land.
 
 ## Constraints and decisions
@@ -254,6 +254,39 @@ Swap where each value comes from, without changing the markup.
 Done when: every public page renders the same text and images as before the port, in both
 languages, from the database.
 
+**As built:**
+- **`Text.astro` takes `field: { ar, en }`** (built with `pick(row, 'title')` from SAFTA's
+  `src/lib/bilingual.ts`) and escapes both sides, because `i18n.js` assigns `data-ar` to
+  `innerHTML`. `prose` renders inline prose (`renderInlineProse`, new in `prose.ts`) with on-site
+  links localized; `required` appends `<b class="req">*</b>` in both languages. `Value.astro` is
+  gone: a plain value is just `{value}`.
+- **`Image.astro` takes `id` and `fallback`.** The fallbacks in `safta-assets.ts` are the art each
+  slot ships with today (hero photos, discover tiles, challenge and partner images, the founding
+  image, the default article hero), keyed by item id. So before the Phase 4 import the site looks
+  as it does now, and after it they are only reached when an admin clears an image.
+- **`ui.ts`** holds `crumbHome` and the member category labels.
+- **`?id=`:** missing → 302 to the list; unknown or unpublished → 404 (the 404 page renders).
+- **Members map rebuilt.** `style.css` only ever had the map's mobile rules, so a base
+  `.memmap` section (33.6) was added. `main.js` module 13 reads markers from
+  `<script id="membersMapData" type="application/json">` and escapes popup text; the `SAFTA_CRM`
+  adapter and the chip-filter code (no chips exist) are gone. The block and Leaflet load only when
+  some published member has coordinates. `members_map` keeps its draft copy.
+- **Three old bugs fixed on the way, all of which kept the map or record pages from working:**
+  - The Leaflet `<script>` carried `leaflet.js`'s SRI hash on `leaflet.min.js`, so browsers
+    blocked it.
+  - CARTO's keyless basemap now answers "API key required"; tiles switched to
+    `tile.openstreetmap.org` with attribution.
+  - `i18n.js` appended `location.search` to a language-switch link that `SiteHeader` already
+    gives it, producing `?id=x?id=x`; with real 404s that broke switching language on a profile
+    or article.
+- **The admin notice is gone**, and `/admin/legacy` instead says it no longer changes the site.
+- Asset query strings bumped to `?v=29`.
+- **Checked by diffing** the text, `data-ar`, placeholders, option values, links and image
+  sources of every page against the pre-Phase 3 commit running on the same `content/`. The only
+  differences are the planned ones: collections empty until the import, the required markers and
+  option values on the forms, the localized consent links and event links, the `kuyiky` fix, and
+  the two discover tiles' alt text (it comes with the imported media).
+
 ### Phase 4 — Legacy import
 
 `scripts/import-legacy.ts` in SAFTA, kept until the switch is done. It reads `content/*.json`,
@@ -379,4 +412,5 @@ two differ. Field names follow this repo's conventions; every text field is an `
 | 2026-10-01 | — | Plan written. |
 | 2026-10-01 | 1 | Done, from waterstrip `dcfba70`. Better Auth + SQLite + Drizzle, `seed-admin.ts` unchanged, `content_singleton` and `media` tables, migration `0000_init`. Login stays at `/{en,ar}/login` (now **email**, not username) posting to `/api/login`; CSRF check back on. The legacy dashboard keeps working: its APIs were only ever gated by the middleware, and `/logout` now delegates to `/api/logout`. `src/lib/auth/` and `hash-password` removed. Also: `data/` is created on first run (waterstrip lacks this), and 6 static pages got the missing `isLocale` guard so `astro check` is clean. Review fix: `security.allowedDomains` is derived from `BETTER_AUTH_URL` at build time; without it the re-enabled origin check 403s every login behind a TLS-terminating proxy (why SAFTA had turned it off in `93f55d1`). |
 | 2026-10-01 | 2 | Done, from waterstrip `9526700`. 26 singletons (version 1, initial = current text) and the `member`, `working_group`, `article`, `event` tables (migration `0001_collections`). Seven dashboard pages built from `sections.ts`; see "As built" under Phase 2. Tested: `astro check` clean, `check:admin` passing, every save path over HTTP (field-level issues, unknown media, fixed options, YouTube, duplicate slugs), and a browser run (edit/save/reload, add and reorder a member, upload a logo). |
+| 2026-10-01 | 3 | Done. Public pages read the cache; see "As built" under Phase 3. Members map rebuilt (and its Leaflet SRI, tile provider and the doubled `?id=` fixed). Tested: `astro check` clean, `check:admin` passing, a text/image diff of every page against the previous commit, a browser run (map markers and popups in both languages, escaping of HTML in names, quote hiding, consent links, 375 px with no overflow), and a dashboard save showing on the site at once. |
 | 2026-10-01 | 4 (prep) | Key map written: all 221 page keys accounted for (202 mapped, 19 dropped with reasons). Changed the image rule to import bundled `assets/img` files. |
