@@ -51,7 +51,13 @@ export const PUT: APIRoute = async ({ request, locals }) => {
   }
 
   try {
-    replaceEvents(body, locals.user.id);
+    // The list arrives in display order. Stamping `order` from position is what
+    // makes moving a row up or down in the dashboard stick: the editors never
+    // touch the `order` each row loaded with.
+    const rows = body.map((row, i) =>
+      row && typeof row === 'object' && !Array.isArray(row) ? { ...row, order: i * 10 } : row,
+    );
+    replaceEvents(rows, locals.user.id);
     return json({ ok: true, data: listAllEvents() }, 200);
   } catch (error) {
     if (error instanceof ContentValidationError) {

@@ -7,8 +7,8 @@ today, the decisions already made, and the work plan.
 The SAFTA project is at `../safta` (`/home/hazel/projects/safta`). Work is planned from this repo,
 but the code changes land in SAFTA's repo.
 
-> **Status (2026-10-01):** Phase 1 done and committed in SAFTA; the legacy key map is written
-> ([safta-key-map.md](safta-key-map.md)). Next: Phase 2. Update the
+> **Status (2026-10-01):** Phases 1 and 2 done in SAFTA; the legacy key map is written
+> ([safta-key-map.md](safta-key-map.md)). Next: Phase 3. Update the
 > [progress log](#progress-log) at the end as phases land.
 
 ## Constraints and decisions
@@ -208,6 +208,24 @@ needs a login; a second start leaves the admin untouched; `npx astro check` is c
 Done when: each admin page saves and loads every field of its sections, and a broken save marks the
 right field.
 
+**As built (differs from the bullets above):**
+- **No hand-written editor per section.** Each panel is declared as data in SAFTA's
+  `src/components/admin/sections.ts` (a fixed list of typed fields with labels) and drawn by one
+  renderer, `FieldList.tsx`. Admins still edit values only. `npm run check:admin` compares every
+  panel with its Zod schema both ways. Waterstrip's `SectionForm`, `ItemList`, field components and
+  hooks are used as they are.
+- **The legacy dashboard moved to `/admin/legacy`** (page and APIs), because waterstrip's
+  `/admin/api/content/[key]` and `/admin` collide with its routes. It stays the live editor until
+  Phase 3, and every new dashboard page carries a notice saying so; remove the notice in Phase 3.
+- **Collections save with their order.** The server sets `order` from list position. Waterstrip had
+  the bug this avoids (moving a row was lost on reload) and got the same fix in its four collection
+  endpoints.
+- **Collection saves check images exist** (`replace*(rows, { requireMedia: true })` from the
+  dashboard; the import still tolerates dangling ids), like singleton saves.
+- **No settings page.** `home_awards.hidden` and `about_glance.hidden` sit in their own panels.
+- **No `content:seed`.** `content/` is still the legacy store. A fresh database starts from each
+  singleton's `initial` (SAFTA's current text, images `null`); the tables stay empty until Phase 4.
+
 ### Phase 3 — Point public pages at the cache
 
 Swap where each value comes from, without changing the markup.
@@ -360,4 +378,5 @@ two differ. Field names follow this repo's conventions; every text field is an `
 |---|---|---|
 | 2026-10-01 | — | Plan written. |
 | 2026-10-01 | 1 | Done, from waterstrip `dcfba70`. Better Auth + SQLite + Drizzle, `seed-admin.ts` unchanged, `content_singleton` and `media` tables, migration `0000_init`. Login stays at `/{en,ar}/login` (now **email**, not username) posting to `/api/login`; CSRF check back on. The legacy dashboard keeps working: its APIs were only ever gated by the middleware, and `/logout` now delegates to `/api/logout`. `src/lib/auth/` and `hash-password` removed. Also: `data/` is created on first run (waterstrip lacks this), and 6 static pages got the missing `isLocale` guard so `astro check` is clean. Review fix: `security.allowedDomains` is derived from `BETTER_AUTH_URL` at build time; without it the re-enabled origin check 403s every login behind a TLS-terminating proxy (why SAFTA had turned it off in `93f55d1`). |
+| 2026-10-01 | 2 | Done, from waterstrip `9526700`. 26 singletons (version 1, initial = current text) and the `member`, `working_group`, `article`, `event` tables (migration `0001_collections`). Seven dashboard pages built from `sections.ts`; see "As built" under Phase 2. Tested: `astro check` clean, `check:admin` passing, every save path over HTTP (field-level issues, unknown media, fixed options, YouTube, duplicate slugs), and a browser run (edit/save/reload, add and reorder a member, upload a logo). |
 | 2026-10-01 | 4 (prep) | Key map written: all 221 page keys accounted for (202 mapped, 19 dropped with reasons). Changed the image rule to import bundled `assets/img` files. |

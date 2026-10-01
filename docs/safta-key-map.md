@@ -69,11 +69,11 @@ list.
 | dropped | `index:t013` `t014` `t015` | Tab labels. Each must `=` the eyebrow of its panel (`t004`, `t007`, `t010`), as in waterstrip. |
 | `home_discover.eyebrow` | `index:t016` | |
 | `home_discover.intro` | `index:t017` | |
-| `home_discover.tiles[0].imageId` | `index:i018` | Alt is "Open raceway ponds…" in **both** `alt` and `alt_ar`, so it is English only: `altEn` gets it, `altAr` stays empty. |
+| `home_discover.tiles[0].imageId` | `index:i018` | Alt is "Open raceway ponds…" in **both** `alt` and `alt_ar`, so it is English only: `altEn` gets it. `altAr` is required on a media row, so the import needs Arabic alt text here: write it into `FIXES`. |
 | `home_discover.tiles[0].eyebrow` | `index:t019` | |
 | `home_discover.tiles[0].heading` | `index:t020` | |
 | `home_discover.tiles[0].href` | (new) | `/technologies` |
-| `home_discover.tiles[1].imageId` | `index:i021` | Alt is "What we do" in both, handled the same way. |
+| `home_discover.tiles[1].imageId` | `index:i021` | Alt is "What we do" in both, handled the same way (the tile's eyebrow "ما نقوم به" fits). |
 | `home_discover.tiles[1].eyebrow` | `index:t022` | |
 | `home_discover.tiles[1].heading` | `index:t023` | |
 | `home_discover.tiles[1].href` | (new) | `/about` |
@@ -384,6 +384,12 @@ Setting them to `null` would lose them.
 | `.png`, `.jpg`, `.webp` under `assets/img/` or `uploads/` | 3 hero + 2 discover + 1 article default + 1 article + 3 member logos + 7 partner logos | `ingestImage` as is. Shared files are stored once, because the media id is the content hash. |
 | `.svg` under `assets/img/` | 9 member logos + 6 article + 7 challenge + 1 about | The import rasterizes them first, with `sharp(svg, { density }).png()` at a 1600 px long edge, then calls `ingestImage`. This is safe because the files come from SAFTA's own repo. **Uploaded** SVGs (`uploads/*.svg`) are still refused and listed, as the plan says. |
 | `""` | 9 group images | `null` |
+
+**Alt text is required on every media row** (`altAr`, by the media pipeline's rule), but four page
+images have none today: the three hero slides and the founding-statement image, all stored with
+`alt: ""` because they are decorative. The import gives them the Arabic text of the field next to
+them (the slide heading, the statement's eyebrow), as the dashboard's upload prefill does. The page
+can still render them with an empty `alt` where they are decorative.
 
 The default article hero is one image, so `safta-assets.ts` only has to cover empty slots: group
 tiles (already drawn in code) and any slot an admin clears later.

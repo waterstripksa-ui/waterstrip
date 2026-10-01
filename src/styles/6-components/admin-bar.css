@@ -24,6 +24,12 @@
   align-items: center;
   gap: 12px;
   margin-inline-end: auto;
+  /* It is a link, but on the dark bar the link colour has no contrast. */
+  color: var(--c-text-invert);
+}
+
+.admin-bar__brand:hover {
+  color: var(--c-text-invert-soft);
 }
 
 .admin-bar__mark {
