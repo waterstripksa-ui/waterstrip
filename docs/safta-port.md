@@ -7,9 +7,9 @@ today, the decisions already made, and the work plan.
 The SAFTA project is at `../safta` (`/home/hazel/projects/safta`). Work is planned from this repo,
 but the code changes land in SAFTA's repo.
 
-> **Status (2026-10-01):** Phases 1–3 done in SAFTA; the legacy key map is written
-> ([safta-key-map.md](safta-key-map.md)). Next: Phase 4 (the legacy import). Update the
-> [progress log](#progress-log) at the end as phases land.
+> **Status (2026-10-02):** Phases 1–4 done in SAFTA; the legacy import is written and tested
+> against the local `content/`. Next: Phase 5 (cutover), starting with a dry run against the
+> production snapshot. Update the [progress log](#progress-log) at the end as phases land.
 
 ## Constraints and decisions
 
@@ -320,6 +320,75 @@ supported.
 
 The script must be idempotent and run cleanly against a copy of production before cutover.
 
+**As built:**
+- **`npm run content:import-legacy -- [--dry-run] [--from <dir>] [--out <file>]`.** `--from`
+  reads `<dir>/content` and `<dir>/public` (a production snapshot needs `public/assets` as well as
+  `public/uploads`, because the old editor also wrote `public/assets/content/*.js`). `--out` saves
+  the envelope it built.
+- **The map is code, not a table.** Each singleton is built field by field from calls such as
+  `index.text('t005', 'heading')`, typed against the singleton's own type. Every call marks its
+  key as used. At the end, any key left unused and not explicitly dropped fails the run, as does
+  any record field the import doesn't know. Fields with no legacy source (ids, links, numbers,
+  emails, `members_map`) come from each singleton's `initial`. A required field nothing filled
+  fails schema validation.
+- **Checks:**
+  - The `=` duplicates must be equal: the hero tab labels, and the about tape, including its two
+    language-swapped copies.
+  - Every Home crumb must equal `crumbHome` in `ui.ts`.
+  - The Arabic YouTube link must be empty or equal the English one.
+  - Member categories must be one of the fixed four, with the right Arabic label.
+  - The map file's `ini` and `cat` must agree with the member, and no pin may lack a member.
+- **Errors are collected and listed together.** Nothing is written while any problem remains.
+  Then the envelope goes through `importContent` twice: first as a dry run, so schema errors also
+  write nothing, then for real once the new media files are written.
+- **`media.ts` was split.** `normaliseImage` hashes without storing anything and `writeMediaFile`
+  writes the file; `ingestImage` uses both and behaves as before. This is what lets a dry run
+  compute every media id.
+- **Bundled SVGs are rasterized with a private font set.** librsvg draws SVG text with the host's
+  fonts, and a server usually has no Arabic font, so the placeholders' Arabic came out as boxes.
+  The import unwraps fontsource's IBM Plex Sans Arabic WOFFs (the SVGs' first choice) to TTF in
+  a temporary directory and points `FONTCONFIG_FILE` at it, so the result is the same on every
+  machine. The Latin eyebrows fall back from Space Grotesk to Plex's Latin.
+- **Alt text:**
+  - Decorative page images get the text beside them: the hero headings, the discover tile
+    eyebrows, the founding-statement eyebrow, and the media crumb for the default article hero.
+  - Collection images get the record's name or title.
+  - A file shared by two slots is stored once; the first slot gives it its alt text.
+- **`FIXES`** holds `kuyiky` and Arabic alt text for the two discover tiles, whose `alt_ar` was a
+  copy of the English.
+- **Run it with the site stopped.** The cache is per process, so a running server keeps serving
+  what it had cached until it restarts.
+- **It refuses to overwrite dashboard edits.** Every dashboard save stamps `updatedBy` and the
+  import never does, so `hasDashboardEdits()` (new in `io.ts`) tells an import over an import (fine
+  to repeat) from one over an admin's work. In the second case it refuses without `--replace`.
+- **Hardening, from the security review:**
+  - `members-map-data.js` is parsed as plain `key: value` records and never run (`node:vm` is no
+    sandbox, and `--from` may point at a copy from elsewhere).
+  - Unknown arguments are an error, so a mistyped `--dry-run` cannot import for real.
+  - Image paths are checked after resolving symlinks, so none can lead out of `public/`.
+  - Filenames are cleaned as uploads are (`displayName`: no bidi overrides, at most 200
+    characters).
+  - Out-of-range numeric entities and non-object records are reported, not crashes.
+- **One Phase 3 bug found by the import.** `Image.astro` took the media id as `id`, and
+  `article.astro` also passed `id="aImg"` for the element. The second won, so every article hero
+  fell back to the default. Nobody noticed, because the articles table was empty. The prop is now
+  `media`.
+- **Tested:**
+  - Imported singletons equal the Phase 2 `initial` values everywhere except the image ids.
+  - A second run writes no files and exports byte-identical content.
+  - A text and image diff of every page against the pre-port site shows only the planned
+    differences, now with images from `/media/` and `&amp;` no longer double-encoded.
+  - All 7 articles and 12 members render with their images, and the map has 12 pins.
+  - In the browser, the logos and placeholders render correctly with no console errors.
+  - Deliberately broken copies fail with a listed reason each: an unmapped key, a changed crumb,
+    an unequal duplicate, unknown markup or entity, an unknown category, an empty Arabic field, a
+    missing image, an uploaded SVG, an unknown record field, and an over-long field.
+  - `hideAwards: true` and an `uploads/…?v=` image path import correctly.
+  - Also from the review: a map record carrying code is rejected without running, a symlink to
+    `/etc` is refused, an RLO character is stripped from a 230-character filename (cut to 200),
+    and an import after a dashboard edit is refused, while `--dry-run` warns and `--replace`
+    proceeds.
+
 ### Members map
 
 `members-map-data.js` holds 12 records whose ids match the `members` collection exactly, each with
@@ -342,7 +411,9 @@ The script must be idempotent and run cleanly against a copy of production befor
 
 1. Freeze editing in production.
 2. Copy production `content/` and `public/uploads/` (keep them; this is the rollback).
-3. Run `import-legacy.ts --dry-run`, then for real, against a fresh database.
+3. With the site stopped, run `npm run setup`, then `npm run content:import-legacy -- --dry-run`,
+   then the import for real, against a fresh database. Fix anything the dry run lists in the old
+   dashboard (or add a `FIXES` entry) and repeat; the import is safe to re-run.
 4. Compare every public page against the old site, in both languages.
 5. Deploy. The reverse proxy must keep `/media/` and the 8 MB body limit (see
    [content-storage.md](content-storage.md#serving)).
@@ -414,3 +485,4 @@ two differ. Field names follow this repo's conventions; every text field is an `
 | 2026-10-01 | 2 | Done, from waterstrip `9526700`. 26 singletons (version 1, initial = current text) and the `member`, `working_group`, `article`, `event` tables (migration `0001_collections`). Seven dashboard pages built from `sections.ts`; see "As built" under Phase 2. Tested: `astro check` clean, `check:admin` passing, every save path over HTTP (field-level issues, unknown media, fixed options, YouTube, duplicate slugs), and a browser run (edit/save/reload, add and reorder a member, upload a logo). |
 | 2026-10-01 | 3 | Done. Public pages read the cache; see "As built" under Phase 3. Members map rebuilt (and its Leaflet SRI, tile provider and the doubled `?id=` fixed). Tested: `astro check` clean, `check:admin` passing, a text/image diff of every page against the previous commit, a browser run (map markers and popups in both languages, escaping of HTML in names, quote hiding, consent links, 375 px with no overflow), and a dashboard save showing on the site at once. |
 | 2026-10-01 | 4 (prep) | Key map written: all 221 page keys accounted for (202 mapped, 19 dropped with reasons). Changed the image rule to import bundled `assets/img` files. |
+| 2026-10-02 | 4 | Done. `scripts/import-legacy.ts` (`npm run content:import-legacy`); see "As built" under Phase 4. Imports 26 singletons, 12 members (all on the map), 9 working groups, 7 articles, 4 events and 36 images. Bundled SVGs rasterized with a private IBM Plex Sans Arabic font set, because the host's fonts had no Arabic. Fixed a Phase 3 bug that showed the default hero on every article (`Image`'s `id` prop clashed with the element's `id`; it is now `media`). |

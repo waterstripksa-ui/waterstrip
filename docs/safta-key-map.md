@@ -5,8 +5,9 @@ for two things in the [port plan](safta-port.md): the singleton and table schema
 and the `MAP` table inside `scripts/import-legacy.ts` in Phase 4.
 
 Built from SAFTA commit `76ac788` and its local `content/`. **Re-check it against the production
-snapshot before cutover.** The import enforces this map, so it fails on any key the map doesn't
-list.
+snapshot before cutover.** The import (`scripts/import-legacy.ts` in SAFTA) implements this map in
+code and enforces it, so it fails on any key the map doesn't list. Where the two disagree, the
+script is what runs.
 
 ## How to read it
 
@@ -42,6 +43,8 @@ list.
    | Key | Old value | New value |
    |---|---|---|
    | `contact:t002` (ar) | `تواصل معنا kuyiky` | `تواصل معنا` |
+   | `index:i018` (alt_ar) | `Open raceway ponds for algae cultivation at KAUST` | `أحواض مفتوحة لاستزراع الطحالب في كاوست` |
+   | `index:i021` (alt_ar) | `What we do` | `ما نقوم به` |
 
 ---
 
@@ -385,11 +388,17 @@ Setting them to `null` would lose them.
 | `.svg` under `assets/img/` | 9 member logos + 6 article + 7 challenge + 1 about | The import rasterizes them first, with `sharp(svg, { density }).png()` at a 1600 px long edge, then calls `ingestImage`. This is safe because the files come from SAFTA's own repo. **Uploaded** SVGs (`uploads/*.svg`) are still refused and listed, as the plan says. |
 | `""` | 9 group images | `null` |
 
-**Alt text is required on every media row** (`altAr`, by the media pipeline's rule), but four page
-images have none today: the three hero slides and the founding-statement image, all stored with
-`alt: ""` because they are decorative. The import gives them the Arabic text of the field next to
-them (the slide heading, the statement's eyebrow), as the dashboard's upload prefill does. The page
-can still render them with an empty `alt` where they are decorative.
+**Alt text is required on every media row** (`altAr`, by the media pipeline's rule), but five page
+images have none today: the three hero slides, the founding-statement image and the default article
+hero, all stored with `alt: ""` because they are decorative. The import gives them the text of the
+field next to them (the slide heading, the statement's eyebrow, the media crumb), as the
+dashboard's upload prefill does. The page can still render them with an empty `alt` where they are
+decorative. The default article hero is the same file as the third hero slide, so in practice it
+keeps that slide's heading.
+
+**SVG text needs fonts.** Rasterizing draws the SVGs' `<text>` with the fonts the import can see.
+The import supplies IBM Plex Sans Arabic itself (from fontsource) rather than relying on the
+server's fonts; see Phase 4's "As built" in the [port plan](safta-port.md#phase-4--legacy-import).
 
 The default article hero is one image, so `safta-assets.ts` only has to cover empty slots: group
 tiles (already drawn in code) and any slot an admin clears later.
