@@ -216,6 +216,7 @@ const ar = {
     consentAfter: '.',
     submit: 'إرسال التسجيل',
     success: 'شكرًا لك — تم تسجيل طلبك بنجاح.',
+    embedFallback: 'تعذّر تحميل نموذج التسجيل. راسلنا مباشرةً على',
   },
   notFound: {
     title: 'الصفحة غير موجودة',
@@ -450,6 +451,7 @@ const en: UI = {
     consentAfter: '.',
     submit: 'Submit registration',
     success: 'Thank you — your registration has been received.',
+    embedFallback: 'The registration form couldn’t load. Email us directly at',
   },
   notFound: {
     title: 'Page not found',

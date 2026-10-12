@@ -28,3 +28,6 @@ data/
 
 # graphify
 graphify-out/
+
+# HubSpot config file
+hubspot.config.yml

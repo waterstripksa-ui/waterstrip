@@ -1,8 +1,8 @@
 ---
-// Markup is waterstrip/register-interest.html verbatim. Hero and aside copy
-// come from the content cache (/admin/register-interest). No backend yet
-// (pre-launch checklist item 5), so the inline script is the mockup's own
-// main.js §15 behaviour for #interestForm; the file picker label is main.js §20.
+// Markup is waterstrip/register-interest.html verbatim, except the form: the
+// mockup's own form had no backend, so it is replaced by HubSpot's embedded
+// form (submissions go straight to HubSpot, not to this server). Hero and aside
+// copy come from the content cache (/admin/register-interest).
 // Like the mockup, this page has no closing membership banner.
 import Layout from '../layouts/Layout.astro';
 import PageHero from '../components/PageHero.astro';
@@ -18,11 +18,33 @@ const L = localizer(locale);
 const hero = getSingleton('register_hero');
 const info = getSingleton('register_info');
 
-// Submitted values stay the Arabic labels whatever the page language, so a
-// future backend receives one vocabulary; only the visible label is translated.
-const arabic = ui('ar').register;
-const entityTypes = t.register.entityTypes.map((label, i) => ({ label, value: arabic.entityTypes[i] }));
-const interestAreas = t.register.areas.map((label, i) => ({ label, value: arabic.areas[i] }));
+// HubSpot form "Join Us". Its labels are HubSpot's (English) on both locales.
+const hubspot = { portalId: '46313188', formId: '810ee0b8-f9a6-4443-a3e7-6fcbf2d0075f', region: 'na1' };
+
+// HubSpot renders the form in a same-origin iframe, out of reach of style.css,
+// and the form's HubSpot-side theme makes it ignore the embed's `css` option.
+// So onFormReady appends these rules inside the iframe instead. They restate
+// the mockup's .field / .btn-solid values (style.css §28); the `form.hs-form`
+// prefix outranks HubSpot's theme selectors. If HubSpot renames its classes the
+// form simply falls back to HubSpot's own look.
+const hubspotCss = `
+  body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; color: #0B2540; }
+  form.hs-form fieldset { max-width: none; }
+  form.hs-form .hs-form-field { margin-bottom: 26px; }
+  form.hs-form .hs-form-field > label { display: block; font-family: inherit; font-size: 12px; font-weight: 400; letter-spacing: .9px; text-transform: uppercase; color: #4A6480; margin-bottom: 9px; }
+  form.hs-form .hs-form-required { color: #C0392B; margin-inline-start: 2px; }
+  form.hs-form .hs-field-desc { font-family: inherit; font-size: 12px; color: #4A6480; margin: -4px 0 9px; }
+  form.hs-form .hs-input { width: 100%; height: auto; font-family: inherit; font-size: 15px; color: #0B2540; background: #fff; border: 1px solid #D4E2EF; border-radius: 0; transition: border-color .3s, box-shadow .3s; }
+  /* HubSpot's theme sizes text inputs through a long :not() chain no plain selector outranks. */
+  form.hs-form .hs-input { padding: 14px 16px !important; min-height: 52px !important; }
+  form.hs-form .hs-input:focus { outline: 0; border-color: #154A91; box-shadow: 0 0 0 3px rgba(47,178,220,.18); }
+  form.hs-form .hs-input.invalid.error { border-color: #C0392B; }
+  form.hs-form .hs-error-msgs { list-style: none; margin: 7px 0 0; padding: 0; }
+  form.hs-form .hs-error-msg { font-family: inherit; font-size: 12px; color: #C0392B; }
+  form.hs-form .hs-button { height: 52px; line-height: 52px; padding: 0 34px; border: 0; border-radius: 0; background: #154A91; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; letter-spacing: .5px; transition: background .3s, transform .3s; }
+  form.hs-form .hs-button:hover { background: #103A72; transform: translateY(-2px); }
+  .submitted-message { font-family: inherit; font-size: 15px; color: #154A91; }
+`;
 ---
 
 <Layout title={L.text(hero, 'title')} description={L.text(hero, 'lede')}>
@@ -37,39 +59,12 @@ const interestAreas = t.register.areas.map((label, i) => ({ label, value: arabic
   <section class="ribbon">
     <div class="wrap">
       <div class="form-shell">
-        <form class="form reveal" id="interestForm" novalidate>
-          <div class="row-2">
-            <div class="field"><label for="ri-name">{t.register.fullName}</label><input id="ri-name" name="name" required /></div>
-            <div class="field"><label for="ri-entity">{t.register.entity}</label><input id="ri-entity" name="entity" required /></div>
-          </div>
-          <div class="row-2">
-            <div class="field"><label for="ri-type">{t.register.entityType}</label>
-              <select id="ri-type" name="type" required><option value="">{t.register.choose}</option>{entityTypes.map((o) => <option value={o.value}>{o.label}</option>)}</select></div>
-            <div class="field"><label for="ri-email">{t.register.email}</label><input id="ri-email" name="email" required type="email" /></div>
-          </div>
-          <div class="row-2">
-            <div class="field"><label for="ri-phone">{t.register.phone}</label><input id="ri-phone" name="phone" /></div>
-            <div class="field"><label for="ri-site">{t.register.website}</label><input id="ri-site" name="website" placeholder="https://" /></div>
-          </div>
-          <div class="field"><label for="ri-area">{t.register.area}</label>
-            <select id="ri-area" name="area" required><option selected value="">{t.register.choose}</option>{interestAreas.map((o) => <option value={o.value}>{o.label}</option>)}</select>
-            <p class="hint">{t.register.areaHint}</p></div>
-          <div class="field"><label for="ri-msg">{t.register.message}</label><textarea id="ri-msg" name="message"></textarea></div>
-          <div class="field">
-            <label for="ri-file">{t.register.file}</label>
-            <p class="hint hint--top">{t.register.fileHint}</p>
-            <div class="filepick">
-              <input accept=".pdf,.ppt,.pptx,.doc,.docx" id="ri-file" name="portfolio" type="file" />
-              <label class="filepick__btn" for="ri-file">{t.register.fileButton}</label>
-              <span class="filepick__name">{t.register.fileNone}</span>
-            </div>
-          </div>
-          <label class="check"><input required type="checkbox" /><span>{t.register.consentBefore}<a href={L.href('/terms')} style="color:var(--c-link)">{t.footer.terms}</a>{t.register.consentAnd}<a href={L.href('/privacy')} style="color:var(--c-link)">{t.footer.privacy}</a>{t.register.consentAfter}</span></label>
-          <div class="form-actions">
-            <button class="btn-solid" type="submit"><span>{t.register.submit}</span><svg fill="none" height="16" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24" width="16" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"></path></svg></button>
-            <span class="form-msg" id="riMsg"><svg fill="none" height="15" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" aria-hidden="true"><path d="M20 6L9 17l-5-5"></path></svg><span>{t.register.success}</span></span>
-          </div>
-        </form>
+        <div class="hs-embed reveal">
+          <div dir="ltr" id="interestForm" lang="en"></div>
+          <p class="hs-embed__fallback" hidden id="riFallback">
+            {t.register.embedFallback} <a href={`mailto:${info.supportEmail}`}>{info.supportEmail}</a>
+          </p>
+        </div>
         <aside class="aside-card reveal">
           <h3 {...L.attrs(info, 'heading')}>{L.text(info, 'heading')}</h3>
           <p class="aside-card__lede" {...L.attrs(info, 'lede')}>{L.text(info, 'lede')}</p>
@@ -92,24 +87,25 @@ const interestAreas = t.register.areas.map((label, i) => ({ label, value: arabic
       </div>
     </div>
   </section>
-</Layout>
 
-<script>
-  // main.js §15 for #interestForm, verbatim in behaviour.
-  const form = document.getElementById('interestForm') as HTMLFormElement | null;
-  form?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    let ok = true;
-    form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[required]').forEach((f) => {
-      const bad = f instanceof HTMLInputElement && f.type === 'checkbox' ? !f.checked : !f.value.trim();
-      f.style.borderColor = bad ? '#C0392B' : '';
-      if (bad) ok = false;
-    });
-    if (!ok) return;
-    document.getElementById('riMsg')?.classList.add('is-on');
-    form.querySelector('.btn-solid')?.setAttribute('disabled', '');
-  });
-  form?.addEventListener('input', (e) => {
-    (e.target as HTMLElement).style.borderColor = '';
-  });
-</script>
+  <script is:inline charset="utf-8" src="https://js.hsforms.net/forms/embed/v2.js"></script>
+  <script is:inline define:vars={{ hubspot, css: hubspotCss, inlineMessage: t.register.success }}>
+    // Blocked by an ad blocker or offline: point people at the support address instead.
+    if (window.hbspt) {
+      window.hbspt.forms.create({
+        ...hubspot,
+        target: '#interestForm',
+        inlineMessage,
+        onFormReady(form) {
+          // A jQuery wrapper or the <form> itself, depending on HubSpot's build.
+          const doc = (form[0] || form).ownerDocument;
+          const style = doc.createElement('style');
+          style.textContent = css;
+          doc.head.append(style);
+        },
+      });
+    } else {
+      document.getElementById('riFallback')?.removeAttribute('hidden');
+    }
+  </script>
+</Layout>
