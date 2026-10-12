@@ -51,6 +51,7 @@ const ar = {
     next: 'التالي',
     close: 'إغلاق',
     sourceLabel: 'المصدر:',
+    formFallback: 'تعذّر تحميل النموذج. راسلنا مباشرةً على',
   },
   home: {
     title: 'الرئيسية',
@@ -216,7 +217,6 @@ const ar = {
     consentAfter: '.',
     submit: 'إرسال التسجيل',
     success: 'شكرًا لك — تم تسجيل طلبك بنجاح.',
-    embedFallback: 'تعذّر تحميل نموذج التسجيل. راسلنا مباشرةً على',
   },
   notFound: {
     title: 'الصفحة غير موجودة',
@@ -280,6 +280,7 @@ const en: UI = {
     next: 'Next',
     close: 'Close',
     sourceLabel: 'Source:',
+    formFallback: 'The form couldn’t load. Email us directly at',
   },
   home: {
     title: 'Home',
@@ -451,7 +452,6 @@ const en: UI = {
     consentAfter: '.',
     submit: 'Submit registration',
     success: 'Thank you — your registration has been received.',
-    embedFallback: 'The registration form couldn’t load. Email us directly at',
   },
   notFound: {
     title: 'Page not found',

@@ -1,0 +1,78 @@
+---
+// A HubSpot form embedded with HubSpot's v2 script. Submissions go straight to
+// HubSpot, never to this server. The labels are HubSpot's (English) on both
+// locales, so the form itself is always LTR; the success message is ours.
+//
+// HubSpot renders the form in a same-origin iframe, out of reach of style.css,
+// and a form with a HubSpot-side theme ignores the embed's `css` option. So
+// onFormReady appends `css` below inside the iframe instead. It restates the
+// mockup's .field / .btn-solid values (style.css §28); the `form.hs-form`
+// prefix outranks HubSpot's theme selectors. If HubSpot renames its classes the
+// form falls back to HubSpot's own look.
+//
+// If the script is blocked (ad blockers, offline) the fallback line points
+// people at `email` instead.
+import { localeOfPath } from '../lib/i18n/locale.ts';
+import { ui } from '../lib/i18n/ui.ts';
+
+interface Props {
+  formId: string;
+  /** Shown in place of the form after a successful submission. */
+  successMessage: string;
+  email: string;
+}
+
+const { formId, successMessage, email } = Astro.props;
+const t = ui(localeOfPath(Astro.url.pathname));
+
+const hubspot = { portalId: '46313188', formId, region: 'na1' };
+const targetId = `hs-${formId}`;
+const fallbackId = `${targetId}-fallback`;
+
+const css = `
+  body { font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif; color: #0B2540; }
+  form.hs-form fieldset { max-width: none; }
+  form.hs-form .hs-form-field { margin-bottom: 26px; }
+  form.hs-form .hs-form-field > label { display: block; font-family: inherit; font-size: 12px; font-weight: 400; letter-spacing: .9px; text-transform: uppercase; color: #4A6480; margin-bottom: 9px; }
+  form.hs-form .hs-form-required { color: #C0392B; margin-inline-start: 2px; }
+  form.hs-form .hs-field-desc { font-family: inherit; font-size: 12px; color: #4A6480; margin: -4px 0 9px; }
+  form.hs-form .hs-input { width: 100%; height: auto; font-family: inherit; font-size: 15px; color: #0B2540; background: #fff; border: 1px solid #D4E2EF; border-radius: 0; transition: border-color .3s, box-shadow .3s; }
+  /* HubSpot's theme sizes text inputs through a long :not() chain no plain selector outranks. */
+  form.hs-form .hs-input { padding: 14px 16px !important; min-height: 52px !important; }
+  form.hs-form textarea.hs-input { min-height: 150px !important; resize: vertical; }
+  form.hs-form .hs-input:focus { outline: 0; border-color: #154A91; box-shadow: 0 0 0 3px rgba(47,178,220,.18); }
+  form.hs-form .hs-input.invalid.error { border-color: #C0392B; }
+  form.hs-form .hs-error-msgs { list-style: none; margin: 7px 0 0; padding: 0; }
+  form.hs-form .hs-error-msg { font-family: inherit; font-size: 12px; color: #C0392B; }
+  form.hs-form .hs-button { height: 52px; line-height: 52px; padding: 0 34px; border: 0; border-radius: 0; background: #154A91; color: #fff; font-family: inherit; font-size: 14px; font-weight: 600; letter-spacing: .5px; transition: background .3s, transform .3s; }
+  form.hs-form .hs-button:hover { background: #103A72; transform: translateY(-2px); }
+  .submitted-message { font-family: inherit; font-size: 15px; color: #154A91; }
+`;
+---
+
+<div class="hs-embed reveal">
+  <div dir="ltr" id={targetId} lang="en"></div>
+  <p class="hs-embed__fallback" hidden id={fallbackId}>
+    {t.common.formFallback} <a href={`mailto:${email}`}>{email}</a>
+  </p>
+</div>
+
+<script is:inline charset="utf-8" src="https://js.hsforms.net/forms/embed/v2.js"></script>
+<script is:inline define:vars={{ hubspot, targetId, fallbackId, css, inlineMessage: successMessage }}>
+  if (window.hbspt) {
+    window.hbspt.forms.create({
+      ...hubspot,
+      target: `#${targetId}`,
+      inlineMessage,
+      onFormReady(form) {
+        // A jQuery wrapper or the <form> itself, depending on HubSpot's build.
+        const doc = (form[0] || form).ownerDocument;
+        const style = doc.createElement('style');
+        style.textContent = css;
+        doc.head.append(style);
+      },
+    });
+  } else {
+    document.getElementById(fallbackId)?.removeAttribute('hidden');
+  }
+</script>

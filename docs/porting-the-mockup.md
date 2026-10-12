@@ -159,8 +159,10 @@ From [waterstrip/README.md](../waterstrip/README.md) — these still apply to th
 2. Flip `robots.txt` from `Disallow: /` to `Allow: /`.
 3. Replace the `#` placeholder social links in the footer with real accounts.
 4. Replace placeholder imagery (`assets/img/ph/*.svg`, `assets/img/hero/*.svg`) with real photos.
-5. Wire the contact and register-interest forms to a real handler. In the Astro port these
-   become server endpoints, and unlike login they will need spam protection.
+5. ~~Wire the contact and register-interest forms to a real handler.~~ **Done, via HubSpot:**
+   both pages embed HubSpot forms ([HubSpotForm.astro](../src/components/HubSpotForm.astro));
+   submissions go to HubSpot, not this server. If the site gets a Content-Security-Policy,
+   it must allow `js.hsforms.net` and HubSpot's form hosts.
 
 Note that `waterstrip/netlify.toml` and `waterstrip/_redirects` target the mockup's Netlify
 deployment. This project deploys to a VPS instead, so the redirects are handled by Astro routing
